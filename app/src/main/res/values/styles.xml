@@ -1,0 +1,43 @@
+<resources>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/ColorPrimary</item>
+        <item name="colorPrimaryDark">@color/ColorPrimaryDark</item>
+        <item name="colorAccent">@color/accent_color</item>
+    </style>
+
+    <style name="AppTheme.Main" parent="Theme.AppCompat">
+        <item name="colorPrimary">@color/ColorPrimary</item>
+        <item name="colorPrimaryDark">@color/ColorPrimaryDark</item>
+        <item name="android:fastScrollThumbDrawable">@drawable/ic_datejumper</item>
+        <item name="android:fastScrollTrackDrawable">@android:color/transparent</item>
+        <item name="colorAccent">@color/accent_color</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+
+    <style name="AppTheme.Album" parent="Theme.AppCompat">
+        <item name="colorPrimary">@color/ColorPrimary</item>
+        <item name="colorPrimaryDark">@color/ColorPrimaryDark</item>
+        <item name="windowActionBar">false</item>
+        <item name="colorAccent">@color/accent_color</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.Player" parent="Theme.AppCompat">
+        <item name="colorPrimary">@color/ColorPrimary</item>
+        <item name="colorPrimaryDark">@color/ColorPrimaryDark</item>
+        <item name="windowActionBar">false</item>
+        <item name="colorAccent">@color/accent_color</item>
+        <item name="windowNoTitle">true</item>
+        <item name="round_selector">@drawable/round_selector_dark</item>
+    </style>
+
+    <style name="AppTheme.Pref" parent="Theme.AppCompat">
+        <item name="colorPrimary">@color/ColorPrimary</item>
+        <item name="colorPrimaryDark">@color/ColorPrimaryDark</item>
+        <item name="colorAccent">@color/accent_color</item>
+    </style>
+
+</resources>

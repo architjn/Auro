@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/noti_color_bg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/noti_album_art"
+        android:layout_alignLeft="@+id/noti_album_art"
+        android:layout_alignRight="@+id/noti_view_holder"
+        android:layout_alignTop="@+id/noti_album_art"
+        android:scaleType="fitXY"
+        android:src="@color/noti_background" />
+
+    <ImageView
+        android:id="@+id/noti_album_art"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/default_artwork_dark" />
+
+    <RelativeLayout
+        android:id="@+id/noti_view_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/noti_album_art"
+        android:layout_alignTop="@+id/noti_album_art"
+        android:layout_toRightOf="@+id/noti_album_art">
+
+        <TextView
+            android:id="@+id/noti_song_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:singleLine="true"
+            android:text="Get Low"
+            android:textColor="#fff"
+            android:textSize="16dp" />
+
+        <TextView
+            android:id="@+id/noti_song_artist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/noti_song_name"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:singleLine="true"
+            android:text="David Guetta &amp; Kaz James"
+            android:textColor="#c7c7c7"
+            android:textSize="12dp" />
+
+        <TextView
+            android:id="@+id/noti_song_album"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/noti_song_artist"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:singleLine="true"
+            android:text="Furious 7"
+            android:textColor="#c7c7c7"
+            android:textSize="12dp" />
+
+        <!--<ImageView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:layout_above="@+id/noti_button_set"-->
+        <!--android:src="#606060" />-->
+
+        <!--<FrameLayout-->
+        <!--android:id="@+id/noti_button_set"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true">-->
+
+        <!--<ImageButton-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:layout_marginRight="20dp"-->
+        <!--android:layout_toLeftOf="@+id/noti_play_button"-->
+        <!--android:background="@drawable/ripple_circle"-->
+        <!--android:clickable="true"-->
+        <!--android:focusable="true"-->
+        <!--android:paddingBottom="2dp"-->
+        <!--android:src="@drawable/ic_skip_previous_white_36dp" />-->
+
+        <!--<ImageButton-->
+        <!--android:id="@+id/noti_play_button"-->
+        <!--android:layout_width="50dp"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:background="@drawable/ripple"-->
+        <!--android:clickable="true"-->
+        <!--android:focusable="true"-->
+        <!--android:src="@drawable/ic_play_arrow_white_36dp" />-->
+
+        <!--<ImageButton-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:layout_marginLeft="20dp"-->
+        <!--android:layout_toRightOf="@+id/noti_play_button"-->
+        <!--android:background="@drawable/ripple_circle"-->
+        <!--android:clickable="true"-->
+        <!--android:focusable="true"-->
+        <!--android:paddingBottom="2dp"-->
+        <!--android:src="@drawable/ic_skip_next_white_36dp" />-->
+
+        <!--</FrameLayout>-->
+
+
+        <LinearLayout
+            android:id="@+id/noti_button_set"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/noti_prev_button"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@drawable/unbounded_ripple"
+                android:clickable="true"
+                android:drawSelectorOnTop="true"
+                android:focusable="true"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:src="@drawable/ic_skip_previous_white_36dp" />
+            <!--android:background="?android:attr/selectableItemBackground"-->
+
+            <ImageButton
+                android:id="@+id/noti_play_button"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@drawable/unbounded_ripple"
+                android:clickable="true"
+                android:drawSelectorOnTop="true"
+                android:focusable="true"
+                android:src="@drawable/ic_pause_white_36dp" />
+
+            <ImageButton
+                android:id="@+id/noti_next_button"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@drawable/unbounded_ripple"
+                android:clickable="true"
+                android:drawSelectorOnTop="true"
+                android:focusable="true"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:src="@drawable/ic_skip_next_white_36dp" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

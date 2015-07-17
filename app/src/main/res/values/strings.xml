@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Acj Music Player</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="theme">Theme</string>
+    <string name="view">View</string>
+    <string name="settings">Settings</string>
+    <string name="songs">Songs</string>
+    <string name="album">Albums</string>
+    <string name="artist">Artists</string>
+    <string name="selected_count">%1$s selected</string>
+    <string name="genres">Genres</string>
+    <string name="support">Support</string>
+    <string name="pref_general">General</string>
+    <string name="pref_theme">Design</string>
+    <string name="pref_scan">Scan Files</string>
+    <string name="pref_scan_sum">Can\'t find your song? Lets Scan.</string>
+    <string name="pref_gplus_com">Google+ Community</string>
+    <string name="pref_gplus_com_sum">Join the community to share with us your feedback</string>
+    <string name="pref_gplus">Google+ Profile</string>
+    <string name="pref_gplus_sum">Follow developer of this application on Google+</string>
+    <string name="pref_twitter">Twitter</string>
+    <string name="pref_twitter_sum">Follow developer of this application on Twitter</string>
+    <string name="pref_home_view">Home Screen</string>
+    <string name="pref_player_view">Player Screen</string>
+    <string name="pref_extend_tabs">Extend tabs to fit screen</string>
+    <string name="pref_fast_scroll">Enable Fast Scroll</string>
+    <string name="pref_fast_scroll_sum">Fast Scroll will only appear on long lists</string>
+</resources>

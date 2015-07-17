@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/artist_grid"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:columnWidth="150dp"
+        android:gravity="center"
+        android:numColumns="auto_fit"
+        android:horizontalSpacing="4dp"
+        android:verticalSpacing="4dp"
+        android:stretchMode="columnWidth" />
+
+</RelativeLayout>

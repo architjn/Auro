@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="ColorPrimary">#37474f</color>
+    <color name="ColorPrimaryDark">#212b2f</color>
+    <color name="tabInactiveTextColor">#9FA8DA</color>
+    <color name="tabsScrollColor">#ffffff</color>
+    <color name="light_color">#b5b5b5</color>
+    <color name="card_background">#212121</color>
+    <color name="noti_background">#414141</color>
+    <color name="control_background_dark">#424242</color>
+    <color name="control_background_light">#424242</color>
+    <color name="accent_color">#ff4081</color>
+
+</resources>
