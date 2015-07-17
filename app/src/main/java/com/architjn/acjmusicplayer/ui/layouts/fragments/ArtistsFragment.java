@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,11 +28,6 @@ public class ArtistsFragment extends Fragment {
     RecyclerView gv;
     private SharedPreferences settingsPref;
     int currentFabPos;
-    FloatingActionButton fab;
-
-    public ArtistsFragment(FloatingActionButton fab) {
-        this.fab = fab;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -100,15 +94,15 @@ public class ArtistsFragment extends Fragment {
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 currentFabPos = dy;
-                if (dy > currentFabPos) {
-                    if (fab.getVisibility() == View.GONE) {
-                        fab.setVisibility(View.VISIBLE);
-                    }
-                } else if (dy < currentFabPos) {
-                    if (fab.getVisibility() == View.VISIBLE) {
-                        fab.setVisibility(View.GONE);
-                    }
-                }
+//                if (dy > currentFabPos) {
+//                    if (fab.getVisibility() == View.GONE) {
+//                        fab.setVisibility(View.VISIBLE);
+//                    }
+//                } else if (dy < currentFabPos) {
+//                    if (fab.getVisibility() == View.VISIBLE) {
+//                        fab.setVisibility(View.GONE);
+//                    }
+//                }
             }
         });
     }

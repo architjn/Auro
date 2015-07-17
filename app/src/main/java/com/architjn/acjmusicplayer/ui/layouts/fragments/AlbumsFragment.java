@@ -28,11 +28,6 @@ public class AlbumsFragment extends Fragment {
     View mainView;
     RecyclerView gv;
     private SharedPreferences settingsPref;
-    private FloatingActionButton fab;
-
-    public AlbumsFragment(FloatingActionButton fab) {
-        this.fab = fab;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -92,7 +87,7 @@ public class AlbumsFragment extends Fragment {
         gv.setLayoutManager(gridLayoutManager);
         gv.addItemDecoration(new SpacesItemDecoration(8));
         gv.setHasFixedSize(true);
-        gv.setAdapter(new AlbumsAdapter(mainView.getContext(), albumList, fab));
+        gv.setAdapter(new AlbumsAdapter(mainView.getContext(), albumList));
 
     }
 }

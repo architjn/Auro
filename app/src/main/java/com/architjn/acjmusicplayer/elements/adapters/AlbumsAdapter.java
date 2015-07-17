@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
@@ -12,8 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,7 +28,6 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.SimpleItem
 
     private final List<AlbumListItem> items;
     private Context context;
-    public FloatingActionButton fab;
 
     public final static class SimpleItemViewHolder extends RecyclerView.ViewHolder {
         public TextView albumName, albumDesc;
@@ -49,10 +45,9 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.SimpleItem
         }
     }
 
-    public AlbumsAdapter(Context context, List<AlbumListItem> items, FloatingActionButton fab) {
+    public AlbumsAdapter(Context context, List<AlbumListItem> items) {
         this.context = context;
         this.items = items;
-        this.fab = fab;
     }
 
     @Override
@@ -93,8 +88,6 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.SimpleItem
         holder.realBackground.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (fab.getVisibility() == View.VISIBLE)
-                    fab.setVisibility(View.INVISIBLE);
                 Intent intent = new Intent(context, AlbumActivity.class);
                 intent.putExtra("albumName", items.get(position).getName().toString());
                 intent.putExtra("albumId", items.get(position).getId());
