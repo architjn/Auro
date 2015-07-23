@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.graphics.Palette;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -18,11 +19,11 @@ import com.architjn.acjmusicplayer.R;
 public class ColorAnimateAlbumView extends AsyncTask<Void, Void, Void> {
 
     private Context context;
-    private RelativeLayout detailHolder;
+    private LinearLayout detailHolder;
     private Palette palette;
     private ValueAnimator colorAnimation, colorAnimation1, colorAnimation2;
 
-    public ColorAnimateAlbumView(Context musicPlayer, RelativeLayout detailHolder, Palette palette) {
+    public ColorAnimateAlbumView(Context musicPlayer, LinearLayout detailHolder, Palette palette) {
         this.context = musicPlayer;
         this.detailHolder = detailHolder;
         this.palette = palette;
