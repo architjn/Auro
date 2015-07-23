@@ -9,6 +9,17 @@
 
 #Team Members
  - <a href="http://google.co.in/+architjn">Archit Jain</a>
+
+##Open Source Libraries used
+- Google AppCompat 
+- Google CardView
+- Google RecyclerView
+- Google Design Library
+- Google Palette
+- <a href="https://github.com/square/picasso">Picasso</a>
+- <a href="https://github.com/aNNiMON/PaperStyleWidgets">PaperStyleWidgets</a>
+
+ 
  
 #License
 >The MIT License (MIT)
