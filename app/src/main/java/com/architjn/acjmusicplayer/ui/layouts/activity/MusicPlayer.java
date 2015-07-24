@@ -127,7 +127,7 @@ public class MusicPlayer extends AppCompatActivity {
             }
         }
 
-        if (settingsPref.getBoolean("pref_album_nav_trans", false)) {
+        if (settingsPref.getBoolean("pref_nav_trans", false)) {
             if (Build.VERSION.SDK_INT >= 21) {
                 getWindow().getDecorView().setSystemUiVisibility(
                         View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
