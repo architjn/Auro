@@ -18,7 +18,7 @@ import com.architjn.acjmusicplayer.R;
 public class ThemeSettings extends PreferenceActivity {
 
     private SharedPreferences shp;
-    private Preference homeView;
+    private Preference homeView, playerView, albumView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +41,8 @@ public class ThemeSettings extends PreferenceActivity {
 
     private void setIds() {
         homeView = findPreference("pref_home_view");
+        playerView = findPreference("pref_player_view");
+        albumView = findPreference("pref_album_view");
     }
 
     private void setListeners() {
@@ -48,6 +50,20 @@ public class ThemeSettings extends PreferenceActivity {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 startActivity(new Intent(ThemeSettings.this, HomeScreenSettings.class));
+                return true;
+            }
+        });
+        playerView.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                startActivity(new Intent(ThemeSettings.this, PlayerScreenSettings.class));
+                return true;
+            }
+        });
+        albumView.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                startActivity(new Intent(ThemeSettings.this, AlbumScreenSettings.class));
                 return true;
             }
         });

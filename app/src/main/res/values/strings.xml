@@ -22,6 +22,7 @@
     <string name="pref_general">General</string>
     <string name="pref_theme">Design</string>
     <string name="pref_scan">Scan Files</string>
+    <string name="pref_status_trans">Fully Transparent Statusbar</string>
     <string name="pref_scan_sum">Can\'t find your song? Lets Scan.</string>
     <string name="pref_gplus_com">Google+ Community</string>
     <string name="pref_gplus_com_sum">Join the community to share with us your feedback</string>
@@ -30,6 +31,7 @@
     <string name="pref_twitter">Twitter</string>
     <string name="pref_twitter_sum">Follow developer of this application on Twitter</string>
     <string name="pref_home_view">Home Screen</string>
+    <string name="pref_album_view">Album Screen</string>
     <string name="pref_player_view">Player Screen</string>
     <string name="pref_extend_tabs">Extend tabs to fit screen</string>
     <string name="pref_fast_scroll">Enable Fast Scroll</string>

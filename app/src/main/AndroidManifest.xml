@@ -45,6 +45,14 @@
             android:name=".ui.layouts.activity.settings.HomeScreenSettings"
             android:label="@string/pref_home_view"
             android:theme="@style/AppTheme.Pref"/>
+        <activity
+            android:name=".ui.layouts.activity.settings.PlayerScreenSettings"
+            android:label="@string/pref_player_view"
+            android:theme="@style/AppTheme.Pref"/>
+        <activity
+            android:name=".ui.layouts.activity.settings.AlbumScreenSettings"
+            android:label="@string/pref_album_view"
+            android:theme="@style/AppTheme.Pref"/>
 
         <service
             android:name=".service.MusicService"
