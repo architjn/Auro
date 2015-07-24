@@ -23,6 +23,7 @@
     <string name="pref_theme">Design</string>
     <string name="pref_scan">Scan Files</string>
     <string name="pref_status_trans">Fully Transparent Statusbar</string>
+    <string name="pref_nav_trans">Fully Transparent Navigationbar</string>
     <string name="pref_scan_sum">Can\'t find your song? Lets Scan.</string>
     <string name="pref_gplus_com">Google+ Community</string>
     <string name="pref_gplus_com_sum">Join the community to share with us your feedback</string>

@@ -4,4 +4,8 @@
         android:defaultValue="true"
         android:key="pref_status_trans"
         android:title="@string/pref_status_trans" />
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="pref_nav_trans"
+        android:title="@string/pref_nav_trans" />
 </PreferenceScreen>
