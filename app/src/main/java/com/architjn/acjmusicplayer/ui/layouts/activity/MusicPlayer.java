@@ -30,6 +30,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -63,6 +64,7 @@ public class MusicPlayer extends AppCompatActivity {
     private SharedPreferences settingsPref;
     private RecyclerView rv;
     private LinearLayout detailHolder;
+    private RelativeLayout shadeOverArt;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private ImageView playButton, rewindButton,
             nextButton, shuffleButton, header;
@@ -159,6 +161,10 @@ public class MusicPlayer extends AppCompatActivity {
         setButtons();
 
         updateSeeker();
+
+        if (!settingsPref.getBoolean("pref_draw_over", true)) {
+            shadeOverArt.setVisibility(View.GONE);
+        }
 
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar_player));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -308,6 +314,7 @@ public class MusicPlayer extends AppCompatActivity {
     }
 
     private void init() {
+        shadeOverArt = (RelativeLayout) findViewById(R.id.shade_over_art);
         toolbar = (Toolbar) findViewById(R.id.toolbar_player);
         playerNestedScroll = (NestedScrollView) findViewById(R.id.player_nested_scroll);
         header = (ImageView) findViewById(R.id.header);

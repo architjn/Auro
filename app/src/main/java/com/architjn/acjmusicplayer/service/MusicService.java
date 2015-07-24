@@ -214,7 +214,7 @@ public class MusicService extends Service {
             } else if (intent.getAction().equals(ACTION_SHUFFLE_PLAYLIST)) {
                 Collections.shuffle(playList);
             } else if (intent.getAction().equals(ACTION_PLAY_NEXT)) {
-                if (currentPlaylistSongId == playList.size() - 1) {
+                if (currentPlaylistSongId == playList.size() - 1 && currentPlaylistSongId!=-1) {
                     playList.add(new SongListItem(intent.getIntExtra("songId", 0), intent.getStringExtra("songName"), intent.getStringExtra("songDesc"),
                             intent.getStringExtra("songPath"), false,
                             intent.getLongExtra("songAlbumId", 0), intent.getStringExtra("songAlbumName"), 0));
