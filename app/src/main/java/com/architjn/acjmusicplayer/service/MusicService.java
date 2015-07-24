@@ -70,6 +70,7 @@ public class MusicService extends Service {
         public void onReceive(Context context, final Intent intent) {
             if (intent.getAction().equals(ACTION_PLAY_SINGLE)) {
                 playList.clear();
+                pausedSongSeek = 0;
                 playMusic(intent.getStringExtra("songPath"), intent.getStringExtra("songName"),
                         intent.getStringExtra("songDesc"), intent.getStringExtra("songArt"),
                         intent.getLongExtra("songAlbumId", 0), intent.getStringExtra("songAlbumName"), true);
@@ -79,6 +80,7 @@ public class MusicService extends Service {
                 currentPlaylistSongId = 0;
                 pausedSongSeek = 0;
             } else if (intent.getAction().equals(ACTION_PLAY_ALBUM)) {
+                pausedSongSeek = 0;
                 playList.clear();
                 System.gc();
                 Cursor musicCursor;
@@ -214,7 +216,7 @@ public class MusicService extends Service {
             } else if (intent.getAction().equals(ACTION_SHUFFLE_PLAYLIST)) {
                 Collections.shuffle(playList);
             } else if (intent.getAction().equals(ACTION_PLAY_NEXT)) {
-                if (currentPlaylistSongId == playList.size() - 1 && currentPlaylistSongId!=-1) {
+                if (currentPlaylistSongId == playList.size() - 1 && currentPlaylistSongId != -1) {
                     playList.add(new SongListItem(intent.getIntExtra("songId", 0), intent.getStringExtra("songName"), intent.getStringExtra("songDesc"),
                             intent.getStringExtra("songPath"), false,
                             intent.getLongExtra("songAlbumId", 0), intent.getStringExtra("songAlbumName"), 0));
@@ -303,7 +305,7 @@ public class MusicService extends Service {
     public void playMusic(final String songPath, final String songName, final String songDesc,
                           final String songArt, final long albumId, final String albumName, @Nullable boolean singlePlay) {
         if (singlePlay) {
-            playList.clear();
+//            playList.clear();
             currentPlaylistSongId = -1;
             currentPlaylistAlbumId = -1;
             pausedSong = new SongListItem(0, songName, songDesc, songPath, false, albumId, albumName, 0);

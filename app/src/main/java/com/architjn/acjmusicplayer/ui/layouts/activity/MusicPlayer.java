@@ -208,6 +208,7 @@ public class MusicPlayer extends AppCompatActivity {
                                 detailHolder.setBackgroundColor(mainColor);
                             } finally {
                                 collapsingToolbarLayout.setContentScrimColor(mainColor);
+                                collapsingToolbarLayout.setStatusBarScrimColor(getAutoStatColor(mainColor));
                             }
                         }
                     }
@@ -234,10 +235,7 @@ public class MusicPlayer extends AppCompatActivity {
                                 seekBar.setProgress(seekProg + 100);
                             else
                                 seekBar.setProgress(100);
-//                        currentTimeHolder.setText((seekProg / 1000) / 60 + ":" +
-//                                (seekProg / 1000) % 60);
                             new ChangeSeekDetailUpdater(seekProg, currentTimeHolder).execute();
-//                        mHandler.postDelayed(this, duration / 100);
                         }
                     }
                 });
@@ -362,6 +360,13 @@ public class MusicPlayer extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+    }
+
+    public int getAutoStatColor(int baseColor) {
+        float[] hsv = new float[3];
+        Color.colorToHSV(baseColor, hsv);
+        hsv[2] *= 0.8f;
+        return Color.HSVToColor(hsv);
     }
 
 }

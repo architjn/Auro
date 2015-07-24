@@ -30,9 +30,6 @@ public class AddSongToPlaylist extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-//        Intent x = new Intent();
-//        x.setAction(MusicService.ACTION_CLEAR_PLAYLIST);
-//        context.sendBroadcast(x);
         Intent musicPlayer = new Intent();
         for (int i = 0; i < songId.size(); i++) {
             musicPlayer.setAction(MusicService.ACTION_ADD_SONG_MULTI);
@@ -42,14 +39,6 @@ public class AddSongToPlaylist extends AsyncTask<Void, Void, Void> {
             musicPlayer.putStringArrayListExtra("songPath", songPath);
             musicPlayer.putStringArrayListExtra("songAlbum", songAlbum);
             musicPlayer.putStringArrayListExtra("songAlbumId", songAlbumId);
-//                    musicPlayer.putExtra("songId", songList.get(i).getId());
-//                    musicPlayer.putExtra("songName", songList.get(i).getName());
-//                    musicPlayer.putExtra("songDesc", songList.get(i).getDesc());
-//                    musicPlayer.putExtra("songPath", songList.get(i).getPath());
-//                    musicPlayer.putExtra("songFav", songList.get(i).getFav());
-//                    musicPlayer.putExtra("songAlbumId", songList.get(i).getAlbumId());
-//                    musicPlayer.putExtra("songAlbumName", songList.get(i).getAlbumName());
-//                    musicPlayer.putExtra("songCount", songList.get(i).getCount());
         }
         context.sendBroadcast(musicPlayer);
         return null;
