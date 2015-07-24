@@ -5,7 +5,10 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
-
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
     <!--<protected-broadcast android:name="android.intent.action.MEDIA_MOUNTED" />-->
 
     <application
@@ -25,27 +28,27 @@
         <activity
             android:name=".ui.layouts.activity.AlbumActivity"
             android:label="Album"
-            android:theme="@style/AppTheme.Album"></activity>
+            android:theme="@style/AppTheme.Album"/>
         <activity
             android:name=".ui.layouts.activity.MusicPlayer"
             android:label=""
-            android:theme="@style/AppTheme.Player"></activity>
+            android:theme="@style/AppTheme.Player"/>
         <activity
             android:name=".ui.layouts.activity.settings.Settings"
             android:label="@string/settings"
-            android:theme="@style/AppTheme.Pref"></activity>
+            android:theme="@style/AppTheme.Pref"/>
         <activity
             android:name=".ui.layouts.activity.settings.ThemeSettings"
             android:label="@string/pref_theme"
-            android:theme="@style/AppTheme.Pref"></activity>
+            android:theme="@style/AppTheme.Pref"/>
         <activity
             android:name=".ui.layouts.activity.settings.HomeScreenSettings"
             android:label="@string/pref_home_view"
-            android:theme="@style/AppTheme.Pref"></activity>
+            android:theme="@style/AppTheme.Pref"/>
 
         <service
             android:name=".service.MusicService"
-            android:enabled="true"></service>
+            android:enabled="true"/>
     </application>
 
 </manifest>

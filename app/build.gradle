@@ -27,7 +27,5 @@ dependencies {
     compile 'com.android.support:design:+'
     compile 'com.android.support:palette-v7:+'
     compile 'com.squareup.picasso:picasso:+'
-    compile 'com.github.manuelpeinado.fadingactionbar:fadingactionbar:+'
     compile 'com.annimon:paperstyle:1.1.0'
-    compile 'com.bignerdranch.android:recyclerview-multiselect:+'
 }

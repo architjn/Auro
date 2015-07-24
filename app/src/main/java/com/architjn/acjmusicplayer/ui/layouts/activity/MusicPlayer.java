@@ -14,8 +14,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.transition.Fade;
 import android.view.MenuItem;
@@ -27,10 +30,13 @@ import android.widget.TextView;
 
 import com.annimon.paperstyle.PaperSeekBar;
 import com.architjn.acjmusicplayer.R;
+import com.architjn.acjmusicplayer.elements.adapters.PlayingSongAdapter;
 import com.architjn.acjmusicplayer.service.MusicService;
 import com.architjn.acjmusicplayer.task.ChangeSeekDetailUpdater;
 import com.architjn.acjmusicplayer.task.ColorAnimateAlbumView;
+import com.architjn.acjmusicplayer.ui.widget.MyLinearLayoutManager;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -42,11 +48,14 @@ public class MusicPlayer extends AppCompatActivity {
 
     public static final String ACTION_GET_PLAY_STATE = "get_play_state";
     public static final String ACTION_GET_SEEK_VALUE = "gte_seek_value";
+    public static final String ACTION_GET_PLAYING_LIST = "get_playing_list";
     public static int mainColor;
     private Toolbar toolbar;
     private String songPath, songName, songDesc, albumName, songArt;
     private TextView songNameView, songArtistView, currentTimeHolder, totalTimeHolder;
     private long albumId;
+    private NestedScrollView playerNestedScroll;
+    private RecyclerView rv;
     private LinearLayout detailHolder;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private ImageView playButton, rewindButton,
@@ -77,6 +86,19 @@ public class MusicPlayer extends AppCompatActivity {
                     playButton.setImageResource(R.drawable.ic_play_arrow_white_48dp);
                     musicStoped = true;
                 }
+            } else if (intent.getAction().equals(ACTION_GET_PLAYING_LIST)) {
+                ArrayList<String> name = new ArrayList<>(), desc = new ArrayList<>(), songId = new ArrayList<>();
+                name = intent.getStringArrayListExtra("name");
+                desc = intent.getStringArrayListExtra("desc");
+                songId = intent.getStringArrayListExtra("songId");
+                rv = (RecyclerView) findViewById(R.id.player_playlist);
+                PlayingSongAdapter adapter = new PlayingSongAdapter(context, name, desc, songId);
+                MyLinearLayoutManager layoutManager = new MyLinearLayoutManager(context,
+                        LinearLayoutManager.VERTICAL, false);
+                layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                rv.setLayoutManager(layoutManager);
+                rv.setHasFixedSize(true);
+                rv.setAdapter(adapter);
             }
         }
     };
@@ -89,6 +111,7 @@ public class MusicPlayer extends AppCompatActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction(ACTION_GET_SEEK_VALUE);
         filter.addAction(ACTION_GET_PLAY_STATE);
+        filter.addAction(ACTION_GET_PLAYING_LIST);
         registerReceiver(musicPlayer, filter);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
@@ -257,6 +280,7 @@ public class MusicPlayer extends AppCompatActivity {
 
     private void init() {
         toolbar = (Toolbar) findViewById(R.id.toolbar_player);
+        playerNestedScroll = (NestedScrollView) findViewById(R.id.player_nested_scroll);
         header = (ImageView) findViewById(R.id.header);
         playButton = (ImageView) findViewById(R.id.player_play);
         rewindButton = (ImageView) findViewById(R.id.player_rewind);

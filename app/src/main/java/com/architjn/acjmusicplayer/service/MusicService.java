@@ -52,6 +52,7 @@ public class MusicService extends Service {
     public static final String ACTION_NEXT = "next";
     public static final String ACTION_STOP = "stop";
     public static final String ACTION_PLAY_ALBUM = "player_play_album";
+    public static final String ACTION_PLAY_NEXT = "player_play_next";
     public static final String ACTION_REMOVE_SERVICE = "player_remove_service";
     public static final String ACTION_CLEAR_PLAYLIST = "player_clear_playlist";
     public static final String ACTION_PLAY_SINGLE = "play_single_song";
@@ -68,9 +69,14 @@ public class MusicService extends Service {
         @Override
         public void onReceive(Context context, final Intent intent) {
             if (intent.getAction().equals(ACTION_PLAY_SINGLE)) {
+                playList.clear();
                 playMusic(intent.getStringExtra("songPath"), intent.getStringExtra("songName"),
                         intent.getStringExtra("songDesc"), intent.getStringExtra("songArt"),
                         intent.getLongExtra("songAlbumId", 0), intent.getStringExtra("songAlbumName"), true);
+                playList.add(new SongListItem(intent.getIntExtra("songId", 0), intent.getStringExtra("songName"), intent.getStringExtra("songDesc"),
+                        intent.getStringExtra("songPath"), false,
+                        intent.getLongExtra("songAlbumId", 0), intent.getStringExtra("songAlbumName"), 0));
+                currentPlaylistSongId = 0;
                 pausedSongSeek = 0;
             } else if (intent.getAction().equals(ACTION_PLAY_ALBUM)) {
                 playList.clear();
@@ -193,8 +199,44 @@ public class MusicService extends Service {
                 if (mediaPlayer != null)
                     i.putExtra("songSeekVal", mediaPlayer.getCurrentPosition());
                 sendBroadcast(i);
+                ArrayList<String> name = new ArrayList<>(), desc = new ArrayList<>(), songId = new ArrayList<>();
+                Intent playlistIntent = new Intent();
+                playlistIntent.setAction(MusicPlayer.ACTION_GET_PLAYING_LIST);
+                for (int j = 0; j < playList.size(); j++) {
+                    name.add(playList.get(j).getName());
+                    desc.add(playList.get(j).getDesc());
+                    songId.add(playList.get(j).getId() + "");
+                }
+                playlistIntent.putStringArrayListExtra("name", name);
+                playlistIntent.putStringArrayListExtra("desc", desc);
+                playlistIntent.putStringArrayListExtra("songId", songId);
+                sendBroadcast(playlistIntent);
             } else if (intent.getAction().equals(ACTION_SHUFFLE_PLAYLIST)) {
                 Collections.shuffle(playList);
+            } else if (intent.getAction().equals(ACTION_PLAY_NEXT)) {
+                if (currentPlaylistSongId == playList.size() - 1) {
+                    playList.add(new SongListItem(intent.getIntExtra("songId", 0), intent.getStringExtra("songName"), intent.getStringExtra("songDesc"),
+                            intent.getStringExtra("songPath"), false,
+                            intent.getLongExtra("songAlbumId", 0), intent.getStringExtra("songAlbumName"), 0));
+                } else if (currentPlaylistSongId != -1) {
+                    playList.add(currentPlaylistSongId + 1, new SongListItem(intent.getIntExtra("songId", 0), intent.getStringExtra("songName"), intent.getStringExtra("songDesc"),
+                            intent.getStringExtra("songPath"), false,
+                            intent.getLongExtra("songAlbumId", 0), intent.getStringExtra("songAlbumName"), 0));
+                } else {
+                    Intent i = intent;
+                    i.setAction(ACTION_PLAY_SINGLE);
+                    sendBroadcast(i);
+                }
+            } else if (intent.getAction().matches(ACTION_ADD_SONG)) {
+                if (playList.size() != 0 && currentPlaylistSongId != -1) {
+                    playList.add(new SongListItem(intent.getIntExtra("songId", 0), intent.getStringExtra("songName"), intent.getStringExtra("songDesc"),
+                            intent.getStringExtra("songPath"), false,
+                            intent.getLongExtra("songAlbumId", 0), intent.getStringExtra("songAlbumName"), 0));
+                } else {
+                    Intent i = intent;
+                    i.setAction(ACTION_PLAY_SINGLE);
+                    sendBroadcast(i);
+                }
             }
         }
 
@@ -366,6 +408,7 @@ public class MusicService extends Service {
         commandFilter.addAction(ACTION_SEEK_GET);
         commandFilter.addAction(ACTION_CLEAR_PLAYLIST);
         commandFilter.addAction(ACTION_NEXT);
+        commandFilter.addAction(ACTION_PLAY_NEXT);
         commandFilter.addAction(ACTION_PREV);
         commandFilter.addAction(ACTION_REMOVE_SERVICE);
         commandFilter.addAction(ACTION_ADD_SONG_MULTI);

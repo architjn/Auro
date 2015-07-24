@@ -124,12 +124,13 @@
             <ImageButton
                 android:id="@+id/noti_prev_button"
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
+                android:layout_height="45dp"
                 android:layout_weight="1"
-                android:background="@drawable/unbounded_ripple"
+                android:background="@android:color/transparent"
                 android:clickable="true"
                 android:drawSelectorOnTop="true"
                 android:focusable="true"
+                android:foreground="@drawable/unbounded_ripple"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
                 android:src="@drawable/ic_skip_previous_white_36dp" />
@@ -138,23 +139,25 @@
             <ImageButton
                 android:id="@+id/noti_play_button"
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
+                android:layout_height="45dp"
                 android:layout_weight="1"
-                android:background="@drawable/unbounded_ripple"
+                android:background="@android:color/transparent"
                 android:clickable="true"
                 android:drawSelectorOnTop="true"
                 android:focusable="true"
+                android:foreground="@drawable/unbounded_ripple"
                 android:src="@drawable/ic_pause_white_36dp" />
 
             <ImageButton
                 android:id="@+id/noti_next_button"
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
+                android:layout_height="45dp"
                 android:layout_weight="1"
-                android:background="@drawable/unbounded_ripple"
+                android:background="@android:color/transparent"
                 android:clickable="true"
                 android:drawSelectorOnTop="true"
                 android:focusable="true"
+                android:foreground="@drawable/unbounded_ripple"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
                 android:src="@drawable/ic_skip_next_white_36dp" />
