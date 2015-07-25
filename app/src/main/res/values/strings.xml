@@ -13,6 +13,7 @@
     <string name="support">Support</string>
     <string name="menu_play_next">Play Next</string>
     <string name="menu_add_playing">Add to Playing Queue</string>
+    <string name="menu_remove_playing">Remove from Playing Queue</string>
     <string name="menu_add_playlist">Add to Playlist</string>
     <string name="menu_delete">Delete from Phone</string>
     <string name="menu_share">Share</string>
@@ -35,6 +36,8 @@
     <string name="pref_home_view">Home Screen</string>
     <string name="pref_album_view">Album Screen</string>
     <string name="pref_player_view">Player Screen</string>
+    <string name="pref_grid_num">Number of Columns</string>
+    <string name="pref_grid_num_sum">For grids</string>
     <string name="pref_extend_tabs">Extend tabs to fit screen</string>
     <string name="pref_fast_scroll">Enable Fast Scroll</string>
     <string name="pref_fast_scroll_sum">Fast Scroll will only appear on long lists</string>

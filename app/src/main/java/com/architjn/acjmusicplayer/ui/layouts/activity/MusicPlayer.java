@@ -215,6 +215,9 @@ public class MusicPlayer extends AppCompatActivity {
             );
         } else {
             header.setImageResource(R.drawable.default_artwork_dark);
+            mainColor = Color.parseColor("#37474f");
+            collapsingToolbarLayout.setContentScrimColor(mainColor);
+            collapsingToolbarLayout.setStatusBarScrimColor(getAutoStatColor(mainColor));
         }
     }
 

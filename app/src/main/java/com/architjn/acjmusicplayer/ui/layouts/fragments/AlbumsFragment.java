@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -81,11 +80,12 @@ public class AlbumsFragment extends Fragment {
             }
             while (musicCursor.moveToNext());
         }
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(mainView.getContext(), 2);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(mainView.getContext(),
+                settingsPref.getInt("pref_grid_num", 2));
         gridLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         gridLayoutManager.scrollToPosition(0);
         gv.setLayoutManager(gridLayoutManager);
-        gv.addItemDecoration(new SpacesItemDecoration(8));
+        gv.addItemDecoration(new SpacesItemDecoration(8, settingsPref.getInt("pref_grid_num", 2)));
         gv.setHasFixedSize(true);
         gv.setAdapter(new AlbumsAdapter(mainView.getContext(), albumList));
 

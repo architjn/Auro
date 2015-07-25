@@ -3,8 +3,8 @@
     <PreferenceCategory android:title="@string/pref_general">
         <Preference
             android:key="pref_scan"
-            android:title="@string/pref_scan"
-            android:summary="@string/pref_scan_sum"/>
+            android:summary="@string/pref_scan_sum"
+            android:title="@string/pref_scan" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/theme">
         <Preference
@@ -15,7 +15,11 @@
         <Preference
             android:key="pref_gplus_com"
             android:summary="@string/pref_gplus_com_sum"
-            android:title="@string/pref_gplus_com" />
+            android:title="@string/pref_gplus_com">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://plus.google.com/communities/114246584066469121582" />
+        </Preference>
         <Preference
             android:key="pref_gplus"
             android:summary="@string/pref_gplus_sum"

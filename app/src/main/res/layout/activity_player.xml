@@ -26,7 +26,7 @@
                     android:id="@+id/detail_holder"
                     android:layout_width="match_parent"
                     android:layout_height="90dp"
-                    android:background="#37474f"
+                    android:background="@color/ColorPrimary"
                     android:elevation="4dp"
                     android:orientation="vertical"
                     android:paddingTop="15dp">

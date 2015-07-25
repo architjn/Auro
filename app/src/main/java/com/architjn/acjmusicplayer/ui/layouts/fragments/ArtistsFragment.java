@@ -82,11 +82,12 @@ public class ArtistsFragment extends Fragment {
             while (musicCursor.moveToNext());
         }
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(mainView.getContext(), 2);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(mainView.getContext(),
+                settingsPref.getInt("pref_grid_num", 2));
         gridLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         gridLayoutManager.scrollToPosition(0);
         gv.setLayoutManager(gridLayoutManager);
-        gv.addItemDecoration(new SpacesItemDecoration(8));
+        gv.addItemDecoration(new SpacesItemDecoration(8, settingsPref.getInt("pref_grid_num", 2)));
         gv.setHasFixedSize(true);
         gv.setAdapter(new ArtistAdapter(mainView.getContext(), albumList));
         gv.setOnScrollListener(new RecyclerView.OnScrollListener() {

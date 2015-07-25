@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.provider.MediaStore;
@@ -24,6 +25,7 @@ import com.architjn.acjmusicplayer.elements.items.SongListItem;
 import com.architjn.acjmusicplayer.task.ChangeNotificationDetails;
 import com.architjn.acjmusicplayer.ui.layouts.activity.MusicPlayer;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,6 +54,8 @@ public class MusicService extends Service {
     public static final String ACTION_NEXT = "next";
     public static final String ACTION_STOP = "stop";
     public static final String ACTION_PLAY_ALBUM = "player_play_album";
+    public static final String ACTION_MENU_FROM_PLAYLIST = "player_menu_from_playlist";
+    public static final String ACTION_PLAY_FROM_PLAYLIST = "player_play_from_playlist";
     public static final String ACTION_PLAY_NEXT = "player_play_next";
     public static final String ACTION_REMOVE_SERVICE = "player_remove_service";
     public static final String ACTION_CLEAR_PLAYLIST = "player_clear_playlist";
@@ -62,6 +66,11 @@ public class MusicService extends Service {
     public static final String ACTION_SEEK_TO = "player_seek_to_song";
     public static final String ACTION_SEEK_GET = "player_seek_get_song";
     public static final String ACTION_SHUFFLE_PLAYLIST = "player_shuffle_playlist";
+
+    public static final String ACTION_MENU_PLAY_NEXT = "menu_play_next";
+    public static final String ACTION_MENU_REMOVE_FROM_QUEUE = "menu_from_queue";
+    public static final String ACTION_MENU_SHARE = "menu_share";
+    public static final String ACTION_MENU_DELETE = "menu_delete";
 
     private ArrayList<SongListItem> playList;
 
@@ -201,18 +210,7 @@ public class MusicService extends Service {
                 if (mediaPlayer != null)
                     i.putExtra("songSeekVal", mediaPlayer.getCurrentPosition());
                 sendBroadcast(i);
-                ArrayList<String> name = new ArrayList<>(), desc = new ArrayList<>(), songId = new ArrayList<>();
-                Intent playlistIntent = new Intent();
-                playlistIntent.setAction(MusicPlayer.ACTION_GET_PLAYING_LIST);
-                for (int j = 0; j < playList.size(); j++) {
-                    name.add(playList.get(j).getName());
-                    desc.add(playList.get(j).getDesc());
-                    songId.add(playList.get(j).getId() + "");
-                }
-                playlistIntent.putStringArrayListExtra("name", name);
-                playlistIntent.putStringArrayListExtra("desc", desc);
-                playlistIntent.putStringArrayListExtra("songId", songId);
-                sendBroadcast(playlistIntent);
+                updatePlaylist();
             } else if (intent.getAction().equals(ACTION_SHUFFLE_PLAYLIST)) {
                 Collections.shuffle(playList);
             } else if (intent.getAction().equals(ACTION_PLAY_NEXT)) {
@@ -239,10 +237,57 @@ public class MusicService extends Service {
                     i.setAction(ACTION_PLAY_SINGLE);
                     sendBroadcast(i);
                 }
+            } else if (intent.getAction().matches(ACTION_PLAY_FROM_PLAYLIST)) {
+                playMusic(Integer.parseInt(intent.getStringExtra("playListId")));
+            } else if (intent.getAction().matches(ACTION_MENU_FROM_PLAYLIST)) {
+                String action = intent.getStringExtra("action");
+                if (action.matches(ACTION_MENU_PLAY_NEXT)) {
+                    SongListItem item = playList.get(intent.getIntExtra("count", -1));
+                    playList.remove(intent.getIntExtra("count", -1));
+                    playList.add(1, item);
+                    updatePlaylist();
+                } else if (action.matches(ACTION_MENU_REMOVE_FROM_QUEUE)) {
+                    playList.remove(intent.getIntExtra("count", -1));
+                    updatePlaylist();
+                } else if (action.matches(ACTION_MENU_SHARE)) {
+                    Intent share = new Intent(Intent.ACTION_SEND);
+                    share.setType("audio/*");
+                    share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file:///" +
+                            playList.get(intent.getIntExtra("count", -1)).getPath()));
+                    share.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(share);
+                } else if (action.matches(ACTION_MENU_DELETE)) {
+                    int pos = intent.getIntExtra("count", -1);
+                    File file = new File(playList.get(pos).getPath());
+                    boolean deleted = file.delete();
+                    if (deleted) {
+                        Toast.makeText(context, "Song Deleted", Toast.LENGTH_SHORT).show();
+                        context.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                                MediaStore.MediaColumns._ID + "='" + playList.get(pos).getId() + "'", null);
+                        playList.remove(pos);
+                        updatePlaylist();
+                    } else
+                        Toast.makeText(context, "Song Not Deleted", Toast.LENGTH_SHORT).show();
+                }
             }
         }
 
     };
+
+    public void updatePlaylist() {
+        ArrayList<String> name = new ArrayList<>(), desc = new ArrayList<>(), songId = new ArrayList<>();
+        Intent playlistIntent = new Intent();
+        playlistIntent.setAction(MusicPlayer.ACTION_GET_PLAYING_LIST);
+        for (int j = 0; j < playList.size(); j++) {
+            name.add(playList.get(j).getName());
+            desc.add(playList.get(j).getDesc());
+            songId.add(j + "");
+        }
+        playlistIntent.putStringArrayListExtra("name", name);
+        playlistIntent.putStringArrayListExtra("desc", desc);
+        playlistIntent.putStringArrayListExtra("songId", songId);
+        sendBroadcast(playlistIntent);
+    }
 
     public void nextSong() {
         if (currentPlaylistSongId < (playList.size() - 1)) {
@@ -410,7 +455,9 @@ public class MusicService extends Service {
         commandFilter.addAction(ACTION_SEEK_GET);
         commandFilter.addAction(ACTION_CLEAR_PLAYLIST);
         commandFilter.addAction(ACTION_NEXT);
+        commandFilter.addAction(ACTION_MENU_FROM_PLAYLIST);
         commandFilter.addAction(ACTION_PLAY_NEXT);
+        commandFilter.addAction(ACTION_PLAY_FROM_PLAYLIST);
         commandFilter.addAction(ACTION_PREV);
         commandFilter.addAction(ACTION_REMOVE_SERVICE);
         commandFilter.addAction(ACTION_ADD_SONG_MULTI);
