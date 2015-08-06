@@ -21,8 +21,10 @@
         <item name="colorPrimaryDark">@color/ColorPrimaryDark</item>
         <item name="colorAccent">@color/accent_color</item>
         <item name="android:windowContentTransitions">true</item>
+        <item name="android:statusBarColor">#a6212b2f</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <!--<item name="android:windowTranslucentStatus">true</item>-->
         <item name="android:windowAllowEnterTransitionOverlap">true</item>
         <item name="android:windowAllowReturnTransitionOverlap">true</item>
         <item name="android:fragmentAllowEnterTransitionOverlap">@bool/true_bool</item>

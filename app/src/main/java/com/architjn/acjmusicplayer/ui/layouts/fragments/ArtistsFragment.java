@@ -95,15 +95,6 @@ public class ArtistsFragment extends Fragment {
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 currentFabPos = dy;
-//                if (dy > currentFabPos) {
-//                    if (fab.getVisibility() == View.GONE) {
-//                        fab.setVisibility(View.VISIBLE);
-//                    }
-//                } else if (dy < currentFabPos) {
-//                    if (fab.getVisibility() == View.VISIBLE) {
-//                        fab.setVisibility(View.GONE);
-//                    }
-//                }
             }
         });
     }

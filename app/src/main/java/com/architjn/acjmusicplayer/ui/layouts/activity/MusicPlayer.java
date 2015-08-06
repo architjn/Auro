@@ -55,6 +55,7 @@ public class MusicPlayer extends AppCompatActivity {
     public static final String ACTION_GET_PLAY_STATE = "get_play_state";
     public static final String ACTION_GET_SEEK_VALUE = "gte_seek_value";
     public static final String ACTION_GET_PLAYING_LIST = "get_playing_list";
+    public static final String ACTION_GET_PLAYING_DETAIL = "get_playing_detail";
     public static int mainColor;
     private Toolbar toolbar;
     private String songPath, songName, songDesc, albumName, songArt;
@@ -63,6 +64,7 @@ public class MusicPlayer extends AppCompatActivity {
     private NestedScrollView playerNestedScroll;
     private SharedPreferences settingsPref;
     private RecyclerView rv;
+    private Timer timer;
     private LinearLayout detailHolder;
     private RelativeLayout shadeOverArt;
     private CollapsingToolbarLayout collapsingToolbarLayout;
@@ -107,6 +109,17 @@ public class MusicPlayer extends AppCompatActivity {
                 rv.setLayoutManager(layoutManager);
                 rv.setHasFixedSize(true);
                 rv.setAdapter(adapter);
+            } else if (intent.getAction().equals(ACTION_GET_PLAYING_DETAIL)) {
+                songPath = intent.getStringExtra("songPath");
+                songName = intent.getStringExtra("songName");
+                songDesc = intent.getStringExtra("songDesc");
+                albumId = intent.getLongExtra("songAlbumId", 0);
+                albumName = intent.getStringExtra("songAlbumName");
+                duration = intent.getIntExtra("songDuration", 0);
+                currentDuration = 0;
+                musicStoped = false;
+                updateSeeker();
+                updateView();
             }
         }
     };
@@ -143,6 +156,7 @@ public class MusicPlayer extends AppCompatActivity {
         filter.addAction(ACTION_GET_SEEK_VALUE);
         filter.addAction(ACTION_GET_PLAY_STATE);
         filter.addAction(ACTION_GET_PLAYING_LIST);
+        filter.addAction(ACTION_GET_PLAYING_DETAIL);
         registerReceiver(musicPlayer, filter);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
@@ -168,7 +182,11 @@ public class MusicPlayer extends AppCompatActivity {
 
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar_player));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        updateView();
 
+    }
+
+    private void updateView() {
         Cursor cursor = getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
                 new String[]{MediaStore.Audio.Albums._ID, MediaStore.Audio.Albums.ALBUM_ART},
                 MediaStore.Audio.Albums._ID + "=?",
@@ -227,7 +245,10 @@ public class MusicPlayer extends AppCompatActivity {
         totalTimeHolder.setText(String.format("%02d", ((duration / 1000) / 60)) +
                 ":" + String.format("%02d", ((duration / 1000) % 60)));
         musicStoped = false;
-        new Timer().schedule(new TimerTask() {
+        if (timer != null)
+            timer.cancel();
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 runOnUiThread(new Runnable() {
@@ -242,6 +263,7 @@ public class MusicPlayer extends AppCompatActivity {
                         }
                     }
                 });
+
             }
         }, 0, 100);
     }

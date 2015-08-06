@@ -20,6 +20,15 @@
     <string name="menu_details">Details</string>
     <string name="menu_set_ringtone">Set as Ringtone</string>
     <string name="menu_song_editor">Tag Editor</string>
+    <string name="nav_playlist">Playlist</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_songs">Songs</string>
+    <string name="nav_albums">Albums</string>
+    <string name="nav_artists">Artists</string>
+    <string name="nav_genres">Genres</string>
+    <string name="nav_about">About Us</string>
+    <string name="nav_others">Others</string>
+    <string name="nav_settings">Settings</string>
     <string name="pref_general">General</string>
     <string name="pref_theme">Design</string>
     <string name="pref_scan">Scan Files</string>
