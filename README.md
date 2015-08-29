@@ -13,7 +13,7 @@
 #Screenshots and Latest Build
 <a href="https://goo.gl/kUsuK6">here</a> <-- Join Community and follow me too :D
 
-#Open Source Libraries used
+#Libraries used
 - Google AppCompat 
 - Google CardView
 - Google RecyclerView
