@@ -11,6 +11,9 @@
     <string name="selected_count">%1$s selected</string>
     <string name="genres">Genres</string>
     <string name="support">Support</string>
+    <string name="menu_playlist_delete">Delete</string>
+    <string name="menu_playlist_rename">Rename</string>
+    <string name="menu_playlist_play">Play</string>
     <string name="menu_play_next">Play Next</string>
     <string name="menu_add_playing">Add to Playing Queue</string>
     <string name="menu_remove_playing">Remove from Playing Queue</string>
