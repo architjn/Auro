@@ -2,6 +2,7 @@ package com.architjn.acjmusicplayer.elements.adapters;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.CountDownTimer;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -84,6 +85,16 @@ public class DialogPlaylistAdapter extends RecyclerView.Adapter<DialogPlaylistAd
                                     helper.removePlayList(items.get(position).getId());
                                     items.remove(position);
                                     notifyItemRemoved(position);
+                                    new CountDownTimer(400, 1000) {
+
+                                        public void onTick(long millisUntilFinished) {
+                                        }
+
+                                        public void onFinish() {
+                                            notifyDataSetChanged();
+                                        }
+
+                                    }.start();
                                     return true;
                                 case R.id.menu_playlist_play:
                                     Toast.makeText(context, "play PlayList", Toast.LENGTH_SHORT).show();
