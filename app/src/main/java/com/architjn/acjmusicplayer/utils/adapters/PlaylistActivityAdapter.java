@@ -1,22 +1,28 @@
 package com.architjn.acjmusicplayer.utils.adapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.CountDownTimer;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.service.MusicService;
 import com.architjn.acjmusicplayer.utils.MySQLiteHelper;
+import com.architjn.acjmusicplayer.utils.items.Mood;
 import com.architjn.acjmusicplayer.utils.items.SongListItem;
 
 import java.io.File;
@@ -87,6 +93,9 @@ public class PlaylistActivityAdapter extends RecyclerView.Adapter<PlaylistActivi
                                 notifyItemRemoved(position);
                                 updateListWithInterval();
                                 return true;
+                            case R.id.menu_mood:
+                                setMood(position);
+                                return true;
                             case R.id.menu_share:
                                 Intent share = new Intent(Intent.ACTION_SEND);
                                 share.setType("audio/*");
@@ -138,6 +147,41 @@ public class PlaylistActivityAdapter extends RecyclerView.Adapter<PlaylistActivi
                 context.sendBroadcast(a);
             }
         });
+    }
+
+
+    private void setMood(int position) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder.setTitle("Choose mood");
+        View view = ((Activity) context).getLayoutInflater().inflate(R.layout.dialog_listview, null);
+        List<Mood> moods = Mood.getAllMoods();
+        RecyclerView gv = (RecyclerView) view.findViewById(R.id.dialog_playlist_rv);
+        LinearLayoutManager gridLayoutManager = new LinearLayoutManager(context);
+        gridLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        gridLayoutManager.scrollToPosition(0);
+        gv.setLayoutManager(gridLayoutManager);
+        gv.setHasFixedSize(true);
+        alertDialogBuilder.setView(view);
+        alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = alertDialogBuilder.create();
+        DialogMoodAdapter adapter = new DialogMoodAdapter(context, moods, items.get(position), dialog);
+        gv.setAdapter(adapter);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+        dialog.show();
     }
 
     private void updateListWithInterval() {
