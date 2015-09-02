@@ -16,9 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.architjn.acjmusicplayer.R;
-import com.architjn.acjmusicplayer.elements.SpacesItemDecoration;
-import com.architjn.acjmusicplayer.elements.adapters.AlbumsAdapter;
-import com.architjn.acjmusicplayer.elements.items.AlbumListItem;
+import com.architjn.acjmusicplayer.utils.SpacesItemDecoration;
+import com.architjn.acjmusicplayer.utils.adapters.AlbumsAdapter;
+import com.architjn.acjmusicplayer.utils.items.AlbumListItem;
 
 import java.util.ArrayList;
 

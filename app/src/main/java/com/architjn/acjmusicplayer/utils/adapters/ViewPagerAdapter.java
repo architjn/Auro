@@ -1,4 +1,4 @@
-package com.architjn.acjmusicplayer.elements.adapters;
+package com.architjn.acjmusicplayer.utils.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

@@ -36,7 +36,7 @@ import android.widget.TextView;
 
 import com.annimon.paperstyle.PaperSeekBar;
 import com.architjn.acjmusicplayer.R;
-import com.architjn.acjmusicplayer.elements.adapters.PlayingSongAdapter;
+import com.architjn.acjmusicplayer.utils.adapters.PlayingSongAdapter;
 import com.architjn.acjmusicplayer.service.MusicService;
 import com.architjn.acjmusicplayer.task.ChangeSeekDetailUpdater;
 import com.architjn.acjmusicplayer.task.ColorAnimateAlbumView;

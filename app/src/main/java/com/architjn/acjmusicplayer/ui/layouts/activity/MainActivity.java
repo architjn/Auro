@@ -19,7 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.architjn.acjmusicplayer.R;
-import com.architjn.acjmusicplayer.elements.adapters.ViewPagerAdapter;
+import com.architjn.acjmusicplayer.utils.adapters.ViewPagerAdapter;
 import com.architjn.acjmusicplayer.service.MusicService;
 import com.architjn.acjmusicplayer.ui.layouts.activity.settings.Settings;
 import com.architjn.acjmusicplayer.ui.layouts.fragments.AlbumsFragment;

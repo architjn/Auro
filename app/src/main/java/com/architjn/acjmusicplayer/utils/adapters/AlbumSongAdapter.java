@@ -1,4 +1,4 @@
-package com.architjn.acjmusicplayer.elements.adapters;
+package com.architjn.acjmusicplayer.utils.adapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -19,9 +19,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.architjn.acjmusicplayer.R;
-import com.architjn.acjmusicplayer.elements.MySQLiteHelper;
-import com.architjn.acjmusicplayer.elements.items.Playlist;
-import com.architjn.acjmusicplayer.elements.items.SongListItem;
+import com.architjn.acjmusicplayer.utils.MySQLiteHelper;
+import com.architjn.acjmusicplayer.utils.items.Playlist;
+import com.architjn.acjmusicplayer.utils.items.SongListItem;
 import com.architjn.acjmusicplayer.service.MusicService;
 
 import java.io.File;
@@ -161,7 +161,7 @@ public class AlbumSongAdapter extends RecyclerView.Adapter<AlbumSongAdapter.Simp
     private void addToPlaylist(int position) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setTitle("Choose playlist");
-        View view = ((Activity) context).getLayoutInflater().inflate(R.layout.dialog_playlist, null);
+        View view = ((Activity) context).getLayoutInflater().inflate(R.layout.dialog_listview, null);
         MySQLiteHelper sqLiteHelper = new MySQLiteHelper(context);
         List<Playlist> playlists = sqLiteHelper.getAllPlaylist();
         playlists.add(new Playlist(-1, "+ Create new Playlist"));

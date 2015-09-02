@@ -37,6 +37,10 @@
             android:label=""
             android:theme="@style/AppTheme.Player" />
         <activity
+            android:name=".ui.layouts.activity.PlaylistActivity"
+            android:label=""
+            android:theme="@style/AppTheme.Main" />
+        <activity
             android:name=".ui.layouts.activity.settings.Settings"
             android:label="@string/settings"
             android:theme="@style/AppTheme.Pref" />

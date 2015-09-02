@@ -1,4 +1,4 @@
-package com.architjn.acjmusicplayer.elements.items;
+package com.architjn.acjmusicplayer.utils.items;
 
 /**
  * Created by architjn on 04/07/15.

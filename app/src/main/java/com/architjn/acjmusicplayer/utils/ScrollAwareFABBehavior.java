@@ -1,4 +1,4 @@
-package com.architjn.acjmusicplayer.elements;
+package com.architjn.acjmusicplayer.utils;
 
 import android.content.Context;
 import android.support.design.widget.CoordinatorLayout;

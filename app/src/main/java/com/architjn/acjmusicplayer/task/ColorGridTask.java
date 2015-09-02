@@ -10,7 +10,7 @@ import android.support.v7.graphics.Palette;
 import android.util.Log;
 
 import com.architjn.acjmusicplayer.R;
-import com.architjn.acjmusicplayer.elements.adapters.AlbumsAdapter;
+import com.architjn.acjmusicplayer.utils.adapters.AlbumsAdapter;
 
 /**
  * Created by architjn on 26/06/15.

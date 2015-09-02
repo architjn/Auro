@@ -17,9 +17,11 @@
     <string name="menu_playlist_rename">Rename</string>
     <string name="menu_playlist_play">Play</string>
     <string name="menu_play_next">Play Next</string>
+    <string name="menu_set_mood">Set Mood</string>
     <string name="menu_add_playing">Add to Playing Queue</string>
     <string name="menu_remove_playing">Remove from Playing Queue</string>
     <string name="menu_add_playlist">Add to Playlist</string>
+    <string name="menu_remove_playlist">Remove from Playlist</string>
     <string name="menu_delete">Delete from Phone</string>
     <string name="menu_share">Share</string>
     <string name="menu_details">Details</string>

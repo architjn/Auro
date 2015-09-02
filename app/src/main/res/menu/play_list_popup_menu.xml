@@ -6,12 +6,12 @@
         android:title="@string/menu_play_next"
         android:visible="true" />
     <item
-        android:id="@+id/menu_remove_playing"
-        android:title="@string/menu_remove_playing"
+        android:id="@+id/menu_add_playing"
+        android:title="@string/menu_add_playing"
         android:visible="true" />
     <item
-        android:id="@+id/menu_add_playlist"
-        android:title="@string/menu_add_playlist"
+        android:id="@+id/menu_remove_playlist"
+        android:title="@string/menu_remove_playlist"
         android:visible="true" />
     <item
         android:id="@+id/menu_mood"

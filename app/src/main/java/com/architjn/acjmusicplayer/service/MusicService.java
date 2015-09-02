@@ -21,7 +21,9 @@ import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.architjn.acjmusicplayer.R;
-import com.architjn.acjmusicplayer.elements.items.SongListItem;
+import com.architjn.acjmusicplayer.utils.Mood;
+import com.architjn.acjmusicplayer.utils.MySQLiteHelper;
+import com.architjn.acjmusicplayer.utils.items.SongListItem;
 import com.architjn.acjmusicplayer.task.ChangeNotificationDetails;
 import com.architjn.acjmusicplayer.ui.layouts.activity.MusicPlayer;
 
@@ -56,6 +58,7 @@ public class MusicService extends Service {
     public static final String ACTION_PLAY_ALBUM = "player_play_album";
     public static final String ACTION_MENU_FROM_PLAYLIST = "player_menu_from_playlist";
     public static final String ACTION_PLAY_FROM_PLAYLIST = "player_play_from_playlist";
+    public static final String ACTION_PLAY_PLAYLIST = "player_play_playlist";
     public static final String ACTION_PLAY_NEXT = "player_play_next";
     public static final String ACTION_REMOVE_SERVICE = "player_remove_service";
     public static final String ACTION_PLAY_SINGLE = "play_single_song";
@@ -84,7 +87,7 @@ public class MusicService extends Service {
                         intent.getLongExtra("songAlbumId", 0), intent.getStringExtra("songAlbumName"), true);
                 playList.add(new SongListItem(intent.getIntExtra("songId", 0), intent.getStringExtra("songName"), intent.getStringExtra("songDesc"),
                         intent.getStringExtra("songPath"), false,
-                        intent.getLongExtra("songAlbumId", 0), intent.getStringExtra("songAlbumName"), 0));
+                        intent.getLongExtra("songAlbumId", 0), intent.getStringExtra("songAlbumName"), 0, Mood.UNKNOWN));
                 currentPlaylistSongId = 0;
                 pausedSongSeek = 0;
             } else if (intent.getAction().equals(ACTION_PLAY_ALBUM)) {
@@ -122,7 +125,7 @@ public class MusicService extends Service {
                                 musicCursor.getString(pathColumn), false,
                                 musicCursor.getLong(albumIdColumn),
                                 musicCursor.getString(albumNameColumn),
-                                count), count);
+                                count, Mood.UNKNOWN), count);
                     }
                     while (musicCursor.moveToNext());
                 }
@@ -224,11 +227,11 @@ public class MusicService extends Service {
                 if (currentPlaylistSongId == playList.size() - 1 && currentPlaylistSongId != -1) {
                     playList.add(new SongListItem(intent.getIntExtra("songId", 0), intent.getStringExtra("songName"), intent.getStringExtra("songDesc"),
                             intent.getStringExtra("songPath"), false,
-                            intent.getLongExtra("songAlbumId", 0), intent.getStringExtra("songAlbumName"), 0));
+                            intent.getLongExtra("songAlbumId", 0), intent.getStringExtra("songAlbumName"), 0, Mood.UNKNOWN));
                 } else if (currentPlaylistSongId != -1) {
                     playList.add(currentPlaylistSongId + 1, new SongListItem(intent.getIntExtra("songId", 0), intent.getStringExtra("songName"), intent.getStringExtra("songDesc"),
                             intent.getStringExtra("songPath"), false,
-                            intent.getLongExtra("songAlbumId", 0), intent.getStringExtra("songAlbumName"), 0));
+                            intent.getLongExtra("songAlbumId", 0), intent.getStringExtra("songAlbumName"), 0, Mood.UNKNOWN));
                 } else {
                     Intent i = intent;
                     i.setAction(ACTION_PLAY_SINGLE);
@@ -238,7 +241,7 @@ public class MusicService extends Service {
                 if (playList.size() != 0 && currentPlaylistSongId != -1) {
                     playList.add(new SongListItem(intent.getIntExtra("songId", 0), intent.getStringExtra("songName"), intent.getStringExtra("songDesc"),
                             intent.getStringExtra("songPath"), false,
-                            intent.getLongExtra("songAlbumId", 0), intent.getStringExtra("songAlbumName"), 0));
+                            intent.getLongExtra("songAlbumId", 0), intent.getStringExtra("songAlbumName"), 0, Mood.UNKNOWN));
                 } else {
                     Intent i = intent;
                     i.setAction(ACTION_PLAY_SINGLE);
@@ -276,6 +279,10 @@ public class MusicService extends Service {
                     } else
                         Toast.makeText(context, "Song Not Deleted", Toast.LENGTH_SHORT).show();
                 }
+            } else if (intent.getAction().matches(ACTION_PLAY_PLAYLIST)) {
+                MySQLiteHelper helper = new MySQLiteHelper(context);
+                playList = helper.getPlayListSongs(intent.getIntExtra("playlistId", -1), null);
+                playMusic(0);
             }
         }
 
@@ -377,7 +384,7 @@ public class MusicService extends Service {
         if (singlePlay) {
             currentPlaylistSongId = -1;
             currentPlaylistAlbumId = -1;
-            pausedSong = new SongListItem(0, songName, songDesc, songPath, false, albumId, albumName, 0);
+            pausedSong = new SongListItem(0, songName, songDesc, songPath, false, albumId, albumName, 0, Mood.UNKNOWN);
             pausedSongPlaylistId = -1;
             singleSong = true;
         } else {
@@ -402,7 +409,7 @@ public class MusicService extends Service {
                         currentPlaylistSongId = -1;
                         currentPlaylistAlbumId = -1;
                         pausedSongPlaylistId = -1;
-                        pausedSong = new SongListItem(0, songName, songDesc, songPath, false, albumId, albumName, 0);
+                        pausedSong = new SongListItem(0, songName, songDesc, songPath, false, albumId, albumName, 0, Mood.UNKNOWN);
                         pausedSongSeek = 0;
                         stopMusic();
                     }
@@ -483,6 +490,7 @@ public class MusicService extends Service {
         commandFilter.addAction(ACTION_MENU_FROM_PLAYLIST);
         commandFilter.addAction(ACTION_PLAY_NEXT);
         commandFilter.addAction(ACTION_PLAY_FROM_PLAYLIST);
+        commandFilter.addAction(ACTION_PLAY_PLAYLIST);
         commandFilter.addAction(ACTION_PREV);
         commandFilter.addAction(ACTION_REMOVE_SERVICE);
         commandFilter.addAction(ACTION_ADD_SONG_MULTI);

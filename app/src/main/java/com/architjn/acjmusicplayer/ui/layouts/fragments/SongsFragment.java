@@ -15,8 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.architjn.acjmusicplayer.R;
-import com.architjn.acjmusicplayer.elements.adapters.SongsAdapter;
-import com.architjn.acjmusicplayer.elements.items.SongListItem;
+import com.architjn.acjmusicplayer.utils.Mood;
+import com.architjn.acjmusicplayer.utils.adapters.SongsAdapter;
+import com.architjn.acjmusicplayer.utils.items.SongListItem;
 
 import java.util.ArrayList;
 
@@ -87,7 +88,7 @@ public class SongsFragment extends Fragment {
                         musicCursor.getString(artistColumn),
                         musicCursor.getString(pathColumn), false,
                         musicCursor.getLong(albumIdColumn),
-                        musicCursor.getString(albumColumn), i));
+                        musicCursor.getString(albumColumn), i, Mood.UNKNOWN));
                 i++;
             }
             while (musicCursor.moveToNext());

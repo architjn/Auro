@@ -23,7 +23,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
-import com.architjn.acjmusicplayer.elements.adapters.StableArrayAdapter;
+import com.architjn.acjmusicplayer.utils.adapters.StableArrayAdapter;
 
 import java.util.ArrayList;
 

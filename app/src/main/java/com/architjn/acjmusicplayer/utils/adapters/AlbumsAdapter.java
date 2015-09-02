@@ -1,4 +1,4 @@
-package com.architjn.acjmusicplayer.elements.adapters;
+package com.architjn.acjmusicplayer.utils.adapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,7 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.architjn.acjmusicplayer.R;
-import com.architjn.acjmusicplayer.elements.items.AlbumListItem;
+import com.architjn.acjmusicplayer.utils.items.AlbumListItem;
 import com.architjn.acjmusicplayer.task.ColorGridTask;
 import com.architjn.acjmusicplayer.ui.layouts.activity.AlbumActivity;
 import com.squareup.picasso.Callback;

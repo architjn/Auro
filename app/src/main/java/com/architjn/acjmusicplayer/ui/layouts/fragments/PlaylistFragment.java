@@ -14,10 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.architjn.acjmusicplayer.R;
-import com.architjn.acjmusicplayer.elements.MySQLiteHelper;
-import com.architjn.acjmusicplayer.elements.SpacesItemDecoration;
-import com.architjn.acjmusicplayer.elements.adapters.PlaylistAdapter;
-import com.architjn.acjmusicplayer.elements.items.Playlist;
+import com.architjn.acjmusicplayer.utils.MySQLiteHelper;
+import com.architjn.acjmusicplayer.utils.SpacesItemDecoration;
+import com.architjn.acjmusicplayer.utils.adapters.PlaylistAdapter;
+import com.architjn.acjmusicplayer.utils.items.Playlist;
 
 import java.util.List;
 

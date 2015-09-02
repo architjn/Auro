@@ -1,4 +1,4 @@
-package com.architjn.acjmusicplayer.elements;
+package com.architjn.acjmusicplayer.utils;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,9 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.architjn.acjmusicplayer.elements.items.Playlist;
-import com.architjn.acjmusicplayer.elements.items.SongListItem;
+import com.architjn.acjmusicplayer.utils.items.Playlist;
+import com.architjn.acjmusicplayer.utils.items.SongListItem;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -36,7 +37,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 "song_path TEXT," +
                 "song_name TEXT," +
                 "song_count INTEGER," +
-                "song_album_name TEXT)";
+                "song_album_name TEXT," +
+                "song_mood TEXT)";
 
         db.execSQL(CREATE_PLAYLIST_TABLE);
         db.execSQL(CREATE_SONGS_TABLE);
@@ -64,6 +66,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     private static final String SONG_KEY_NAME = "song_name";
     private static final String SONG_KEY_COUNT = "song_count";
     private static final String SONG_KEY_ALBUM_NAME = "song_album_name";
+    private static final String SONG_KEY_MOOD = "song_mood";
 
     private static final String[] COLUMNS = {PLAYLIST_KEY_ID, PLAYLIST_KEY_TITLE};
 
@@ -107,6 +110,13 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         return playlists;
     }
 
+    public void updateMood(long songId, Mood mood) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("UPDATE " + TABLE_SONG + " SET " + SONG_KEY_MOOD + "='" + getMoodInString(mood) + "'"
+                + " WHERE " + SONG_KEY_ID
+                + "='" + songId + "'");
+    }
+
     public void addSong(SongListItem song, int playlistId) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -119,9 +129,36 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         values.put(SONG_KEY_NAME, song.getName());
         values.put(SONG_KEY_COUNT, song.getCount());
         values.put(SONG_KEY_ALBUM_NAME, song.getAlbumName());
+        values.put(SONG_KEY_MOOD, getMoodInString(song.getMood()));
 
         db.insert(TABLE_SONG, null, values);
         db.close();
+    }
+
+    public String getMoodInString(Mood mood) {
+        switch (mood) {
+            case UNKNOWN:
+                return "UNKNOWN";
+            case HAPPY:
+                return "HAPPY";
+            case SAD:
+                return "SAD";
+            default:
+                return "UNKNOWN";
+        }
+    }
+
+    public Mood getMoodAsEnum(String mood) {
+        switch (mood) {
+            case "UNKNOWN":
+                return Mood.UNKNOWN;
+            case "HAPPY":
+                return Mood.HAPPY;
+            case "SAD":
+                return Mood.SAD;
+            default:
+                return Mood.UNKNOWN;
+        }
     }
 
     public List<SongListItem> getPlayListSongs(int playlistId) {
@@ -142,7 +179,35 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 song = new SongListItem(Long.valueOf(cursor.getString(0)),
                         cursor.getString(6), cursor.getString(3),
                         cursor.getString(5), fav, Long.parseLong(cursor.getString(2)),
-                        cursor.getString(8), Integer.parseInt(cursor.getString(7)));
+                        cursor.getString(8), Integer.parseInt(cursor.getString(7)),
+                        getMoodAsEnum(cursor.getString(9)));
+                songs.add(song);
+            } while (cursor.moveToNext());
+        }
+
+        return songs;
+    }
+
+    public ArrayList<SongListItem> getPlayListSongs(int playlistId, String nullHack) {
+        ArrayList<SongListItem> songs = new ArrayList<SongListItem>();
+        String query = "SELECT  * FROM " + TABLE_SONG + " WHERE "
+                + SONG_KEY_PLAYLISTID + "='" + playlistId + "'";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        SongListItem song = null;
+        if (cursor.moveToFirst()) {
+            do {
+                boolean fav;
+                if (cursor.getString(4).matches("0")) {
+                    fav = false;
+                } else {
+                    fav = true;
+                }
+                song = new SongListItem(Long.valueOf(cursor.getString(0)),
+                        cursor.getString(6), cursor.getString(3),
+                        cursor.getString(5), fav, Long.parseLong(cursor.getString(2)),
+                        cursor.getString(8), Integer.parseInt(cursor.getString(7)),
+                        getMoodAsEnum(cursor.getString(9)));
                 songs.add(song);
             } while (cursor.moveToNext());
         }

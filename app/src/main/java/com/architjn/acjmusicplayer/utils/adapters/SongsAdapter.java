@@ -1,4 +1,4 @@
-package com.architjn.acjmusicplayer.elements.adapters;
+package com.architjn.acjmusicplayer.utils.adapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,15 +14,17 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.architjn.acjmusicplayer.R;
-import com.architjn.acjmusicplayer.elements.MySQLiteHelper;
-import com.architjn.acjmusicplayer.elements.items.Playlist;
-import com.architjn.acjmusicplayer.elements.items.SongListItem;
 import com.architjn.acjmusicplayer.service.MusicService;
+import com.architjn.acjmusicplayer.utils.MySQLiteHelper;
+import com.architjn.acjmusicplayer.utils.items.Mood;
+import com.architjn.acjmusicplayer.utils.items.Playlist;
+import com.architjn.acjmusicplayer.utils.items.SongListItem;
 
 import java.io.File;
 import java.util.List;
@@ -97,6 +99,9 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SimpleItemVi
                             case R.id.menu_add_playlist:
                                 addToPlaylist(position);
                                 return true;
+                            case R.id.menu_mood:
+                                setMood(position);
+                                return true;
                             case R.id.menu_share:
                                 Intent share = new Intent(Intent.ACTION_SEND);
                                 share.setType("audio/*");
@@ -151,7 +156,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SimpleItemVi
     private void addToPlaylist(int position) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setTitle("Choose playlist");
-        View view = ((Activity) context).getLayoutInflater().inflate(R.layout.dialog_playlist, null);
+        View view = ((Activity) context).getLayoutInflater().inflate(R.layout.dialog_listview, null);
         MySQLiteHelper sqLiteHelper = new MySQLiteHelper(context);
         List<Playlist> playlists = sqLiteHelper.getAllPlaylist();
         playlists.add(new Playlist(-1, "+ Create new Playlist"));
@@ -180,6 +185,39 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SimpleItemVi
         dialog.show();
     }
 
+    private void setMood(int position) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder.setTitle("Choose mood");
+        View view = ((Activity) context).getLayoutInflater().inflate(R.layout.dialog_listview, null);
+        List<Mood> moods = Mood.getAllMoods();
+        RecyclerView gv = (RecyclerView) view.findViewById(R.id.dialog_playlist_rv);
+        LinearLayoutManager gridLayoutManager = new LinearLayoutManager(context);
+        gridLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        gridLayoutManager.scrollToPosition(0);
+        gv.setLayoutManager(gridLayoutManager);
+        gv.setHasFixedSize(true);
+        alertDialogBuilder.setView(view);
+        alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = alertDialogBuilder.create();
+        DialogMoodAdapter adapter = new DialogMoodAdapter(context, moods, items.get(position), dialog);
+        gv.setAdapter(adapter);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+        dialog.show();
+    }
 
     @Override
     public int getItemCount() {
