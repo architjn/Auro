@@ -59,7 +59,10 @@ public class DialogMoodAdapter extends RecyclerView.Adapter<DialogMoodAdapter.Si
             @Override
             public void onClick(View v) {
                 MySQLiteHelper helper = new MySQLiteHelper(context);
-                helper.updateMood(songToAdd.getId(), items.get(position).getMood());
+                if (songToAdd.getId() != -1)
+                    helper.updateMood(songToAdd.getId(), items.get(position).getMood());
+                else
+                    helper.updateMood(songToAdd.getName(), items.get(position).getMood());
                 dialog.dismiss();
             }
         });

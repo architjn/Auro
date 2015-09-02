@@ -16,6 +16,7 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="DarkDialog" parent="Theme.AppCompat.Dialog"/>
 
     <style name="AppTheme.Album" parent="Theme.AppCompat">
         <!--<item name="colorPrimary">@color/ColorPrimary</item>-->

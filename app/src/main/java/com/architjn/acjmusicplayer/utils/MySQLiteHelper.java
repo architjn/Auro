@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.provider.MediaStore;
 
 import com.architjn.acjmusicplayer.utils.items.Playlist;
 import com.architjn.acjmusicplayer.utils.items.SongListItem;
@@ -17,9 +18,11 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "PlaylistDB";
+    private Context context;
 
     public MySQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     @Override
@@ -30,6 +33,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
         String CREATE_SONGS_TABLE = "CREATE TABLE song (" +
                 "song_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "song_real_id INTEGER," +
                 "song_playlist_id INTEGER," +
                 "song_album_id INTEGER," +
                 "song_desc TEXT," +
@@ -58,6 +62,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     private static final String PLAYLIST_KEY_ID = "playlist_id";
     private static final String PLAYLIST_KEY_TITLE = "playlist_title";
     private static final String SONG_KEY_ID = "song_id";
+    private static final String SONG_KEY_REAL_ID = "song_real_id";
     private static final String SONG_KEY_PLAYLISTID = "song_playlist_id";
     private static final String SONG_KEY_ALBUMID = "song_album_id";
     private static final String SONG_KEY_DESC = "song_desc";
@@ -113,14 +118,19 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     public void updateMood(long songId, Mood mood) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("UPDATE " + TABLE_SONG + " SET " + SONG_KEY_MOOD + "='" + getMoodInString(mood) + "'"
-                + " WHERE " + SONG_KEY_ID
+                + " WHERE " + SONG_KEY_REAL_ID
                 + "='" + songId + "'");
+    }
+
+    public void updateMood(String songName, Mood mood) {
+        updateMood(getSong(songName).getId(), mood);
     }
 
     public void addSong(SongListItem song, int playlistId) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(SONG_KEY_ID, (int) song.getId());
+        values.putNull(SONG_KEY_ID);
+        values.put(SONG_KEY_REAL_ID, (int) song.getId());
         values.put(SONG_KEY_PLAYLISTID, playlistId);
         values.put(SONG_KEY_ALBUMID, song.getAlbumId());
         values.put(SONG_KEY_DESC, song.getDesc());
@@ -133,6 +143,44 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
         db.insert(TABLE_SONG, null, values);
         db.close();
+    }
+
+    public void addSong(String songName, int playlistId) {
+        SongListItem song = getSong(songName);
+        addSong(song, playlistId);
+    }
+
+    private SongListItem getSong(String songName) {
+        final String where = MediaStore.Audio.Media.IS_MUSIC + "=1 AND " +
+                MediaStore.Audio.Media.TITLE + "='" + songName + "'";
+        final String orderBy = MediaStore.Audio.Media.TITLE;
+        Cursor musicCursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                null, where, null, orderBy);
+        if (musicCursor != null && musicCursor.moveToFirst()) {
+            int titleColumn = musicCursor.getColumnIndex
+                    (android.provider.MediaStore.Audio.Media.TITLE);
+            int idColumn = musicCursor.getColumnIndex
+                    (android.provider.MediaStore.Audio.Media._ID);
+            int artistColumn = musicCursor.getColumnIndex
+                    (android.provider.MediaStore.Audio.Media.ARTIST);
+            int pathColumn = musicCursor.getColumnIndex
+                    (MediaStore.Audio.Media.DATA);
+            int albumIdColumn = musicCursor.getColumnIndex
+                    (MediaStore.Audio.Media.ALBUM_ID);
+            int albumColumn = musicCursor.getColumnIndex
+                    (MediaStore.Audio.Media.ALBUM);
+            do {
+                String temp = musicCursor.getString(titleColumn);
+                return new SongListItem(musicCursor.getLong(idColumn),
+                        temp,
+                        musicCursor.getString(artistColumn),
+                        musicCursor.getString(pathColumn), false,
+                        musicCursor.getLong(albumIdColumn),
+                        musicCursor.getString(albumColumn), 0, Mood.UNKNOWN);
+            }
+            while (musicCursor.moveToNext());
+        }
+        return null;
     }
 
     public String getMoodInString(Mood mood) {
@@ -176,11 +224,11 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 } else {
                     fav = true;
                 }
-                song = new SongListItem(Long.valueOf(cursor.getString(0)),
-                        cursor.getString(6), cursor.getString(3),
-                        cursor.getString(5), fav, Long.parseLong(cursor.getString(2)),
-                        cursor.getString(8), Integer.parseInt(cursor.getString(7)),
-                        getMoodAsEnum(cursor.getString(9)));
+                song = new SongListItem(Long.valueOf(cursor.getString(1)),
+                        cursor.getString(7), cursor.getString(4),
+                        cursor.getString(6), fav, Long.parseLong(cursor.getString(3)),
+                        cursor.getString(9), Integer.parseInt(cursor.getString(8)),
+                        getMoodAsEnum(cursor.getString(10)));
                 songs.add(song);
             } while (cursor.moveToNext());
         }
@@ -203,11 +251,11 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 } else {
                     fav = true;
                 }
-                song = new SongListItem(Long.valueOf(cursor.getString(0)),
-                        cursor.getString(6), cursor.getString(3),
-                        cursor.getString(5), fav, Long.parseLong(cursor.getString(2)),
-                        cursor.getString(8), Integer.parseInt(cursor.getString(7)),
-                        getMoodAsEnum(cursor.getString(9)));
+                song = new SongListItem(Long.valueOf(cursor.getString(1)),
+                        cursor.getString(7), cursor.getString(4),
+                        cursor.getString(6), fav, Long.parseLong(cursor.getString(3)),
+                        cursor.getString(9), Integer.parseInt(cursor.getString(8)),
+                        getMoodAsEnum(cursor.getString(10)));
                 songs.add(song);
             } while (cursor.moveToNext());
         }
@@ -217,7 +265,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
     public void removeSong(long songId, int playlistId) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DELETE FROM " + TABLE_SONG + " WHERE " + SONG_KEY_ID
+        db.execSQL("DELETE FROM " + TABLE_SONG + " WHERE " + SONG_KEY_REAL_ID
                 + "='" + songId + "' AND " + SONG_KEY_PLAYLISTID + "='" + playlistId + "'");
     }
 

@@ -45,7 +45,8 @@ public class DialogPlaylistAdapter extends RecyclerView.Adapter<DialogPlaylistAd
         }
     }
 
-    public DialogPlaylistAdapter(Context context, List<Playlist> items, SongListItem songListItem, AlertDialog dialog) {
+    public DialogPlaylistAdapter(Context context, List<Playlist> items,
+                                 SongListItem songListItem, AlertDialog dialog) {
         this.context = context;
         this.items = items;
         this.songToAdd = songListItem;
@@ -88,14 +89,12 @@ public class DialogPlaylistAdapter extends RecyclerView.Adapter<DialogPlaylistAd
                                     items.remove(position);
                                     notifyItemRemoved(position);
                                     new CountDownTimer(400, 1000) {
-
                                         public void onTick(long millisUntilFinished) {
                                         }
 
                                         public void onFinish() {
                                             notifyDataSetChanged();
                                         }
-
                                     }.start();
                                     return true;
                                 case R.id.menu_playlist_play:
@@ -119,7 +118,10 @@ public class DialogPlaylistAdapter extends RecyclerView.Adapter<DialogPlaylistAd
                 @Override
                 public void onClick(View v) {
                     MySQLiteHelper helper = new MySQLiteHelper(context);
-                    helper.addSong(songToAdd, items.get(position).getId());
+                    if (songToAdd.getId() != -1)
+                        helper.addSong(songToAdd, items.get(position).getId());
+                    else
+                        helper.addSong(songToAdd.getName(), items.get(position).getId());
                     dialog.dismiss();
                     Toast.makeText(context, "Song added to playlist", Toast.LENGTH_SHORT).show();
                 }

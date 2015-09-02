@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
@@ -17,15 +18,26 @@ import android.os.IBinder;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.internal.view.ContextThemeWrapper;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.architjn.acjmusicplayer.R;
-import com.architjn.acjmusicplayer.utils.Mood;
-import com.architjn.acjmusicplayer.utils.MySQLiteHelper;
-import com.architjn.acjmusicplayer.utils.items.SongListItem;
 import com.architjn.acjmusicplayer.task.ChangeNotificationDetails;
 import com.architjn.acjmusicplayer.ui.layouts.activity.MusicPlayer;
+import com.architjn.acjmusicplayer.utils.Mood;
+import com.architjn.acjmusicplayer.utils.MySQLiteHelper;
+import com.architjn.acjmusicplayer.utils.adapters.DialogMoodAdapter;
+import com.architjn.acjmusicplayer.utils.adapters.DialogPlaylistAdapter;
+import com.architjn.acjmusicplayer.utils.items.Playlist;
+import com.architjn.acjmusicplayer.utils.items.SongListItem;
 
 import java.io.File;
 import java.io.IOException;
@@ -72,6 +84,8 @@ public class MusicService extends Service {
     public static final String ACTION_MENU_PLAY_NEXT = "menu_play_next";
     public static final String ACTION_MENU_REMOVE_FROM_QUEUE = "menu_from_queue";
     public static final String ACTION_MENU_SHARE = "menu_share";
+    public static final String ACTION_MENU_ADD_PLAYLIST = "menu_add_in_playlist";
+    public static final String ACTION_MENU_SET_MOOD = "menu_set_mood";
     public static final String ACTION_MENU_DELETE = "menu_delete";
 
     private ArrayList<SongListItem> playList;
@@ -288,6 +302,7 @@ public class MusicService extends Service {
 
     };
 
+
     public void updateCurrentPlaying() {
         Intent sendDetails = new Intent();
         sendDetails.putExtra("songPath", songPath);
@@ -312,7 +327,7 @@ public class MusicService extends Service {
         for (int j = 0; j < playList.size(); j++) {
             name.add(playList.get(j).getName());
             desc.add(playList.get(j).getDesc());
-            songId.add(j + "");
+            songId.add(playList.get(j).getId() + "");
         }
         playlistIntent.putStringArrayListExtra("name", name);
         playlistIntent.putStringArrayListExtra("desc", desc);

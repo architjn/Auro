@@ -136,9 +136,6 @@ public class AlbumSongAdapter extends RecyclerView.Adapter<AlbumSongAdapter.Simp
                                 Toast.makeText(context, "Details", Toast.LENGTH_SHORT).show();
                                 return true;
                             case R.id.menu_set_ringtone:
-//                                Uri uri = MediaStore.Audio.Media.getContentUriForPath(items.get(position).getPath());
-//                                RingtoneManager.setActualDefaultRingtoneUri(context,
-//                                        RingtoneManager.TYPE_RINGTONE, uri);
                                 Toast.makeText(context, "Set as Ringtone", Toast.LENGTH_SHORT).show();
                                 return true;
                             case R.id.menu_delete:
