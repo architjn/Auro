@@ -175,7 +175,7 @@ public class PlaylistActivityAdapter extends RecyclerView.Adapter<PlaylistActivi
             }
         });
         AlertDialog dialog = alertDialogBuilder.create();
-        DialogMoodAdapter adapter = new DialogMoodAdapter(context, moods, items.get(position), dialog);
+        DialogMoodAdapter adapter = new DialogMoodAdapter(context, moods, data.get(position), dialog);
         gv.setAdapter(adapter);
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(dialog.getWindow().getAttributes());
