@@ -61,14 +61,11 @@ public class SongsFragment extends Fragment {
     private void setSongList() {
         final ArrayList<SongListItem> songList = new ArrayList<>();
         System.gc();
-//        String[] STAR = {"*"};
-//        String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
         final String where = MediaStore.Audio.Media.IS_MUSIC + "=1";
         final String orderBy = MediaStore.Audio.Media.TITLE;
         musicCursor = mainView.getContext().getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 null, where, null, orderBy);
         if (musicCursor != null && musicCursor.moveToFirst()) {
-            //get columns
             int titleColumn = musicCursor.getColumnIndex
                     (android.provider.MediaStore.Audio.Media.TITLE);
             int idColumn = musicCursor.getColumnIndex

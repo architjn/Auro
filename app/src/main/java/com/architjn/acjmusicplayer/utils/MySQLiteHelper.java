@@ -31,7 +31,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 "playlist_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "playlist_title TEXT)";
 
-        String CREATE_SONGS_TABLE = "CREATE TABLE song (" +
+        String CREATE_SONGS_FOR_PLAYLIST_TABLE = "CREATE TABLE song_for_playlist (" +
                 "song_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "song_real_id INTEGER," +
                 "song_playlist_id INTEGER," +
@@ -44,23 +44,39 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 "song_album_name TEXT," +
                 "song_mood TEXT)";
 
-        db.execSQL(CREATE_PLAYLIST_TABLE);
+        String CREATE_SONGS_TABLE = "CREATE TABLE song (" +
+                "song_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "song_real_id INTEGER," +
+                "song_album_id INTEGER," +
+                "song_desc TEXT," +
+                "song_fav INTEGER," +
+                "song_path TEXT," +
+                "song_name TEXT," +
+                "song_count INTEGER," +
+                "song_album_name TEXT," +
+                "song_mood TEXT)";
+
         db.execSQL(CREATE_SONGS_TABLE);
+        db.execSQL(CREATE_PLAYLIST_TABLE);
+        db.execSQL(CREATE_SONGS_FOR_PLAYLIST_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS playlist");
+        db.execSQL("DROP TABLE IF EXISTS song_for_playlist");
         db.execSQL("DROP TABLE IF EXISTS song");
 
         this.onCreate(db);
     }
 
     private static final String TABLE_PLAYLIST = "playlist";
+    private static final String TABLE_SONG_FOR_PLAYLIST = "song_for_playlist";
     private static final String TABLE_SONG = "song";
 
     private static final String PLAYLIST_KEY_ID = "playlist_id";
     private static final String PLAYLIST_KEY_TITLE = "playlist_title";
+
     private static final String SONG_KEY_ID = "song_id";
     private static final String SONG_KEY_REAL_ID = "song_real_id";
     private static final String SONG_KEY_PLAYLISTID = "song_playlist_id";
@@ -72,6 +88,18 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     private static final String SONG_KEY_COUNT = "song_count";
     private static final String SONG_KEY_ALBUM_NAME = "song_album_name";
     private static final String SONG_KEY_MOOD = "song_mood";
+
+    private static final String SONG_LIST_KEY_ID = "song_id";
+    private static final String SONG_LIST_KEY_REAL_ID = "song_real_id";
+    private static final String SONG_LIST_KEY_ALBUMID = "song_album_id";
+    private static final String SONG_LIST_KEY_DESC = "song_desc";
+    private static final String SONG_LIST_KEY_FAV = "song_fav";
+    private static final String SONG_LIST_KEY_PATH = "song_path";
+    private static final String SONG_LIST_KEY_NAME = "song_name";
+    private static final String SONG_LIST_KEY_COUNT = "song_count";
+    private static final String SONG_LIST_KEY_ALBUM_NAME = "song_album_name";
+    private static final String SONG_LIST_KEY_MOOD = "song_mood";
+
 
     private static final String[] COLUMNS = {PLAYLIST_KEY_ID, PLAYLIST_KEY_TITLE};
 
@@ -95,8 +123,87 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_PLAYLIST + " WHERE " + PLAYLIST_KEY_ID
                 + "='" + playlistId + "'");
-        db.execSQL("DELETE FROM " + TABLE_SONG + " WHERE " + SONG_KEY_PLAYLISTID
+        db.execSQL("DELETE FROM " + TABLE_SONG_FOR_PLAYLIST + " WHERE " + SONG_KEY_PLAYLISTID
                 + "='" + playlistId + "'");
+    }
+
+    public void updateSongsList(ArrayList<SongListItem> songsList) {
+        ArrayList<SongListItem> previousList = getAllSongs();
+        ArrayList<Boolean> checker = new ArrayList<Boolean>();
+        boolean isSongPresent;
+        //Search if already present in database
+        for (int i = 0; i < songsList.size(); i++) {
+            isSongPresent = false;
+            for (int j = 0; j < previousList.size(); j++) {
+                if (previousList.get(j).getId() == songsList.get(i).getId()) {
+                    updateASong(songsList.get(i));
+                    isSongPresent = true;
+                    checker.add(j, true);
+                }
+            }
+            if (!isSongPresent) {
+                addSongToFullList(songsList.get(i));
+            }
+        }
+    }
+
+    public ArrayList<SongListItem> getAllSongs() {
+        ArrayList<SongListItem> songs = new ArrayList<SongListItem>();
+        String query = "SELECT  * FROM " + TABLE_SONG;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        SongListItem song;
+        if (cursor.moveToFirst()) {
+            do {
+                boolean fav;
+                if (cursor.getString(4).matches("0")) {
+                    fav = false;
+                } else {
+                    fav = true;
+                }
+                song = new SongListItem(Long.valueOf(cursor.getString(1)),
+                        cursor.getString(7), cursor.getString(4),
+                        cursor.getString(6), fav, Long.parseLong(cursor.getString(3)),
+                        cursor.getString(9), Integer.parseInt(cursor.getString(8)),
+                        getMoodAsEnum(cursor.getString(10)));
+                songs.add(song);
+            } while (cursor.moveToNext());
+        }
+
+        return songs;
+    }
+
+    private void addSongToFullList(SongListItem song) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.putNull(SONG_LIST_KEY_ID);
+        values.put(SONG_LIST_KEY_ID, (int) song.getId());
+        values.put(SONG_LIST_KEY_ALBUMID, song.getAlbumId());
+        values.put(SONG_LIST_KEY_DESC, song.getDesc());
+        values.put(SONG_LIST_KEY_FAV, song.getFav());
+        values.put(SONG_LIST_KEY_PATH, song.getPath());
+        values.put(SONG_LIST_KEY_NAME, song.getName());
+        values.put(SONG_LIST_KEY_COUNT, song.getCount());
+        values.put(SONG_LIST_KEY_ALBUM_NAME, song.getAlbumName());
+        values.put(SONG_LIST_KEY_MOOD, getMoodInString(song.getMood()));
+
+        db.insert(TABLE_SONG, null, values);
+        db.close();
+    }
+
+    private void updateASong(SongListItem song) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("UPDATE " + TABLE_SONG_FOR_PLAYLIST + " SET "
+                + SONG_LIST_KEY_ALBUMID + "='" + song.getAlbumName() + "',"
+                + SONG_LIST_KEY_DESC + "='" + song.getDesc() + "',"
+                + SONG_LIST_KEY_FAV + "='" + song.getFav() + "',"
+                + SONG_LIST_KEY_PATH + "='" + song.getPath() + "',"
+                + SONG_LIST_KEY_NAME + "='" + song.getName() + "',"
+                + SONG_LIST_KEY_COUNT + "='" + song.getName() + "',"
+                + SONG_LIST_KEY_NAME + "='" + song.getCount() + "',"
+                + SONG_KEY_MOOD + "='" + song.getAlbumName() + "',"
+                + SONG_LIST_KEY_ALBUM_NAME + "='" + getMoodInString(Mood.UNKNOWN) + "'"
+                + " WHERE " + SONG_KEY_REAL_ID + "='" + song.getId() + "'");
     }
 
     public List<Playlist> getAllPlaylist() {
@@ -117,7 +224,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
     public void updateMood(long songId, Mood mood) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("UPDATE " + TABLE_SONG + " SET " + SONG_KEY_MOOD + "='" + getMoodInString(mood) + "'"
+        db.execSQL("UPDATE " + TABLE_SONG_FOR_PLAYLIST + " SET " + SONG_KEY_MOOD + "='" + getMoodInString(mood) + "'"
                 + " WHERE " + SONG_KEY_REAL_ID
                 + "='" + songId + "'");
     }
@@ -141,7 +248,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         values.put(SONG_KEY_ALBUM_NAME, song.getAlbumName());
         values.put(SONG_KEY_MOOD, getMoodInString(song.getMood()));
 
-        db.insert(TABLE_SONG, null, values);
+        db.insert(TABLE_SONG_FOR_PLAYLIST, null, values);
         db.close();
     }
 
@@ -211,7 +318,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
     public List<SongListItem> getPlayListSongs(int playlistId) {
         List<SongListItem> songs = new LinkedList<SongListItem>();
-        String query = "SELECT  * FROM " + TABLE_SONG + " WHERE "
+        String query = "SELECT  * FROM " + TABLE_SONG_FOR_PLAYLIST + " WHERE "
                 + SONG_KEY_PLAYLISTID + "='" + playlistId + "'";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
@@ -238,7 +345,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
     public ArrayList<SongListItem> getPlayListSongs(int playlistId, String nullHack) {
         ArrayList<SongListItem> songs = new ArrayList<SongListItem>();
-        String query = "SELECT  * FROM " + TABLE_SONG + " WHERE "
+        String query = "SELECT  * FROM " + TABLE_SONG_FOR_PLAYLIST + " WHERE "
                 + SONG_KEY_PLAYLISTID + "='" + playlistId + "'";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
@@ -265,7 +372,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
     public void removeSong(long songId, int playlistId) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DELETE FROM " + TABLE_SONG + " WHERE " + SONG_KEY_REAL_ID
+        db.execSQL("DELETE FROM " + TABLE_SONG_FOR_PLAYLIST + " WHERE " + SONG_KEY_REAL_ID
                 + "='" + songId + "' AND " + SONG_KEY_PLAYLISTID + "='" + playlistId + "'");
     }
 
