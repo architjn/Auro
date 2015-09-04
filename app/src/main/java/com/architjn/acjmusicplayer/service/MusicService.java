@@ -7,7 +7,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
@@ -18,14 +17,6 @@ import android.os.IBinder;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.internal.view.ContextThemeWrapper;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.WindowManager;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -33,10 +24,8 @@ import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.task.ChangeNotificationDetails;
 import com.architjn.acjmusicplayer.ui.layouts.activity.MusicPlayer;
 import com.architjn.acjmusicplayer.utils.Mood;
+import com.architjn.acjmusicplayer.utils.MusicPlayerDBHelper;
 import com.architjn.acjmusicplayer.utils.MySQLiteHelper;
-import com.architjn.acjmusicplayer.utils.adapters.DialogMoodAdapter;
-import com.architjn.acjmusicplayer.utils.adapters.DialogPlaylistAdapter;
-import com.architjn.acjmusicplayer.utils.items.Playlist;
 import com.architjn.acjmusicplayer.utils.items.SongListItem;
 
 import java.io.File;
@@ -92,24 +81,32 @@ public class MusicService extends Service {
 
     private BroadcastReceiver musicPlayer = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, final Intent intent) {
+        public void onReceive(final Context context, final Intent intent) {
             if (intent.getAction().equals(ACTION_PLAY_SINGLE)) {
                 playList.clear();
                 pausedSongSeek = 0;
                 playMusic(intent.getStringExtra("songPath"), intent.getStringExtra("songName"),
                         intent.getStringExtra("songDesc"), intent.getStringExtra("songArt"),
                         intent.getLongExtra("songAlbumId", 0), intent.getStringExtra("songAlbumName"), true);
-                playList.add(new SongListItem(intent.getIntExtra("songId", 0), intent.getStringExtra("songName"), intent.getStringExtra("songDesc"),
+                playList.add(new SongListItem(intent.getLongExtra("songId", 0), intent.getStringExtra("songName"), intent.getStringExtra("songDesc"),
                         intent.getStringExtra("songPath"), false,
                         intent.getLongExtra("songAlbumId", 0), intent.getStringExtra("songAlbumName"), 0, Mood.UNKNOWN));
                 currentPlaylistSongId = 0;
                 pausedSongSeek = 0;
+                Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        MusicPlayerDBHelper helper = new MusicPlayerDBHelper(context);
+                        helper.clearPlayingList();
+                        helper.addSong(playList.get(0));
+                    }
+                };
+                new Thread(runnable).start();
             } else if (intent.getAction().equals(ACTION_PLAY_ALBUM)) {
                 pausedSongSeek = 0;
                 playList.clear();
                 System.gc();
                 Cursor musicCursor;
-
                 String where = MediaStore.Audio.Media.ALBUM_ID + "=?";
                 String whereVal[] = {intent.getLongExtra("albumId", 0) + ""};
                 String orderBy = MediaStore.Audio.Media._ID;
@@ -169,7 +166,30 @@ public class MusicService extends Service {
                 }
             } else if (intent.getAction().equals(ACTION_REQUEST_SONG_DETAILS)) {
                 if (songPath == null) {
-                    Toast.makeText(MusicService.this, "Nothing to Play", Toast.LENGTH_SHORT).show();
+                    MusicPlayerDBHelper helper = new MusicPlayerDBHelper(context);
+                    ArrayList<SongListItem> playback = helper.getCurrentPlayingList();
+                    if (playback.size() != 0) {
+                        songPath = playback.get(0).getPath();
+                        songName = playback.get(0).getName();
+                        songDesc = playback.get(0).getDesc();
+                        albumId = playback.get(0).getAlbumId();
+                        albumName = playback.get(0).getAlbumName();
+                        Intent sendDetails = new Intent(MusicService.this, MusicPlayer.class);
+                        sendDetails.putExtra("songPath", songPath);
+                        sendDetails.putExtra("songName", songName);
+                        sendDetails.putExtra("songDesc", songDesc);
+                        sendDetails.putExtra("songAlbumId", albumId);
+                        sendDetails.putExtra("songAlbumName", albumName);
+                        try {
+                            sendDetails.putExtra("songDuration", mediaPlayer.getDuration());
+                            sendDetails.putExtra("songCurrTime", mediaPlayer.getCurrentPosition());
+                        } catch (NullPointerException e) {
+                            e.printStackTrace();
+                        }
+                        sendDetails.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(sendDetails);
+                    } else
+                        Toast.makeText(MusicService.this, "Nothing to Play", Toast.LENGTH_SHORT).show();
                 } else {
                     Intent sendDetails = new Intent(MusicService.this, MusicPlayer.class);
                     sendDetails.putExtra("songPath", songPath);
