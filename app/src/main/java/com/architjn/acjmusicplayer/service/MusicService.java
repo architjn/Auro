@@ -272,6 +272,7 @@ public class MusicService extends Service {
                     sendBroadcast(i);
                 }
             } else if (intent.getAction().matches(ACTION_PLAY_FROM_PLAYLIST)) {
+                pausedSongSeek = 0;
                 playMusic(Integer.parseInt(intent.getStringExtra("playListId")));
                 updateCurrentPlaying();
             } else if (intent.getAction().matches(ACTION_MENU_FROM_PLAYLIST)) {
@@ -406,7 +407,7 @@ public class MusicService extends Service {
                 public void onCompletion(MediaPlayer mp) {
                     if (currentPlaylistSongId < playList.getPlaybackTableSize() - 1) {
                         pausedSongSeek = 0;
-                        SongListItem song = playList.getSong((int) playList.getNextSong(currentPlaylistSongId).getId());
+                        SongListItem song = playList.getNextSong(currentPlaylistSongId);
                         playMusic((int) song.getId(), song.getPath(), song.getName(),
                                 song.getDesc(), "", song.getAlbumId(),
                                 song.getAlbumName(), false);

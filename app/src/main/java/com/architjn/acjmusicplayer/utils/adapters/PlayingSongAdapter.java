@@ -105,7 +105,7 @@ public class PlayingSongAdapter extends RecyclerView.Adapter<PlayingSongAdapter.
                             case R.id.menu_share:
                                 Intent c = new Intent();
                                 c.setAction(MusicService.ACTION_MENU_FROM_PLAYLIST);
-                                c.putExtra("count", position);
+                                c.putExtra("count", (int) songs.get(position).getId());
                                 c.putExtra("action", MusicService.ACTION_MENU_SHARE);
                                 context.sendBroadcast(c);
                                 return true;
