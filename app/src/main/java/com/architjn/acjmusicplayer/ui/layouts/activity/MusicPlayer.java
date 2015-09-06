@@ -36,11 +36,13 @@ import android.widget.TextView;
 
 import com.annimon.paperstyle.PaperSeekBar;
 import com.architjn.acjmusicplayer.R;
+import com.architjn.acjmusicplayer.utils.MusicPlayerDBHelper;
 import com.architjn.acjmusicplayer.utils.adapters.PlayingSongAdapter;
 import com.architjn.acjmusicplayer.service.MusicService;
 import com.architjn.acjmusicplayer.task.ChangeSeekDetailUpdater;
 import com.architjn.acjmusicplayer.task.ColorAnimateAlbumView;
 import com.architjn.acjmusicplayer.ui.widget.MyLinearLayoutManager;
+import com.architjn.acjmusicplayer.utils.items.SongListItem;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -97,12 +99,9 @@ public class MusicPlayer extends AppCompatActivity {
                     musicStoped = true;
                 }
             } else if (intent.getAction().equals(ACTION_GET_PLAYING_LIST)) {
-                ArrayList<String> name = new ArrayList<>(), desc = new ArrayList<>(), songId = new ArrayList<>();
-                name = intent.getStringArrayListExtra("name");
-                desc = intent.getStringArrayListExtra("desc");
-                songId = intent.getStringArrayListExtra("songId");
                 rv = (RecyclerView) findViewById(R.id.player_playlist);
-                PlayingSongAdapter adapter = new PlayingSongAdapter(context, name, desc, songId);
+                MusicPlayerDBHelper helper = new MusicPlayerDBHelper(context);
+                PlayingSongAdapter adapter = new PlayingSongAdapter(context, helper.getCurrentPlayingList());
                 MyLinearLayoutManager layoutManager = new MyLinearLayoutManager(context,
                         LinearLayoutManager.VERTICAL, false);
                 layoutManager.setOrientation(LinearLayoutManager.VERTICAL);

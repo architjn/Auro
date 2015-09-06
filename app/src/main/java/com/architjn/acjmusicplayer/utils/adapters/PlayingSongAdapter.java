@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class PlayingSongAdapter extends RecyclerView.Adapter<PlayingSongAdapter.SimpleItemViewHolder> {
 
-    private final List<String> name, desc, songId;
+    private final List<SongListItem> songs;
     private Context context;
 
     public final static class SimpleItemViewHolder extends RecyclerView.ViewHolder {
@@ -47,11 +47,9 @@ public class PlayingSongAdapter extends RecyclerView.Adapter<PlayingSongAdapter.
         }
     }
 
-    public PlayingSongAdapter(Context context, List<String> name, List<String> desc, List<String> songId) {
+    public PlayingSongAdapter(Context context, List<SongListItem> songs) {
         this.context = context;
-        this.name = name;
-        this.desc = desc;
-        this.songId = songId;
+        this.songs = songs;
     }
 
     @Override
@@ -63,14 +61,14 @@ public class PlayingSongAdapter extends RecyclerView.Adapter<PlayingSongAdapter.
 
     @Override
     public void onBindViewHolder(SimpleItemViewHolder holder, final int position) {
-        holder.title.setText(name.get(position));
-        holder.desc.setText(desc.get(position));
+        holder.title.setText(songs.get(position).getName());
+        holder.desc.setText(songs.get(position).getDesc());
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent a = new Intent();
                 a.setAction(MusicService.ACTION_PLAY_FROM_PLAYLIST);
-                a.putExtra("playListId", songId.get(position) + "");
+                a.putExtra("playListId", songs.get(position).getId() + "");
                 context.sendBroadcast(a);
             }
         });
@@ -167,7 +165,7 @@ public class PlayingSongAdapter extends RecyclerView.Adapter<PlayingSongAdapter.
         });
         AlertDialog dialog = alertDialogBuilder.create();
         DialogPlaylistAdapter adapter = new DialogPlaylistAdapter(context,
-                playlists, new SongListItem(-1, name.get(position),
+                playlists, new SongListItem(-1, songs.get(position).getName(),
                 null, null, null, -1, null, -1, null), dialog);
         gv.setAdapter(adapter);
         dialog.show();
@@ -200,7 +198,7 @@ public class PlayingSongAdapter extends RecyclerView.Adapter<PlayingSongAdapter.
         });
         AlertDialog dialog = alertDialogBuilder.create();
         DialogMoodAdapter adapter = new DialogMoodAdapter(context, moods, new SongListItem(-1,
-                name.get(position), null, null, null, -1, null, -1, null),
+                songs.get(position).getName(), null, null, null, -1, null, -1, null),
                 dialog);
         gv.setAdapter(adapter);
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
@@ -212,6 +210,6 @@ public class PlayingSongAdapter extends RecyclerView.Adapter<PlayingSongAdapter.
 
     @Override
     public int getItemCount() {
-        return this.name.size();
+        return this.songs.size();
     }
 }

@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.architjn.acjmusicplayer.utils.items.SongListItem;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by architjn on 04/09/15.
@@ -36,7 +37,8 @@ public class MusicPlayerDBHelper extends SQLiteOpenHelper {
                 "song_name TEXT," +
                 "song_count INTEGER," +
                 "song_album_name TEXT," +
-                "song_mood TEXT)";
+                "song_mood TEXT," +
+                "song_playing INTEGER)";
         db.execSQL(CREATE_PLAYBACK_TABLE);
     }
 
@@ -58,6 +60,7 @@ public class MusicPlayerDBHelper extends SQLiteOpenHelper {
     private static final String SONG_KEY_COUNT = "song_count";
     private static final String SONG_KEY_ALBUM_NAME = "song_album_name";
     private static final String SONG_KEY_MOOD = "song_mood";
+    private static final String SONG_KEY_PLAYING = "song_playing";
 
     public void addSong(SongListItem song) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -75,6 +78,19 @@ public class MusicPlayerDBHelper extends SQLiteOpenHelper {
 
         db.insert(TABLE_PLAYBACK, null, values);
         db.close();
+    }
+
+    public void removeSong(int pos) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + TABLE_PLAYBACK + " WHERE " +
+                SONG_KEY_ID + "='" + pos + "'");
+    }
+
+    public void shuffleRows() {
+        ArrayList<SongListItem> songs = getCurrentPlayingList();
+        Collections.shuffle(songs);
+        clearPlayingList();
+        addSongs(songs);
     }
 
     public ArrayList<SongListItem> getCurrentPlayingList() {
@@ -101,6 +117,43 @@ public class MusicPlayerDBHelper extends SQLiteOpenHelper {
         }
 
         return songs;
+    }
+
+    public int getPlaybackTableSize() {
+        String query = "SELECT  * FROM " + TABLE_PLAYBACK;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        return cursor.getCount();
+    }
+
+    public SongListItem getSongById(int pos) {
+        String query = "SELECT  * FROM " + TABLE_PLAYBACK + " WHERE " +
+                SONG_KEY_ID + "='" + pos + "'";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()) {
+            do {
+                boolean fav;
+                if (cursor.getString(4).matches("0")) {
+                    fav = false;
+                } else {
+                    fav = true;
+                }
+                return new SongListItem(Long.valueOf(cursor.getString(1)),
+                        cursor.getString(6), cursor.getString(3),
+                        cursor.getString(5), fav, Long.parseLong(cursor.getString(2)),
+                        cursor.getString(8), Integer.parseInt(cursor.getString(7)),
+                        getMoodAsEnum(cursor.getString(9)));
+            } while (cursor.moveToNext());
+        }
+        return null;
+    }
+
+    public void setSongKeyPlaying(int index) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("UPDATE " + TABLE_PLAYBACK + " SET " + SONG_KEY_PLAYING + "='0'");
+        db.execSQL("UPDATE " + TABLE_PLAYBACK + " SET " + SONG_KEY_PLAYING + "='1' WHERE "
+                + SONG_KEY_ID + "='" + index + "'");
     }
 
     public void clearPlayingList() {
@@ -140,4 +193,47 @@ public class MusicPlayerDBHelper extends SQLiteOpenHelper {
         }
     }
 
+    public void addSongs(ArrayList<SongListItem> playList) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        for (int i = 0; i < playList.size(); i++) {
+            SongListItem song = playList.get(i);
+            ContentValues values = new ContentValues();
+            values.put(SONG_KEY_ID, i);
+            values.put(SONG_KEY_REAL_ID, (int) song.getId());
+            values.put(SONG_KEY_ALBUMID, song.getAlbumId());
+            values.put(SONG_KEY_DESC, song.getDesc());
+            values.put(SONG_KEY_FAV, song.getFav());
+            values.put(SONG_KEY_PATH, song.getPath());
+            values.put(SONG_KEY_NAME, song.getName());
+            values.put(SONG_KEY_COUNT, song.getCount());
+            values.put(SONG_KEY_ALBUM_NAME, song.getAlbumName());
+            values.put(SONG_KEY_MOOD, getMoodInString(song.getMood()));
+            values.put(SONG_KEY_PLAYING, 0);
+            db.insert(TABLE_PLAYBACK, null, values);
+        }
+        db.close();
+    }
+
+    public SongListItem getSongBySongId(int playingPos) {
+        String query = "SELECT  * FROM " + TABLE_PLAYBACK + " WHERE " +
+                SONG_KEY_REAL_ID + "='" + playingPos + "'";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()) {
+            do {
+                boolean fav;
+                if (cursor.getString(4).matches("0")) {
+                    fav = false;
+                } else {
+                    fav = true;
+                }
+                return new SongListItem(Long.valueOf(cursor.getString(1)),
+                        cursor.getString(6), cursor.getString(3),
+                        cursor.getString(5), fav, Long.parseLong(cursor.getString(2)),
+                        cursor.getString(8), Integer.parseInt(cursor.getString(7)),
+                        getMoodAsEnum(cursor.getString(9)));
+            } while (cursor.moveToNext());
+        }
+        return null;
+    }
 }
