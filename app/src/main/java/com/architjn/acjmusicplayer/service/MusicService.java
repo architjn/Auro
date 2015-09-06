@@ -17,7 +17,6 @@ import android.os.IBinder;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -84,7 +83,7 @@ public class MusicService extends Service {
             if (intent.getAction().equals(ACTION_PLAY_SINGLE)) {
                 playList.clearPlayingList();
                 pausedSongSeek = 0;
-                playMusic(intent.getStringExtra("songPath"), intent.getStringExtra("songName"),
+                playMusic((int) intent.getLongExtra("songId", -1), intent.getStringExtra("songPath"), intent.getStringExtra("songName"),
                         intent.getStringExtra("songDesc"), intent.getStringExtra("songArt"),
                         intent.getLongExtra("songAlbumId", 0), intent.getStringExtra("songAlbumName"), true);
                 playList.addSong(new SongListItem(intent.getLongExtra("songId", 0), intent.getStringExtra("songName"), intent.getStringExtra("songDesc"),
@@ -144,16 +143,16 @@ public class MusicService extends Service {
                 }
             } else if (intent.getAction().equals(ACTION_NEXT)) {
                 pausedSongSeek = 0;
-                nextSong();
+                playMusic(playList.getNextSong(currentPlaylistSongId));
                 updateCurrentPlaying();
             } else if (intent.getAction() == ACTION_PREV) {
                 if (mediaPlayer.getCurrentPosition() >= 5000) {
                     mediaPlayer.seekTo(0);
                 } else {
                     pausedSongSeek = 0;
-                    prevSong();
-                    updateCurrentPlaying();
+                    playMusic(playList.getPrevSong(currentPlaylistSongId));
                 }
+                updateCurrentPlaying();
             } else if (intent.getAction().equals(ACTION_REQUEST_SONG_DETAILS)) {
                 if (songPath == null) {
                     MusicPlayerDBHelper helper = new MusicPlayerDBHelper(context);
@@ -199,8 +198,8 @@ public class MusicService extends Service {
             } else if (intent.getAction().equals(ACTION_STOP)) {
                 if (mediaPlayer != null && mediaPlayer.isPlaying()) {
                     if (!singleSong) {
-                        pausedSong = playList.getSongById(currentPlaylistSongId);
-                        pausedSongPlaylistId = currentPlaylistSongId;
+                        pausedSong = playList.getSong(currentPlaylistSongId);
+                        pausedSongPlaylistId = (int) pausedSong.getId();
                     }
                     pausedSongSeek = mediaPlayer.getCurrentPosition();
                     stopMusic();
@@ -210,7 +209,7 @@ public class MusicService extends Service {
                             pausedSong.getAlbumId(), pausedSong.getAlbumName());
                 } else {
                     if (!singleSong) {
-                        playMusicByIndex(pausedSongPlaylistId);
+                        playMusic(pausedSongPlaylistId);
                     } else {
                         playMusic(pausedSong);
                     }
@@ -238,11 +237,11 @@ public class MusicService extends Service {
                 sendBroadcast(i);
                 updatePlaylist();
             } else if (intent.getAction().equals(ACTION_SHUFFLE_PLAYLIST)) {
-                String currentPlayingId = playList.getSongById(currentPlaylistSongId).getName();
+                String currentPlayingId = playList.getSong(currentPlaylistSongId).getName();
                 playList.shuffleRows();
                 updatePlaylist();
                 for (int i = 0; i < playList.getPlaybackTableSize(); i++) {
-                    if (currentPlayingId.matches(playList.getSongById(i).getName())) {
+                    if (currentPlayingId.matches(playList.getSong(i).getName())) {
                         currentPlaylistSongId = i;
                         break;
                     }
@@ -278,7 +277,7 @@ public class MusicService extends Service {
             } else if (intent.getAction().matches(ACTION_MENU_FROM_PLAYLIST)) {
                 String action = intent.getStringExtra("action");
                 if (action.matches(ACTION_MENU_PLAY_NEXT)) {
-                    SongListItem item = playList.getSongById(intent.getIntExtra("count", -1));
+                    SongListItem item = playList.getSong(intent.getIntExtra("count", -1));
 //                    playList.addSong(1, item);
                     //TODO
                     updatePlaylist();
@@ -289,12 +288,12 @@ public class MusicService extends Service {
                     Intent share = new Intent(Intent.ACTION_SEND);
                     share.setType("audio/*");
                     share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file:///" +
-                            playList.getSongById(intent.getIntExtra("count", -1)).getPath()));
+                            playList.getSong(intent.getIntExtra("count", -1)).getPath()));
                     share.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(share);
                 } else if (action.matches(ACTION_MENU_DELETE)) {
                     int pos = intent.getIntExtra("count", -1);
-                    SongListItem song = playList.getSongById(pos);
+                    SongListItem song = playList.getSong(pos);
                     File file = new File(song.getPath());
                     boolean deleted = file.delete();
                     if (deleted) {
@@ -309,8 +308,7 @@ public class MusicService extends Service {
             } else if (intent.getAction().matches(ACTION_PLAY_PLAYLIST)) {
                 MySQLiteHelper helper = new MySQLiteHelper(context);
                 playList.clearPlayingList();
-                playList.addSongs(helper.getPlayListSongs(intent.getIntExtra("playlistId", -1), null));
-                playMusicByIndex(0);
+                playMusic((int) playList.addSongs(helper.getPlayListSongs(intent.getIntExtra("playlistId", -1), null)).get(0).getId());
             }
         }
 
@@ -340,24 +338,6 @@ public class MusicService extends Service {
         sendBroadcast(playlistIntent);
     }
 
-    public void nextSong() {
-        Log.v("currId", currentPlaylistSongId + " <===");
-        Log.v("size", playList.getPlaybackTableSize() + " <===");
-        if (currentPlaylistSongId < (playList.getPlaybackTableSize() - 1)) {
-            playMusic(currentPlaylistSongId + 1);
-        } else {
-            playMusic(0);
-        }
-    }
-
-    public void prevSong() {
-        if (currentPlaylistSongId > 0) {
-            playMusic(currentPlaylistSongId - 1);
-        } else {
-            playMusic(playList.getPlaybackTableSize() - 1);
-        }
-    }
-
     public void addSong(SongListItem song, int count) {
         playList.addSong(song);
 //        if (count == 1) {
@@ -384,35 +364,26 @@ public class MusicService extends Service {
 
     public void playMusic(int playingPos) {
         if (playList.getPlaybackTableSize() != 0) {
-            SongListItem song = playList.getSongBySongId(playingPos);
-            playMusic(song.getPath(), song.getName(),
-                    song.getDesc(), "", song.getAlbumId(),
-                    song.getAlbumName(), false);
-            currentPlaylistSongId = playingPos;
-            currentPlaylistAlbumId = song.getAlbumId();
-        } else {
-            Toast.makeText(MusicService.this, "Nothing to play", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void playMusicByIndex(int playingPos) {
-        if (playList.getPlaybackTableSize() != 0) {
-            SongListItem song = playList.getSongById(playingPos);
-            playMusic(song.getPath(), song.getName(),
-                    song.getDesc(), "", song.getAlbumId(),
-                    song.getAlbumName(), false);
-            currentPlaylistSongId = playingPos;
-            currentPlaylistAlbumId = song.getAlbumId();
+            try {
+                SongListItem song = playList.getSong(playingPos);
+                playMusic((int) song.getId(), song.getPath(), song.getName(),
+                        song.getDesc(), "", song.getAlbumId(),
+                        song.getAlbumName(), false);
+                currentPlaylistSongId = playingPos;
+                currentPlaylistAlbumId = song.getAlbumId();
+            } catch (NullPointerException e) {
+                playMusic(playList.getFirstSong());
+            }
         } else {
             Toast.makeText(MusicService.this, "Nothing to play", Toast.LENGTH_SHORT).show();
         }
     }
 
     public void playMusic(SongListItem song) {
-        playMusic(song.getPath(), song.getName(), song.getDesc(), "", song.getAlbumId(), song.getAlbumName(), true);
+        playMusic((int) song.getId(), song.getPath(), song.getName(), song.getDesc(), "", song.getAlbumId(), song.getAlbumName(), true);
     }
 
-    public void playMusic(final String songPath, final String songName, final String songDesc,
+    public void playMusic(final int songId, final String songPath, final String songName, final String songDesc,
                           final String songArt, final long albumId, final String albumName, @Nullable boolean singlePlay) {
 
         if (singlePlay) {
@@ -429,14 +400,14 @@ public class MusicService extends Service {
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setDataSource(songPath);
             mediaPlayer.prepare();
+            currentPlaylistSongId = songId;
             mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
                     if (currentPlaylistSongId < playList.getPlaybackTableSize() - 1) {
                         pausedSongSeek = 0;
-                        currentPlaylistSongId++;
-                        SongListItem song = playList.getSongById(currentPlaylistSongId);
-                        playMusic(song.getPath(), song.getName(),
+                        SongListItem song = playList.getSong((int) playList.getNextSong(currentPlaylistSongId).getId());
+                        playMusic((int) song.getId(), song.getPath(), song.getName(),
                                 song.getDesc(), "", song.getAlbumId(),
                                 song.getAlbumName(), false);
                         updateCurrentPlaying();
