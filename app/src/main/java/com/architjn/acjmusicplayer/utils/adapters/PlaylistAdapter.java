@@ -98,7 +98,6 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Simple
                                 case R.id.menu_playlist_play:
                                     Intent i = new Intent();
                                     i.putExtra("playlistId", items.get(position).getId());
-                                    i.putExtra("title", items.get(position).getName());
                                     i.setAction(MusicService.ACTION_PLAY_PLAYLIST);
                                     context.sendBroadcast(i);
                                     return true;
@@ -118,6 +117,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Simple
                 public void onClick(View v) {
                     Intent i = new Intent(context, PlaylistActivity.class);
                     i.putExtra("playlistId", items.get(position).getId());
+                    i.putExtra("title", items.get(position).getName());
                     context.startActivity(i);
                 }
             });

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.architjn.acjmusicplayer.utils.items.SongListItem;
 
@@ -28,7 +29,8 @@ public class MusicPlayerDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_PLAYBACK_TABLE = "CREATE TABLE playback (" +
-                "song_real_id INTEGER PRIMARY KEY," +
+                "song_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "song_real_id INTEGER," +
                 "song_album_id INTEGER," +
                 "song_desc TEXT," +
                 "song_fav INTEGER," +
@@ -49,6 +51,7 @@ public class MusicPlayerDBHelper extends SQLiteOpenHelper {
 
     private static final String TABLE_PLAYBACK = "playback";
 
+    private static final String SONG_KEY_ID = "song_id";
     private static final String SONG_KEY_REAL_ID = "song_real_id";
     private static final String SONG_KEY_ALBUMID = "song_album_id";
     private static final String SONG_KEY_DESC = "song_desc";
@@ -63,6 +66,7 @@ public class MusicPlayerDBHelper extends SQLiteOpenHelper {
     public void addSong(SongListItem song) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.putNull(SONG_KEY_ID);
         values.put(SONG_KEY_REAL_ID, (int) song.getId());
         values.put(SONG_KEY_ALBUMID, song.getAlbumId());
         values.put(SONG_KEY_DESC, song.getDesc());
@@ -90,6 +94,19 @@ public class MusicPlayerDBHelper extends SQLiteOpenHelper {
         addSongs(songs);
     }
 
+    public SongListItem getLastSong() {
+        String query = "SELECT * FROM " + TABLE_PLAYBACK + " ORDER BY "
+                + SONG_KEY_ID + " DESC LIMIT 1";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()) {
+            do {
+                return getSongFromCursor(cursor);
+            } while (cursor.moveToNext());
+        }
+        return null;
+    }
+
     public SongListItem getNextSong(int currentId) {
         String query = "SELECT * FROM " + TABLE_PLAYBACK;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -98,26 +115,12 @@ public class MusicPlayerDBHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             boolean isNext = false, isFirst = true;
             do {
-                boolean fav;
-                if (cursor.getString(3).matches("0")) {
-                    fav = false;
-                } else {
-                    fav = true;
-                }
                 if (isFirst) {
-                    firstSong = new SongListItem(Long.valueOf(cursor.getString(0)),
-                            cursor.getString(5), cursor.getString(2),
-                            cursor.getString(4), fav, Long.parseLong(cursor.getString(1)),
-                            cursor.getString(7), Integer.parseInt(cursor.getString(6)),
-                            getMoodAsEnum(cursor.getString(8)));
+                    firstSong = getSongFromCursor(cursor);
                     isFirst = false;
                 } else if (isNext)
-                    return new SongListItem(Long.valueOf(cursor.getString(0)),
-                            cursor.getString(5), cursor.getString(2),
-                            cursor.getString(4), fav, Long.parseLong(cursor.getString(1)),
-                            cursor.getString(7), Integer.parseInt(cursor.getString(6)),
-                            getMoodAsEnum(cursor.getString(8)));
-                if (cursor.getString(0).matches(String.valueOf(currentId))) {
+                    return getSongFromCursor(cursor);
+                if (cursor.getString(1).matches(String.valueOf(currentId))) {
                     isNext = true;
                 }
             } while (cursor.moveToNext());
@@ -134,22 +137,12 @@ public class MusicPlayerDBHelper extends SQLiteOpenHelper {
         ArrayList<SongListItem> songs = new ArrayList<>();
         if (cursor.moveToFirst()) {
             do {
-                boolean fav;
-                if (cursor.getString(3).matches("0")) {
-                    fav = false;
-                } else {
-                    fav = true;
-                }
                 if (isFirst) {
                     isFirst = false;
-                } else if (cursor.getString(0).matches(String.valueOf(currentId))) {
+                } else if (cursor.getString(1).matches(String.valueOf(currentId))) {
                     return songs.get(counter - 1);
                 }
-                songs.add(new SongListItem(Long.valueOf(cursor.getString(0)),
-                        cursor.getString(5), cursor.getString(2),
-                        cursor.getString(4), fav, Long.parseLong(cursor.getString(1)),
-                        cursor.getString(7), Integer.parseInt(cursor.getString(6)),
-                        getMoodAsEnum(cursor.getString(8))));
+                songs.add(getSongFromCursor(cursor));
                 counter++;
             } while (cursor.moveToNext());
         }
@@ -162,17 +155,7 @@ public class MusicPlayerDBHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(query, null);
         if (cursor.moveToFirst()) {
             do {
-                boolean fav;
-                if (cursor.getString(3).matches("0")) {
-                    fav = false;
-                } else {
-                    fav = true;
-                }
-                return new SongListItem(Long.valueOf(cursor.getString(0)),
-                        cursor.getString(5), cursor.getString(2),
-                        cursor.getString(4), fav, Long.parseLong(cursor.getString(1)),
-                        cursor.getString(7), Integer.parseInt(cursor.getString(6)),
-                        getMoodAsEnum(cursor.getString(8)));
+                return getSongFromCursor(cursor);
             } while (cursor.moveToNext());
         }
         return null;
@@ -186,17 +169,7 @@ public class MusicPlayerDBHelper extends SQLiteOpenHelper {
         SongListItem song = null;
         if (cursor.moveToFirst()) {
             do {
-                boolean fav;
-                if (cursor.getString(3).matches("0")) {
-                    fav = false;
-                } else {
-                    fav = true;
-                }
-                song = new SongListItem(Long.valueOf(cursor.getString(0)),
-                        cursor.getString(5), cursor.getString(2),
-                        cursor.getString(4), fav, Long.parseLong(cursor.getString(1)),
-                        cursor.getString(7), Integer.parseInt(cursor.getString(6)),
-                        getMoodAsEnum(cursor.getString(8)));
+                song = getSongFromCursor(cursor);
                 songs.add(song);
             } while (cursor.moveToNext());
         }
@@ -260,6 +233,8 @@ public class MusicPlayerDBHelper extends SQLiteOpenHelper {
         for (int i = 0; i < playList.size(); i++) {
             SongListItem song = playList.get(i);
             ContentValues values = new ContentValues();
+            Log.v("sname", song.getName());
+            values.putNull(SONG_KEY_ID);
             values.put(SONG_KEY_REAL_ID, (int) song.getId());
             values.put(SONG_KEY_ALBUMID, song.getAlbumId());
             values.put(SONG_KEY_DESC, song.getDesc());
@@ -283,19 +258,24 @@ public class MusicPlayerDBHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(query, null);
         if (cursor.moveToFirst()) {
             do {
-                boolean fav;
-                if (cursor.getString(3).matches("0")) {
-                    fav = false;
-                } else {
-                    fav = true;
-                }
-                return new SongListItem(Long.valueOf(cursor.getString(0)),
-                        cursor.getString(5), cursor.getString(2),
-                        cursor.getString(4), fav, Long.parseLong(cursor.getString(1)),
-                        cursor.getString(7), Integer.parseInt(cursor.getString(6)),
-                        getMoodAsEnum(cursor.getString(8)));
+                return getSongFromCursor(cursor);
             } while (cursor.moveToNext());
         }
         return null;
     }
+
+    private SongListItem getSongFromCursor(Cursor cursor) {
+        boolean fav;
+        if (cursor.getString(4).matches("0")) {
+            fav = false;
+        } else {
+            fav = true;
+        }
+        return new SongListItem(Long.valueOf(cursor.getString(1)),
+                cursor.getString(6), cursor.getString(3),
+                cursor.getString(5), fav, Long.parseLong(cursor.getString(2)),
+                cursor.getString(8), Integer.parseInt(cursor.getString(7)),
+                getMoodAsEnum(cursor.getString(9)));
+    }
+
 }

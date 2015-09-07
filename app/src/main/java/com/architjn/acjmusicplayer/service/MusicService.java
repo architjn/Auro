@@ -240,14 +240,15 @@ public class MusicService extends Service {
                 String currentPlayingId = playList.getSong(currentPlaylistSongId).getName();
                 playList.shuffleRows();
                 updatePlaylist();
+                ArrayList<SongListItem> songsList = playList.getCurrentPlayingList();
                 for (int i = 0; i < playList.getPlaybackTableSize(); i++) {
-                    if (currentPlayingId.matches(playList.getSong(i).getName())) {
-                        currentPlaylistSongId = i;
+                    if (currentPlayingId.matches(songsList.get(i).getName())) {
+                        currentPlaylistSongId = (int) songsList.get(i).getId();
                         break;
                     }
                 }
             } else if (intent.getAction().equals(ACTION_PLAY_NEXT)) {
-                if (currentPlaylistSongId == playList.getPlaybackTableSize() - 1 && currentPlaylistSongId != -1) {
+                if (currentPlaylistSongId == playList.getLastSong().getId() && currentPlaylistSongId != -1) {
                     playList.addSong(new SongListItem(intent.getIntExtra("songId", 0), intent.getStringExtra("songName"), intent.getStringExtra("songDesc"),
                             intent.getStringExtra("songPath"), false,
                             intent.getLongExtra("songAlbumId", 0), intent.getStringExtra("songAlbumName"), 0, Mood.UNKNOWN));
@@ -309,7 +310,8 @@ public class MusicService extends Service {
             } else if (intent.getAction().matches(ACTION_PLAY_PLAYLIST)) {
                 MySQLiteHelper helper = new MySQLiteHelper(context);
                 playList.clearPlayingList();
-                playMusic((int) playList.addSongs(helper.getPlayListSongs(intent.getIntExtra("playlistId", -1), null)).get(0).getId());
+                playList.addSongs(helper.getPlayListSongs(intent.getIntExtra("playlistId", -1), null));
+                playMusic(playList.getFirstSong());
             }
         }
 
