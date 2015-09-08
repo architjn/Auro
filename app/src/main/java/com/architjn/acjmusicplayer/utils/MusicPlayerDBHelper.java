@@ -75,7 +75,7 @@ public class MusicPlayerDBHelper extends SQLiteOpenHelper {
         values.put(SONG_KEY_NAME, song.getName());
         values.put(SONG_KEY_COUNT, song.getCount());
         values.put(SONG_KEY_ALBUM_NAME, song.getAlbumName());
-        values.put(SONG_KEY_MOOD, getMoodInString(song.getMood()));
+        values.put(SONG_KEY_MOOD, song.getMood());
 
         db.insert(TABLE_PLAYBACK, null, values);
         db.close();
@@ -202,31 +202,6 @@ public class MusicPlayerDBHelper extends SQLiteOpenHelper {
                 + "='" + song.getId() + "'");
     }
 
-    private String getMoodInString(Mood mood) {
-        switch (mood) {
-            case UNKNOWN:
-                return "UNKNOWN";
-            case HAPPY:
-                return "HAPPY";
-            case SAD:
-                return "SAD";
-            default:
-                return "UNKNOWN";
-        }
-    }
-
-    private Mood getMoodAsEnum(String mood) {
-        switch (mood) {
-            case "UNKNOWN":
-                return Mood.UNKNOWN;
-            case "HAPPY":
-                return Mood.HAPPY;
-            case "SAD":
-                return Mood.SAD;
-            default:
-                return Mood.UNKNOWN;
-        }
-    }
 
     public ArrayList<SongListItem> addSongs(ArrayList<SongListItem> playList) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -243,7 +218,7 @@ public class MusicPlayerDBHelper extends SQLiteOpenHelper {
             values.put(SONG_KEY_NAME, song.getName());
             values.put(SONG_KEY_COUNT, song.getCount());
             values.put(SONG_KEY_ALBUM_NAME, song.getAlbumName());
-            values.put(SONG_KEY_MOOD, getMoodInString(song.getMood()));
+            values.put(SONG_KEY_MOOD, song.getMood());
             values.put(SONG_KEY_PLAYING, 0);
             db.insert(TABLE_PLAYBACK, null, values);
         }
@@ -275,7 +250,7 @@ public class MusicPlayerDBHelper extends SQLiteOpenHelper {
                 cursor.getString(6), cursor.getString(3),
                 cursor.getString(5), fav, Long.parseLong(cursor.getString(2)),
                 cursor.getString(8), Integer.parseInt(cursor.getString(7)),
-                getMoodAsEnum(cursor.getString(9)));
+                cursor.getString(9));
     }
 
 }

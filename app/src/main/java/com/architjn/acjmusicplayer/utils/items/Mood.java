@@ -1,8 +1,5 @@
 package com.architjn.acjmusicplayer.utils.items;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by architjn on 02/09/15.
  */
@@ -28,14 +25,6 @@ public class Mood {
 
     public int getImgRes() {
         return imgRes;
-    }
-
-    public static List<Mood> getAllMoods() {
-        List<Mood> moods = new ArrayList<>();
-        moods.add(new Mood(0, "Sad", com.architjn.acjmusicplayer.utils.Mood.SAD));
-        moods.add(new Mood(0, "Happy", com.architjn.acjmusicplayer.utils.Mood.HAPPY));
-        moods.add(new Mood(0, "Angry", com.architjn.acjmusicplayer.utils.Mood.ANGRY));
-        return moods;
     }
 
 }

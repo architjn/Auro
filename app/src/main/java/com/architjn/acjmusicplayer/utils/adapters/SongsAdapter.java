@@ -22,7 +22,7 @@ import android.widget.Toast;
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.service.MusicService;
 import com.architjn.acjmusicplayer.utils.MySQLiteHelper;
-import com.architjn.acjmusicplayer.utils.items.Mood;
+import com.architjn.acjmusicplayer.utils.Mood;
 import com.architjn.acjmusicplayer.utils.items.Playlist;
 import com.architjn.acjmusicplayer.utils.items.SongListItem;
 
@@ -189,7 +189,8 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SimpleItemVi
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setTitle("Choose mood");
         View view = ((Activity) context).getLayoutInflater().inflate(R.layout.dialog_listview, null);
-        List<Mood> moods = Mood.getAllMoods();
+        Mood mood = new Mood();
+        List<String> moods = mood.getAllMoods();
         RecyclerView gv = (RecyclerView) view.findViewById(R.id.dialog_playlist_rv);
         LinearLayoutManager gridLayoutManager = new LinearLayoutManager(context);
         gridLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);

@@ -10,14 +10,13 @@ import com.architjn.acjmusicplayer.utils.Mood;
 public class SongListItem {
 
     long id, albumId;
-    String name, desc, path, albumName;
+    String name, desc, path, albumName, mood;
     Boolean fav;
     Bitmap art;
     int count;
-    com.architjn.acjmusicplayer.utils.Mood mood;
 
     public SongListItem(long id, String name, String desc, String path,
-                        Boolean fav, long albumId, String albumName, int count, com.architjn.acjmusicplayer.utils.Mood mood) {
+                        Boolean fav, long albumId, String albumName, int count, String mood) {
         this.desc = desc;
         this.fav = fav;
         this.path = path;
@@ -68,11 +67,11 @@ public class SongListItem {
         return this.count;
     }
 
-    public com.architjn.acjmusicplayer.utils.Mood getMood() {
+    public String getMood() {
         return mood;
     }
 
-    public void setMood(com.architjn.acjmusicplayer.utils.Mood mood) {
+    public void setMood(String mood) {
         this.mood = mood;
     }
 }
