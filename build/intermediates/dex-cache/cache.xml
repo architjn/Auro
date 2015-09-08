@@ -6,7 +6,7 @@
         jumboMode="false"
         revision="21.1.2"
         sha1="bd9269a3716a9b5e8c43dd91c9d4cebfb07eeb80">
-        <dex dex="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/pre-dexed/debug/classes-a92ebd71eb9bb08fe66f4591ec687bc16516c9af.jar" />
+        <dex dex="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/pre-dexed/release/classes-a92ebd71eb9bb08fe66f4591ec687bc16516c9af.jar" />
     </item>
 
 </items>

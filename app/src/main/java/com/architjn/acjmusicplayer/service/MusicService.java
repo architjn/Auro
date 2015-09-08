@@ -264,7 +264,7 @@ public class MusicService extends Service {
                 }
             } else if (intent.getAction().matches(ACTION_ADD_SONG)) {
                 if (playList.getPlaybackTableSize() != 0 && currentPlaylistSongId != -1) {
-                    playList.addSong(new SongListItem(intent.getIntExtra("songId", 0), intent.getStringExtra("songName"), intent.getStringExtra("songDesc"),
+                    playList.addSong(new SongListItem(intent.getLongExtra("songId", 0), intent.getStringExtra("songName"), intent.getStringExtra("songDesc"),
                             intent.getStringExtra("songPath"), false,
                             intent.getLongExtra("songAlbumId", 0), intent.getStringExtra("songAlbumName"), 0, Mood.UNKNOWN));
                 } else {
