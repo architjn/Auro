@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <color name="ColorPrimary">#37474f</color>
-    <color name="ColorPrimaryDark">#212b2f</color>
-    <color name="tabInactiveTextColor">#9FA8DA</color>
-    <color name="tabsScrollColor">#ffffff</color>
-    <color name="light_color">#b5b5b5</color>
-    <color name="card_background">#212121</color>
-    <color name="noti_background">#414141</color>
-    <color name="control_background_dark">#424242</color>
-    <color name="control_background_light">#424242</color>
-    <color name="accent_color">#ff4081</color>
-
+    <color name="colorPrimary">#607D8B</color>
+    <color name="colorPrimaryDark">#455A64</color>
+    <color name="color400">#78909C</color>
+    <color name="appBackground">#FAFAFA</color>
+    <color name="cardview_shadow_end_color">#03000000</color>
+    <color name="cardview_shadow_start_color">#47000000</color>
+    <color name="light_grey">#ededed</color>
+    <color name="drawer_item_text_color">#2b2b2b</color>
 </resources>

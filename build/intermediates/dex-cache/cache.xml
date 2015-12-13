@@ -2,11 +2,18 @@
 <items version="2" >
 
     <item
-        jar="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/exploded-aar/com.makeramen/dragsortadapter/1.3.0/jars/classes.jar"
+        jar="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/exploded-aar/com.github.carlonzo.stikkyheader/core/0.0.3-SNAPSHOT/jars/classes.jar"
         jumboMode="false"
-        revision="21.1.2"
-        sha1="bd9269a3716a9b5e8c43dd91c9d4cebfb07eeb80">
-        <dex dex="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/pre-dexed/release/classes-a92ebd71eb9bb08fe66f4591ec687bc16516c9af.jar" />
+        revision="23.0.1"
+        sha1="74c7d3a2feb4aa499e6799481bdbec19066449eb">
+        <dex dex="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/pre-dexed/debug/classes-4bcbb1c5ef45e9ae16514a7a11a6038f0d8a24d3.jar" />
+    </item>
+    <item
+        jar="/Users/architjn/.gradle/caches/modules-2/files-2.1/com.squareup.picasso/picasso/2.5.3-SNAPSHOT/3187377c740f2db5a8033fad57cae6bbc8f6fa61/picasso-2.5.3-SNAPSHOT.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="3187377c740f2db5a8033fad57cae6bbc8f6fa61">
+        <dex dex="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/pre-dexed/debug/picasso-2.5.3-SNAPSHOT-99836de8fddbc881a9965440127b54ef53b0751a.jar" />
     </item>
 
 </items>

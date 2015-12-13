@@ -8,8 +8,9 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbarlayout_artist"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:fitsSystemWindows="true">
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        app:theme="@style/ToolbarTheme">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsingtoolbarlayout_album"
@@ -18,45 +19,59 @@
             android:elevation="10dp"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            app:expandedTitleMarginBottom="40dp"
+            app:expandedTitleTextAppearance="@style/ExpandedTransparent"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:statusBarScrim="@color/colorPrimary"
+            app:theme="@style/ToolbarTheme">
+
 
             <ImageView
                 android:id="@+id/activity_album_art"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="@dimen/parallax_img_height"
+                android:layout_marginBottom="100dp"
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
-                android:src="@drawable/default_artwork_dark"
-                android:transitionName="albumArt"
                 app:layout_collapseMode="parallax" />
+
+            <LinearLayout
+                android:id="@+id/album_song_name_holder"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_gravity="bottom"
+                android:background="@color/colorPrimary"
+                android:orientation="horizontal" />
+
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar_album"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin" />
+                app:layout_collapseMode="pin"
+                app:theme="@style/ToolbarTheme" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_artist_activity"
+        android:id="@+id/rv_album_activity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_album"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="20dp"
-        android:clickable="true"
-        android:elevation="12dp"
-        android:src="@drawable/ic_play"
-        android:visibility="invisible"
-        app:backgroundTint="@color/accent_color"
-        app:borderWidth="0dp"
-        app:layout_anchor="@+id/appbarlayout_artist"
-        app:layout_anchorGravity="bottom|right|end" />
+    <!--<android.support.design.widget.FloatingActionButton-->
+    <!--android:id="@+id/fab_album"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginRight="20dp"-->
+    <!--android:clickable="true"-->
+    <!--android:elevation="12dp"-->
+    <!--android:src="@drawable/ic_play"-->
+    <!--android:visibility="invisible"-->
+    <!--app:backgroundTint="@color/accent_color"-->
+    <!--app:borderWidth="0dp"-->
+    <!--app:layout_anchor="@+id/appbarlayout_artist"-->
+    <!--app:layout_anchorGravity="bottom|right|end" />-->
 
 </android.support.design.widget.CoordinatorLayout>

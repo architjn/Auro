@@ -1,27 +1,29 @@
 package com.architjn.acjmusicplayer.utils.items;
 
 /**
- * Created by architjn on 31/08/15.
+ * Created by architjn on 09/12/15.
  */
 public class Playlist {
 
-    int id;
-    String name;
+    private int playlistId;
+    private String playlistName;
+    private long songCount;
 
-    public Playlist(int id, String name){
-        this.id = id;
-        this.name = name;
+    public Playlist(int playlistId, String playlistName, long songCount) {
+        this.playlistId = playlistId;
+        this.playlistName = playlistName;
+        this.songCount = songCount;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public int getPlaylistId() {
+        return playlistId;
     }
 
-    public int getId() {
-        return id;
+    public String getPlaylistName() {
+        return playlistName;
     }
 
-    public String getName() {
-        return name;
+    public long getSongCount() {
+        return songCount;
     }
 }

@@ -3,4 +3,12 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="grid_view_album_art_height">200dp</dimen>
+    <dimen name="small_sliding_player_height">48.0dip</dimen>
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="now_playing_seekbar_size">24dp</dimen>
+    <dimen name="now_playing_seekbar_thub_size">2dp</dimen>
+    <dimen name="parallax_img_height">400dp</dimen>
+    <dimen name="parallax_label_bg_height">100dp</dimen>
+    <dimen name="cardview_compat_inset_shadow">1dp</dimen>
+    <dimen name="controller_button_size">28dp</dimen>
 </resources>

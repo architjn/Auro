@@ -1,44 +1,37 @@
 <resources>
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/ColorPrimary</item>
-        <item name="colorPrimaryDark">@color/ColorPrimaryDark</item>
-        <item name="colorAccent">@color/accent_color</item>
-    </style>
-
-    <style name="AppTheme.Main" parent="Theme.AppCompat">
-        <item name="colorPrimary">@color/ColorPrimary</item>
-        <item name="colorPrimaryDark">@color/ColorPrimaryDark</item>
-        <item name="android:fastScrollThumbDrawable">@drawable/ic_datejumper</item>
-        <item name="android:fastScrollTrackDrawable">@android:color/transparent</item>
-        <item name="colorAccent">@color/accent_color</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-
-    <style name="DarkDialog" parent="Theme.AppCompat.Dialog"/>
-
-    <style name="AppTheme.Album" parent="Theme.AppCompat">
-        <!--<item name="colorPrimary">@color/ColorPrimary</item>-->
-        <!--<item name="colorPrimaryDark">@color/ColorPrimaryDark</item>-->
-        <item name="windowActionBar">false</item>
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="actionMenuTextColor">@android:color/white</item>
         <!--<item name="colorAccent">@color/accent_color</item>-->
-        <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.Player" parent="Theme.AppCompat">
-        <!--<item name="colorPrimary">@color/ColorPrimary</item>-->
-        <!--<item name="colorPrimaryDark">@color/ColorPrimaryDark</item>-->
+    <style name="ToolbarTheme">
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textColorSecondary">@android:color/white</item>
+    </style>
+
+    <style name="AppTheme.Main" parent="AppTheme">
         <item name="windowActionBar">false</item>
-        <!--<item name="colorAccent">@color/accent_color</item>-->
         <item name="windowNoTitle">true</item>
-        <item name="round_selector">@drawable/round_selector_dark</item>
+        <item name="android:windowActionBarOverlay">true</item>
     </style>
 
-    <style name="AppTheme.Pref" parent="Theme.AppCompat">
-        <item name="colorPrimary">@color/ColorPrimary</item>
-        <item name="colorPrimaryDark">@color/ColorPrimaryDark</item>
-        <item name="colorAccent">@color/accent_color</item>
+    <style name="DialogLight" parent="@android:style/Theme.Dialog">
+        <item name="@android:windowBackground">@android:color/white</item>
+    </style>
+
+    <style name="AppTheme.Splash" parent="AppTheme">
+        <!--<item name="android:fastScrollThumbDrawable">@drawable/ic_datejumper</item>-->
+        <!--<item name="android:fastScrollTrackDrawable">@android:color/transparent</item>-->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="ExpandedTransparent">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">24sp</item>
     </style>
 
 </resources>

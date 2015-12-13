@@ -2,67 +2,38 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.architjn.acjmusicplayer">
 
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.AppCompat.Light">
+
         <activity
-            android:name=".ui.layouts.activity.HomeActivity"
+            android:name=".ui.layouts.activity.SplashActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.Main">
+            android:theme="@style/AppTheme.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".ui.layouts.activity.MainActivity"
-            android:label="@string/app_name"
             android:theme="@style/AppTheme.Main" />
+
         <activity
             android:name=".ui.layouts.activity.AlbumActivity"
-            android:label="Album"
-            android:theme="@style/AppTheme.Album" />
-        <activity
-            android:name=".ui.layouts.activity.MusicPlayer"
-            android:label=""
-            android:theme="@style/AppTheme.Player" />
-        <activity
-            android:name=".ui.layouts.activity.PlaylistActivity"
-            android:label=""
             android:theme="@style/AppTheme.Main" />
         <activity
-            android:name=".ui.layouts.activity.settings.Settings"
-            android:label="@string/settings"
-            android:theme="@style/AppTheme.Pref" />
-        <activity
-            android:name=".ui.layouts.activity.settings.ThemeSettings"
-            android:label="@string/pref_theme"
-            android:theme="@style/AppTheme.Pref" />
-        <activity
-            android:name=".ui.layouts.activity.settings.HomeScreenSettings"
-            android:label="@string/pref_home_view"
-            android:theme="@style/AppTheme.Pref" />
-        <activity
-            android:name=".ui.layouts.activity.settings.PlayerScreenSettings"
-            android:label="@string/pref_player_view"
-            android:theme="@style/AppTheme.Pref" />
-        <activity
-            android:name=".ui.layouts.activity.settings.AlbumScreenSettings"
-            android:label="@string/pref_album_view"
-            android:theme="@style/AppTheme.Pref" />
+            android:name=".ui.layouts.activity.PlayerActivity"
+            android:theme="@style/AppTheme.Main" />
 
         <service
-            android:name=".service.MusicService"
+            android:name=".service.PlayerService"
             android:enabled="true" />
     </application>
 

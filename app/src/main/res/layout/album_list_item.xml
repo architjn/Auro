@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/album_item_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_weight="0"
+        android:padding="15dp"
+        android:textColor="#9a9a9a"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/album_item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:padding="18dp"
+        android:singleLine="true"
+        android:textColor="#000"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/album_item_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:padding="15dp"
+        android:textColor="#9a9a9a" />
+
+    <ImageView
+        android:id="@+id/album_item_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="12dp"
+        android:layout_weight="0"
+        android:background="@drawable/unbounded_ripple"
+        android:foregroundTint="#434343"
+        android:padding="5dp"
+        android:src="@drawable/abc_ic_menu_moreoverflow_mtrl_alpha"
+        android:theme="@style/Theme.AppCompat.Light" />
+
+</LinearLayout>

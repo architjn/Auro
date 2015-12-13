@@ -1,186 +1,204 @@
 package com.architjn.acjmusicplayer.ui.layouts.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.architjn.acjmusicplayer.R;
-import com.architjn.acjmusicplayer.utils.adapters.ViewPagerAdapter;
-import com.architjn.acjmusicplayer.service.MusicService;
-import com.architjn.acjmusicplayer.ui.layouts.activity.settings.Settings;
-import com.architjn.acjmusicplayer.ui.layouts.fragments.AlbumsFragment;
-import com.architjn.acjmusicplayer.ui.layouts.fragments.ArtistsFragment;
-import com.architjn.acjmusicplayer.ui.layouts.fragments.GenresFragment;
-import com.architjn.acjmusicplayer.ui.layouts.fragments.SongsFragment;
+import com.architjn.acjmusicplayer.ui.layouts.fragments.AlbumsListFragment;
+import com.architjn.acjmusicplayer.ui.layouts.fragments.ArtistListFragment;
+import com.architjn.acjmusicplayer.ui.layouts.fragments.PlaylistListFragment;
+import com.architjn.acjmusicplayer.ui.layouts.fragments.SongsListFragment;
+import com.architjn.acjmusicplayer.ui.widget.OnSwipeListener;
+import com.architjn.acjmusicplayer.ui.widget.SwipeInterface;
 
-
+/**
+ * Created by architjn on 27/11/15.
+ */
 public class MainActivity extends AppCompatActivity {
 
-    private SharedPreferences settingsPref;
-    private FloatingActionButton fab;
+
+    private static final String TAG = "MainActivity-TAG";
+
+    public enum FragmentName {
+        Albums, Songs, Artists, Playlists
+    }
+
     private DrawerLayout drawerLayout;
+    private ListView drawerList;
+    private ArrayAdapter<String> navigationDrawerAdapter;
+    private ActionBarDrawerToggle drawerToggle;
     private Toolbar toolbar;
-    private ViewPager viewPager;
-    private NavigationView navigationView;
+    private int currentItem = -1;
+    private SongsListFragment songFragment;
+    private AlbumsListFragment albumFragment;
+    private ArtistListFragment artistFragment;
+    private PlaylistListFragment playlistFragment;
+
+    private FragmentName currentFragment;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        overridePendingTransition(0, 0);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        initDrawer();
+        setPlayer();
+        songFragment = new SongsListFragment();
+        fragmentSwitcher(songFragment, 0, FragmentName.Songs);
+    }
 
-        init();
-        setDrawer();
-
-        fab.setOnClickListener(new View.OnClickListener() {
+    private void setPlayer() {
+        findViewById(R.id.small_panel).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent requestSongDetials = new Intent();
-                requestSongDetials.setAction(MusicService.ACTION_REQUEST_SONG_DETAILS);
-                sendBroadcast(requestSongDetials);
+            public void onClick(View view) {
+                launchPlayer();
             }
         });
+        findViewById(R.id.small_panel).setOnTouchListener(
+                new OnSwipeListener(
+                        new SwipeInterface() {
+                            @Override
+                            public void bottom2top(View v) {
+                                launchPlayer();
+                            }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            getWindow().setExitTransition(new Explode());
-        }
+                            @Override
+                            public void left2right(View v) {
+                                launchPlayer();
+                            }
 
-        setupViewPager(viewPager);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.main_tablayout);
-        if (settingsPref.getBoolean("pref_extend_tabs", false))
-            tabLayout.setTabMode(TabLayout.MODE_FIXED);
-        else
-            tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-        tabLayout.setupWithViewPager(viewPager);
+                            @Override
+                            public void right2left(View v) {
+                                launchPlayer();
+                            }
+
+                            @Override
+                            public void top2bottom(View v) {
+                                launchPlayer();
+                            }
+                        }) {
+                });
     }
 
-    private void init() {
-        fab = (FloatingActionButton) findViewById(R.id.fab_main);
-        viewPager = (ViewPager) findViewById(R.id.main_viewPager);
-        toolbar = (Toolbar) findViewById(R.id.main_toolbar);
-        settingsPref = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        drawerLayout = (DrawerLayout) findViewById(R.id.main_drawerlayout);
-        navigationView = (NavigationView) findViewById(R.id.main_navigationview);
+    private void launchPlayer() {
+        startActivity(new Intent(MainActivity.this, PlayerActivity.class));
     }
 
-    private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFrag(new SongsFragment(), getResources().getString(R.string.songs));
-        adapter.addFrag(new AlbumsFragment(), getResources().getString(R.string.album));
-        adapter.addFrag(new ArtistsFragment(), getResources().getString(R.string.artist));
-        adapter.addFrag(new GenresFragment(), getResources().getString(R.string.genres));
-        viewPager.setAdapter(adapter);
-        viewPager.setCurrentItem(getIntent().getIntExtra("pos", 2) - 2);
-    }
-
-    public void setDrawer() {
-        drawerLayout.setStatusBarBackgroundColor(Color.TRANSPARENT);
-        if (toolbar != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            toolbar.setNavigationIcon(R.drawable.ic_drawer);
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    drawerLayout.openDrawer(GravityCompat.START);
-                }
-            });
-        }
-        navigationView.getMenu().getItem(getIntent().getIntExtra("pos", 2)).setChecked(true);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+    private void initDrawer() {
+        drawerList = (ListView) findViewById(R.id.left_drawer);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+        String[] leftSliderData = {getResources().getString(R.string.songs),
+                getResources().getString(R.string.albums),
+                getResources().getString(R.string.artists),
+                getResources().getString(R.string.playlist)};
+        navigationDrawerAdapter = new ArrayAdapter<String>(
+                MainActivity.this, R.layout.drawer_list_item, leftSliderData);
+        drawerList.setAdapter(navigationDrawerAdapter);
+        drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.navigation_home:
-                        startActivity(new Intent(MainActivity.this, HomeActivity.class));
-                        finish();
-                        drawerLayout.closeDrawer(GravityCompat.START);
+            public void onItemClick(
+                    AdapterView<?> adapterView, View view, int i, long l) {
+                switch (i) {
+                    case 0:
+                        if (songFragment == null)
+                            songFragment = new SongsListFragment();
+                        fragmentSwitcher(songFragment, i,
+                                FragmentName.Songs);
                         break;
-                    case R.id.navigation_playlist:
-                        startActivity(new Intent(MainActivity.this, HomeActivity.class));
-                        finish();
-                        drawerLayout.closeDrawer(GravityCompat.START);
+                    case 1:
+                        if (albumFragment == null)
+                            albumFragment = new AlbumsListFragment();
+                        fragmentSwitcher(albumFragment, i,
+                                FragmentName.Albums);
                         break;
-                    case R.id.navigation_songs:
-                        viewPager.setCurrentItem(0);
-                        drawerLayout.closeDrawer(GravityCompat.START);
+                    case 2:
+                        if (artistFragment == null)
+                            artistFragment = new ArtistListFragment();
+                        fragmentSwitcher(artistFragment, i,
+                                FragmentName.Artists);
                         break;
-                    case R.id.navigation_albums:
-                        viewPager.setCurrentItem(1);
-                        drawerLayout.closeDrawer(GravityCompat.START);
-                        break;
-                    case R.id.navigation_artists:
-                        viewPager.setCurrentItem(2);
-                        drawerLayout.closeDrawer(GravityCompat.START);
-                        break;
-                    case R.id.navigation_genres:
-                        viewPager.setCurrentItem(3);
-                        drawerLayout.closeDrawer(GravityCompat.START);
-                        break;
-                    case R.id.navigation_sub_item_2:
-                        startActivity(new Intent(MainActivity.this, Settings.class));
-                        drawerLayout.closeDrawer(GravityCompat.START);
+                    case 3:
+                        if (playlistFragment == null)
+                            playlistFragment = new PlaylistListFragment();
+                        fragmentSwitcher(playlistFragment, i,
+                                FragmentName.Playlists);
                         break;
                 }
-                return false;
             }
         });
-        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
+                toolbar, 0, 0) {
 
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                invalidateOptionsMenu();
+                syncState();
             }
 
             @Override
-            public void onPageSelected(int position) {
-                navigationView.getMenu().getItem(position + 2).setChecked(true);
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                invalidateOptionsMenu();
+                syncState();
             }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
+        };
+        drawerLayout.setDrawerListener(drawerToggle);
+        drawerToggle.syncState();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (fab.getVisibility() != View.VISIBLE)
-            fab.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            startActivity(new Intent(MainActivity.this, Settings.class));
-            return true;
+    private void fragmentSwitcher(Fragment fragment, int itemId, FragmentName fname) {
+        currentFragment = fname;
+        if (currentItem == itemId) {
+            // Don't allow re-selection of the currently active item
+            return;
         }
-        return super.onOptionsItemSelected(item);
+        currentItem = itemId;
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle(String.valueOf(fname));
+
+        getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(android.R.anim.slide_in_left, 0)
+                .replace(R.id.main_fragment_holder, fragment)
+                .commit();
+
+        if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+            drawerLayout.closeDrawer(Gravity.LEFT);
+        }
     }
 
+    public void killActivity() {
+        super.onBackPressed();
+    }
+
+    @Override
+    public void onBackPressed() {
+        switch (currentFragment) {
+            case Songs:
+                songFragment.onBackPress();
+                break;
+            case Albums:
+                albumFragment.onBackPress();
+                break;
+            case Artists:
+                artistFragment.onBackPress();
+                break;
+            case Playlists:
+                playlistFragment.onBackPress();
+                break;
+        }
+    }
 }
