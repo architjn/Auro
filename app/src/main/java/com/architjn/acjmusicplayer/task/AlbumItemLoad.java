@@ -6,7 +6,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.media.ThumbnailUtils;
 import android.os.AsyncTask;
 import android.support.v7.graphics.Palette;
 import android.util.DisplayMetrics;
@@ -78,19 +77,14 @@ public class AlbumItemLoad extends AsyncTask<Void, Void, Void> {
                         }
                     }
                 });
-        bmp = ThumbnailUtils.extractThumbnail(bmp, dpToPx(180), dpToPx(180));
+//        bmp = ThumbnailUtils.extractThumbnail(bmp, dpToPx(180), dpToPx(180));
         return null;
     }
 
-    public int dpToPx(int dp) {
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return px;
-    }
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        holder.img.setImageBitmap(bmp);
+//        holder.img.setImageBitmap(bmp);
         super.onPostExecute(aVoid);
     }
 }

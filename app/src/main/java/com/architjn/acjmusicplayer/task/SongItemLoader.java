@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.ParcelFileDescriptor;
 
+import com.architjn.acjmusicplayer.utils.adapters.PlayingListAdapter;
 import com.architjn.acjmusicplayer.utils.adapters.SongListAdapter;
 
 import java.io.FileDescriptor;
@@ -20,6 +21,7 @@ public class SongItemLoader extends AsyncTask<Void, Void, Void> {
 
     private Context context;
     private SongListAdapter.SimpleItemViewHolder holder;
+    private PlayingListAdapter.SimpleItemViewHolder holderPlaying;
     private long albumId;
     private int size;
     private Bitmap bmp;
@@ -28,6 +30,14 @@ public class SongItemLoader extends AsyncTask<Void, Void, Void> {
                           long albumId, int size) {
         this.context = context;
         this.holder = holder;
+        this.albumId = albumId;
+        this.size = size;
+    }
+
+    public SongItemLoader(Context context, PlayingListAdapter.SimpleItemViewHolder holder,
+                          long albumId, int size) {
+        this.context = context;
+        this.holderPlaying = holder;
         this.albumId = albumId;
         this.size = size;
     }
@@ -60,7 +70,10 @@ public class SongItemLoader extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        holder.img.setImageBitmap(bmp);
+        if (holder != null) {
+            holder.img.setImageBitmap(bmp);
+        }else
+            holderPlaying.img.setImageBitmap(bmp);
         super.onPostExecute(aVoid);
     }
 }

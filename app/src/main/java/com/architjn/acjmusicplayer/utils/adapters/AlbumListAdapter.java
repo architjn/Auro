@@ -3,7 +3,9 @@ package com.architjn.acjmusicplayer.utils.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,7 @@ import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.task.AlbumItemLoad;
 import com.architjn.acjmusicplayer.ui.layouts.activity.AlbumActivity;
 import com.architjn.acjmusicplayer.utils.items.Album;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -57,7 +60,9 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Simp
         holder.bottomBg.setBackgroundColor(Color.parseColor("#ffffff"));
         holder.name.setText(items.get(position - 1).getAlbumTitle());
         holder.artist.setText(items.get(position - 1).getAlbumArtist());
+
         new AlbumItemLoad(context, items.get(position - 1).getAlbumArtPath(), holder).execute();
+        setAlbumArt(position - 1, holder);
         holder.mainView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -67,6 +72,20 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Simp
                 context.startActivity(i);
             }
         });
+    }
+
+    private void setAlbumArt(int position, SimpleItemViewHolder holder) {
+        final Uri sArtworkUri = Uri
+                .parse("content://media/external/audio/albumart/"
+                        + items.get(position).getAlbumId());
+        Picasso.with(context).load(sArtworkUri).resize(dpToPx(180),
+                dpToPx(180)).centerCrop().into(holder.img);
+    }
+
+    public int dpToPx(int dp) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        return px;
     }
 
     @Override

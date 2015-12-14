@@ -2,7 +2,6 @@ package com.architjn.acjmusicplayer.utils;
 
 import android.content.Context;
 import android.media.MediaPlayer;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.architjn.acjmusicplayer.R;
@@ -24,8 +23,6 @@ public class PlayerHandler {
     private PlayerService service;
     private MediaPlayer mediaPlayer;
     private ArrayList<Song> currentPlayingSongs;
-
-
     private int currentPlayingPos = -1;
 
     public PlayerHandler(Context context, PlayerService service) {
@@ -42,7 +39,7 @@ public class PlayerHandler {
     }
 
     public void playAlbumSongs(long albumId, final int startSongPos) throws IOException {
-        currentPlayingSongs = ListSongs.getAlbumSongList(context, albumId);
+        setCurrentPlayingSongs(ListSongs.getAlbumSongList(context, albumId));
         stopPlayer();
         mediaPlayer.reset();
         mediaPlayer.setDataSource(currentPlayingSongs.get(startSongPos).getPath());
@@ -63,20 +60,32 @@ public class PlayerHandler {
         });
     }
 
-    public void stopPlayer() {
-        setPlayingPos(-1);
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-        }
+    public void setCurrentPlayingSongs(Song currentPlayingSong) {
+        ArrayList<Song> newSongsList = new ArrayList<>();
+        newSongsList.add(currentPlayingSong);
+        setCurrentPlayingSongs(newSongsList);
     }
+
+    public void setCurrentPlayingSongs(ArrayList<Song> currentPlayingSongs) {
+        this.currentPlayingSongs.clear();
+        this.currentPlayingSongs = currentPlayingSongs;
+        dbHandler.changePlaybackList(currentPlayingSongs, getCurrentPlayingPos());
+    }
+
+    public void stopPlayer() {
+//        setPlayingPos(-1);
+//        if (mediaPlayer != null) {
+//            mediaPlayer.stop();
+//        }
+    }
+
 
     public void playAllSongs(long songId) throws IOException {
         stopPlayer();
-        currentPlayingSongs.clear();
-        currentPlayingSongs = ListSongs.getSongList(context);
-        mediaPlayer.reset();
+        setCurrentPlayingSongs(ListSongs.getSongList(context));
         final int songToPlayPos = findForASongInArrayList(songId);
         setPlayingPos(songToPlayPos);
+        mediaPlayer.reset();
         mediaPlayer.setDataSource(currentPlayingSongs
                 .get(songToPlayPos).getPath());
         mediaPlayer.prepare();
@@ -194,19 +203,29 @@ public class PlayerHandler {
         mediaPlayer.reset();
         mediaPlayer.setDataSource(songToPlay.getPath());
         mediaPlayer.prepare();
-        currentPlayingSongs.clear();
-        currentPlayingSongs.add(songToPlay);
+        setCurrentPlayingSongs(songToPlay);
         mediaPlayer.start();
     }
 
     public void setPlayingPos(int pos) {
         currentPlayingPos = pos;
+        if (getCurrentPlayingSongs().size() != 0)
+            dbHandler.updatePlayingPosition(currentPlayingSongs
+                    .get(pos).getSongId());
     }
 
     public long getCurrentPlayingSongId() {
         if (currentPlayingPos == -1 || currentPlayingPos >= currentPlayingSongs.size())
             return -1;
         return currentPlayingSongs.get(currentPlayingPos).getSongId();
+    }
+
+    public ArrayList<Song> getCurrentPlayingSongs() {
+        return currentPlayingSongs;
+    }
+
+    public Song getCurrentPlayingSong() {
+        return currentPlayingSongs.get(currentPlayingPos);
     }
 
     public MediaPlayer getMediaPlayer() {

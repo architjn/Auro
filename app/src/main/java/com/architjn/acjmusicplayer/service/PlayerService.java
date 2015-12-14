@@ -21,6 +21,7 @@ import java.io.IOException;
  */
 public class PlayerService extends Service {
 
+    private static final String TAG = "PlayerService-TAG";
     private BroadcastReceiver playerServiceBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -40,6 +41,7 @@ public class PlayerService extends Service {
     public static final String ACTION_PLAY_ALL_SONGS = "ACTION_PLAY_ALL_SONGS";
     public static final String ACTION_PLAY_ALBUM = "ACTION_PLAY_ALBUM";
     public static final String ACTION_GET_SONG = "ACTION_GET_SONG";
+    public static final String ACTION_CHANGE_SONG = "ACTION_CHANGE_SONG";
     public static final String ACTION_SEEK_SONG = "ACTION_SEEK_SONG";
     public static final String ACTION_NEXT_SONG = "ACTION_NEXT_SONG";
     public static final String ACTION_PREV_SONG = "ACTION_PREV_SONG";
@@ -59,6 +61,7 @@ public class PlayerService extends Service {
         filter.addAction(ACTION_PREV_SONG);
         filter.addAction(ACTION_PAUSE_SONG);
         filter.addAction(ACTION_SEEK_SONG);
+        filter.addAction(ACTION_CHANGE_SONG);
         registerReceiver(playerServiceBroadcastReceiver, filter);
         return START_STICKY;
     }
@@ -94,6 +97,9 @@ public class PlayerService extends Service {
             case ACTION_SEEK_SONG:
                 musicPlayerHandler.seek(intent.getIntExtra("seek", 0));
                 break;
+            case ACTION_CHANGE_SONG:
+                musicPlayerHandler.playNextSong(intent.getIntExtra("pos", 0));
+                break;
         }
     }
 
@@ -101,7 +107,10 @@ public class PlayerService extends Service {
         Intent i = new Intent();
         i.setAction(PlayerActivity.ACTION_RECIEVE_SONG);
         i.putExtra("songId", musicPlayerHandler.getCurrentPlayingSongId());
+        i.putExtra("songName", musicPlayerHandler.getCurrentPlayingSong().getName());
+        i.putExtra("albumId", musicPlayerHandler.getCurrentPlayingSong().getAlbumId());
         i.putExtra("seek", musicPlayerHandler.getMediaPlayer().getCurrentPosition());
+        i.putExtra("pos", musicPlayerHandler.getCurrentPlayingPos());
         sendBroadcast(i);
     }
 

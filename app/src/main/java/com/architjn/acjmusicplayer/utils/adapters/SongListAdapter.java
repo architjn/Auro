@@ -5,6 +5,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -17,11 +18,11 @@ import android.widget.TextView;
 
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.service.PlayerService;
-import com.architjn.acjmusicplayer.task.SongItemLoader;
 import com.architjn.acjmusicplayer.ui.layouts.activity.MainActivity;
 import com.architjn.acjmusicplayer.ui.layouts.fragments.SongsListFragment;
 import com.architjn.acjmusicplayer.utils.Utils;
 import com.architjn.acjmusicplayer.utils.items.Song;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -54,17 +55,24 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.Simple
         holder.name.setText(items.get(position).getName());
         holder.artistName.setText(items.get(position).getArtist());
         holder.mainView.setElevation(0);
-//        holder.img.setImageDrawable(new ColorDrawable(0xFFFFFFFF));
-        holder.img.setImageDrawable(null);
+//        holder.img.setImageDrawable(null);
         //Load Image in Background
-        new SongItemLoader(context, holder, items.get(position).getAlbumId(), dpToPx(50)).execute();
-
+//        new SongItemLoader(context, holder, items.get(position).getAlbumId(), dpToPx(50)).execute();
+        setAlbumArt(position, holder);
         if (selectedView != null)
             selectedView.setBackgroundColor(context.getResources()
                     .getColor(R.color.appBackground));
         selectedSongId = -1;
         selectedView = null;
         setOnClicks(holder, position);
+    }
+
+    private void setAlbumArt(int position, SimpleItemViewHolder holder) {
+        final Uri sArtworkUri = Uri
+                .parse("content://media/external/audio/albumart/"
+                        + items.get(position).getAlbumId());
+        Picasso.with(context).load(sArtworkUri).resize(dpToPx(50),
+                dpToPx(50)).centerCrop().into(holder.img);
     }
 
     private void setOnClicks(final SimpleItemViewHolder holder, final int position) {

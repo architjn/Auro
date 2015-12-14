@@ -2,22 +2,14 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-<<<<<<< HEAD
     buildToolsVersion "23.0.1"
 
     defaultConfig {
         applicationId "com.architjn.acjmusicplayer"
         minSdkVersion 21
-=======
-    buildToolsVersion "23.0.2"
-
-    defaultConfig {
-        applicationId "com.architjn.acjmusicplayer"
-        minSdkVersion 14
->>>>>>> origin/master
         targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "0.5beta"
     }
     buildTypes {
         release {
@@ -33,7 +25,6 @@ repositories {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-<<<<<<< HEAD
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:cardview-v7:23.1.1'
     compile 'com.android.support:recyclerview-v7:23.1.1'
@@ -42,14 +33,4 @@ dependencies {
     compile 'com.squareup.picasso:picasso:+'
     compile 'com.sothree.slidinguppanel:library:3.2.0'
     compile 'com.github.carlonzo.stikkyheader:core:0.0.3-SNAPSHOT'
-=======
-    compile 'com.android.support:appcompat-v7:23.1.0'
-    compile 'com.android.support:cardview-v7:23.1.0'
-    compile 'com.android.support:recyclerview-v7:23.1.0'
-    compile 'com.android.support:design:23.1.0'
-    compile 'com.android.support:palette-v7:23.1.0'
-    compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.annimon:paperstyle:1.1.0'
-    compile 'com.makeramen:dragsortadapter:1.3.0'
->>>>>>> origin/master
 }

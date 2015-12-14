@@ -26,12 +26,14 @@ import android.widget.Toast;
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.service.PlayerService;
 import com.architjn.acjmusicplayer.task.PlayerLoader;
-import com.architjn.acjmusicplayer.utils.ListSongs;
+import com.architjn.acjmusicplayer.ui.widget.PointShiftingArrayList;
 import com.architjn.acjmusicplayer.utils.PlayerDBHandler;
+import com.architjn.acjmusicplayer.utils.PlayingListDividerItemDecoration;
 import com.architjn.acjmusicplayer.utils.UserPreferenceHandler;
 import com.architjn.acjmusicplayer.utils.adapters.PlayingListAdapter;
 import com.architjn.acjmusicplayer.utils.items.Song;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -41,6 +43,8 @@ import java.util.TimerTask;
 public class PlayerActivity extends AppCompatActivity {
 
     private TimerTask task;
+    private ImageView artHolder;
+    private PointShiftingArrayList<Song> songPointShiftingArrayList;
 
     private enum PlayerState {
         PLAYING, PAUSED
@@ -70,7 +74,7 @@ public class PlayerActivity extends AppCompatActivity {
         }
     };
     private PlayingListAdapter adapter;
-    private AppCompatSeekBar seekBar;
+    public AppCompatSeekBar seekBar;
     private TextView currentSeekText;
     private TextView totalSeekText;
     private Timer timer;
@@ -94,6 +98,7 @@ public class PlayerActivity extends AppCompatActivity {
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar_player));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
+        artHolder = (ImageView) findViewById(R.id.activity_player_art);
         askUpdate();
         IntentFilter filter = new IntentFilter();
         filter.addAction(ACTION_RECIEVE_SONG);
@@ -121,18 +126,30 @@ public class PlayerActivity extends AppCompatActivity {
     private void setRecyclerView() {
         rv = (RecyclerView) findViewById(R.id.rv_player);
         rv.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new PlayingListAdapter(this, setHeader(), ListSongs.getSongList(this));
+        PlayerDBHandler dbHandler = new PlayerDBHandler(this);
+        songPointShiftingArrayList = new PointShiftingArrayList<>();
+        ArrayList<Song> normalList = dbHandler.getAllPlaybackSongs();
+        songPointShiftingArrayList.copy(normalList);
+        rv.addItemDecoration(new PlayingListDividerItemDecoration(this, 75));
+        songPointShiftingArrayList.setPointOnShifted(dbHandler.getFetchedPlayingPos());
+//        for (int i = 0; i < songPointShiftingArrayList.size(); i++) {
+//            Log.v(TAG, i + "  " + songPointShiftingArrayList.getNewShiftedPoint(i)
+//                    + "  " + songPointShiftingArrayList.getNormalIndex(
+//                    songPointShiftingArrayList.getNewShiftedPoint(i)));
+//        }
+        adapter = new PlayingListAdapter(this, setHeader(), songPointShiftingArrayList, normalList);
         rv.setAdapter(adapter);
     }
 
     private void updateView(Context context, Intent intent) {
         currentSong = new PlayerDBHandler(context)
                 .getSongFromId(intent.getLongExtra("songId", 0));
-        new PlayerLoader(context, (ImageView) findViewById(R.id.activity_player_art))
+        new PlayerLoader(context, artHolder)
                 .execute(currentSong.getAlbumId());
         totalSeekText.setText(currentSong.getDuration());
         seekBar.setMax((int) currentSong.getDurationLong());
         seekBar.setProgress(intent.getIntExtra("seek", 0));
+        adapter.setPointOnShifted(intent.getIntExtra("pos", 0));
         currentSeekText.setText(currentSong.getFormatedTime(
                 intent.getIntExtra("seek", 0)));
         updateSeekBar();
@@ -225,6 +242,27 @@ public class PlayerActivity extends AppCompatActivity {
                 updateShuffle();
             }
         });
+//        artHolder.setOnTouchListener(
+//                new OnSwipeListener(new SwipeInterface() {
+//                    @Override
+//                    public void bottom2top(View v) {
+//                    }
+//
+//                    @Override
+//                    public void left2right(View v) {
+//                        sendBroadcast(new Intent(PlayerService.ACTION_PREV_SONG));
+//                    }
+//
+//                    @Override
+//                    public void right2left(View v) {
+//                        sendBroadcast(new Intent(PlayerService.ACTION_NEXT_SONG));
+//                    }
+//
+//                    @Override
+//                    public void top2bottom(View v) {
+//                        PlayerActivity.super.onBackPressed();
+//                    }
+//                }));
         return header;
     }
 
@@ -239,35 +277,6 @@ public class PlayerActivity extends AppCompatActivity {
 //        timer.cancel();
         pause.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_arrow_white_48dp, null));
     }
-
-//
-//    private void playOrPause() {
-//        try {
-//            if (playerState == PlayerState.PLAYING) {
-//                playerState = PlayerState.PAUSED;
-//                timer.cancel();
-//                pause.setImageDrawable(getResources()
-//                        .getDrawable(R.drawable.ic_play_arrow_white_48dp, null));
-//            } else {
-//                playerState = PlayerState.PLAYING;
-//                timer.schedule(task, 0, 100);
-//                pause.setImageDrawable(getResources()
-//                        .getDrawable(R.drawable.ic_pause_white_48dp, null));
-//            }
-//        } catch (IllegalStateException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    private void updatePlayView() {
-//        if (playerState == PlayerState.PLAYING) {
-//            pause.setImageDrawable(getResources()
-//                    .getDrawable(R.drawable.ic_pause_white_48dp, null));
-//        } else {
-//            pause.setImageDrawable(getResources()
-//                    .getDrawable(R.drawable.ic_play_arrow_white_48dp, null));
-//        }
-//    }
 
     private void updateShuffle() {
         if (preferenceHandler.isShuffleEnabled()) {
