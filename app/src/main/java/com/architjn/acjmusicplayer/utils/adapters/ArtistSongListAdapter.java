@@ -1,5 +1,6 @@
 package com.architjn.acjmusicplayer.utils.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.PopupMenu;
@@ -14,9 +15,8 @@ import android.widget.TextView;
 
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.service.PlayerService;
-import com.architjn.acjmusicplayer.ui.layouts.activity.PlayerActivity;
-import com.architjn.acjmusicplayer.ui.widget.PointShiftingArrayList;
 import com.architjn.acjmusicplayer.utils.ListSongs;
+import com.architjn.acjmusicplayer.utils.Utils;
 import com.architjn.acjmusicplayer.utils.items.Song;
 import com.squareup.picasso.Picasso;
 
@@ -26,18 +26,16 @@ import java.util.ArrayList;
 /**
  * Created by architjn on 28/11/15.
  */
-public class PlayingListAdapter extends RecyclerView.Adapter<PlayingListAdapter.SimpleItemViewHolder> {
+public class ArtistSongListAdapter extends RecyclerView.Adapter<ArtistSongListAdapter.SimpleItemViewHolder> {
 
     private static final int ITEM_VIEW_TYPE_HEADER = 0;
     private static final int ITEM_VIEW_TYPE_ITEM = 1;
-    private static final int ITEM_VIEW_TYPE_UP_NEXT_HEADER = 2;
-    private static final String TAG = "PlayingListAdapter-TAG";
 
-    private PointShiftingArrayList<Song> items;
-    private Context context;
     private View header;
+    private ArrayList<Song> items;
+    private Context context;
 
-    public PlayingListAdapter(Context context, View header, PointShiftingArrayList<Song> items, ArrayList<Song> normalList) {
+    public ArtistSongListAdapter(Context context, View header, ArrayList<Song> items) {
         this.context = context;
         this.header = header;
         this.items = items;
@@ -47,72 +45,41 @@ public class PlayingListAdapter extends RecyclerView.Adapter<PlayingListAdapter.
         return position == 0;
     }
 
-    public boolean isUpNextHeader(int position) {
-        return position == 2;
-    }
-
     @Override
-    public PlayingListAdapter.SimpleItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == ITEM_VIEW_TYPE_HEADER) {
+    public ArtistSongListAdapter.SimpleItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == ITEM_VIEW_TYPE_HEADER)
             return new SimpleItemViewHolder(header);
-        } else if (viewType == ITEM_VIEW_TYPE_UP_NEXT_HEADER) {
-            return new SimpleItemViewHolder(LayoutInflater.from(parent.getContext()).
-                    inflate(R.layout.up_next_header, parent, false));
-        }
         View itemView = LayoutInflater.from(parent.getContext()).
                 inflate(R.layout.songs_list_item, parent, false);
         return new SimpleItemViewHolder(itemView);
     }
 
-    public int dpToPx(int dp) {
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return px;
-    }
-
     @Override
-    public void onBindViewHolder(final PlayingListAdapter.SimpleItemViewHolder holder, final int position) {
-        if (isHeader(position)) {
+    public void onBindViewHolder(final ArtistSongListAdapter.SimpleItemViewHolder holder, final int position) {
+        if (isHeader(position))
             return;
-        } else if (isUpNextHeader(position))
-            return;
-        holder.name.setText(items.get(getPosition(position)).getName());
-        holder.artistName.setText(items.get(getPosition(position)).getArtist());
-        holder.img.setPadding(0, 0, 0, 0);
-        //Load Image in Background
-        if (getPosition(position) == 0) {
-            int padding = 10;
-            holder.img.setPadding(dpToPx(padding), dpToPx(padding), dpToPx(padding), dpToPx(padding));
-            holder.img.setImageDrawable(context.getResources()
-                    .getDrawable(R.drawable.ic_speaker_48dp, null));
-        } else {
-            Picasso.with(context).load(new File(ListSongs.getAlbumArt(context,
-                    items.get(getPosition(position)).getAlbumId()))).resize(dpToPx(50),
-                    dpToPx(50)).centerCrop().into(holder.img);
-        }
-        setOnClick(holder, getPosition(position));
+        holder.name.setText(items.get(position - 1).getName());
+        holder.artistName.setText(items.get(position - 1).getArtist());
+        setAlbumArt(position - 1, holder);
+        setOnClicks(holder, position - 1);
     }
 
-    private void setOnClick(SimpleItemViewHolder holder, final int position) {
+    private void setAlbumArt(int position, SimpleItemViewHolder holder) {
+        Picasso.with(context).load(new File(ListSongs.getAlbumArt(context,
+                items.get(position).getAlbumId()))).resize(dpToPx(50),
+                dpToPx(50)).centerCrop().into(holder.img);
+    }
+
+    private void setOnClicks(final SimpleItemViewHolder holder, final int position) {
         holder.mainView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (position == 0) {
-                    new Thread(new Runnable() {
-                        public void run() {
-                            Intent i = new Intent(PlayerService.ACTION_SEEK_SONG);
-                            i.putExtra("seek", 0);
-                            context.sendBroadcast(i);
-                            ((PlayerActivity) context).seekBar.setProgress(0);
-                        }
-                    }).start();
-                    return;
-                }
                 new Thread(new Runnable() {
                     public void run() {
                         Intent i = new Intent();
-                        i.setAction(PlayerService.ACTION_CHANGE_SONG);
-                        i.putExtra("pos", items.getNormalIndex(position));
+                        i.setAction(PlayerService.ACTION_PLAY_PLAYLIST);
+                        i.putExtra("name", items.get(position).getName());
+                        i.putExtra("pos", position);
                         context.sendBroadcast(i);
                     }
                 }).start();
@@ -122,13 +89,19 @@ public class PlayingListAdapter extends RecyclerView.Adapter<PlayingListAdapter.
             @Override
             public void onClick(View view) {
                 PopupMenu pm = new PopupMenu(context, view);
+                final Intent intent = new Intent();
                 pm.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.popup_song_play:
+                                intent.setAction(PlayerService.ACTION_PLAY_SINGLE);
+                                intent.putExtra("songId", items.get(position).getSongId());
+                                context.sendBroadcast(intent);
                                 break;
                             case R.id.popup_song_addtoplaylist:
+                                new Utils(context).addToPlaylist(((Activity) context),
+                                        items.get(position).getSongId());
                                 break;
                         }
                         return false;
@@ -140,15 +113,15 @@ public class PlayingListAdapter extends RecyclerView.Adapter<PlayingListAdapter.
         });
     }
 
-    private int getPosition(int position) {
-        if (position > 2)
-            return position - 2;
-        return position - 1;
+    public int dpToPx(int dp) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        return px;
     }
 
     @Override
     public int getItemCount() {
-        return items.size() + 2;
+        return items.size() + 1;
     }
 
     public class SimpleItemViewHolder extends RecyclerView.ViewHolder {
@@ -167,18 +140,12 @@ public class PlayingListAdapter extends RecyclerView.Adapter<PlayingListAdapter.
         }
     }
 
-    public void setPointOnShifted(int pointOnShifted) {
-        items.setPointOnShifted(pointOnShifted);
-        notifyDataSetChanged();
-    }
-
     @Override
     public int getItemViewType(int position) {
         if (isHeader(position))
             return ITEM_VIEW_TYPE_HEADER;
-        else if (isUpNextHeader(position))
-            return ITEM_VIEW_TYPE_UP_NEXT_HEADER;
         else
             return ITEM_VIEW_TYPE_ITEM;
     }
+
 }

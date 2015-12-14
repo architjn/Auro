@@ -10,6 +10,10 @@
         android:title="@string/shuffle"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/popup_playlist_rename"
+        android:title="@string/rename"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/popup_playlist_delete"
         android:title="@string/delete"
         app:showAsAction="ifRoom" />

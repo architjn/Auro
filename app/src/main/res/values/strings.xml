@@ -43,4 +43,6 @@
     <string name="cant_play_song">Can\'t play this song</string>
     <string name="nothing_to_play">Nothing to play</string>
     <string name="up_next">Up Next</string>
+    <string name="rename">Rename</string>
+    <string name="songs_uppercase">SONGS</string>
 </resources>

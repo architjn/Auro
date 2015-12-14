@@ -31,6 +31,12 @@
         <activity
             android:name=".ui.layouts.activity.PlayerActivity"
             android:theme="@style/AppTheme.Main" />
+        <activity
+            android:name=".ui.layouts.activity.PlaylistActivity"
+            android:theme="@style/AppTheme.Main" />
+        <activity
+            android:name=".ui.layouts.activity.ArtistActivity"
+            android:theme="@style/AppTheme.Main" />
 
         <service
             android:name=".service.PlayerService"

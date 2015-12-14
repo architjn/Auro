@@ -132,11 +132,6 @@ public class PlayerActivity extends AppCompatActivity {
         songPointShiftingArrayList.copy(normalList);
         rv.addItemDecoration(new PlayingListDividerItemDecoration(this, 75));
         songPointShiftingArrayList.setPointOnShifted(dbHandler.getFetchedPlayingPos());
-//        for (int i = 0; i < songPointShiftingArrayList.size(); i++) {
-//            Log.v(TAG, i + "  " + songPointShiftingArrayList.getNewShiftedPoint(i)
-//                    + "  " + songPointShiftingArrayList.getNormalIndex(
-//                    songPointShiftingArrayList.getNewShiftedPoint(i)));
-//        }
         adapter = new PlayingListAdapter(this, setHeader(), songPointShiftingArrayList, normalList);
         rv.setAdapter(adapter);
     }

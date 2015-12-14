@@ -59,6 +59,15 @@ public class PlaylistDBHelper extends SQLiteOpenHelper {
         this.onCreate(db);
     }
 
+    public void renamePlaylist(String name, int playlistId) {
+        String query = "UPDATE " + TABLE_PLAYLIST + " SET " + PLAYLIST_KEY_NAME
+                + "='" + name + "' WHERE "
+                + PLAYLIST_KEY_ID + "='" + playlistId + "'";
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL(query);
+        db.close();
+    }
+
     public void addSong(int song, int playlistId) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();

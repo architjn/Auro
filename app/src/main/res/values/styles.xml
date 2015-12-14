@@ -4,6 +4,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="actionMenuTextColor">@android:color/white</item>
+        <item name="morphButtonStyle">@style/Widget.MorphButton</item>
         <!--<item name="colorAccent">@color/accent_color</item>-->
     </style>
 
@@ -23,8 +24,6 @@
     </style>
 
     <style name="AppTheme.Splash" parent="AppTheme">
-        <!--<item name="android:fastScrollThumbDrawable">@drawable/ic_datejumper</item>-->
-        <!--<item name="android:fastScrollTrackDrawable">@android:color/transparent</item>-->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>

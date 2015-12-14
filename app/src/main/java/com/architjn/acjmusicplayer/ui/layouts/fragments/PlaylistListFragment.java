@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.Animatable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -16,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.utils.PermissionChecker;
@@ -87,6 +90,14 @@ public class PlaylistListFragment extends Fragment {
     public void listIsEmpty() {
         emptyView.setVisibility(View.VISIBLE);
         rv.setVisibility(View.GONE);
+        ImageView img = ((ImageView) mainView.findViewById(R.id.animation));
+        final Drawable drawable = img.getDrawable();
+        img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((Animatable) drawable).start();
+            }
+        });
     }
 
     public void listNoMoreEmpty() {

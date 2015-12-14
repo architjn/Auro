@@ -21,8 +21,7 @@ public abstract class ColorChangeAnimation extends AsyncTask<Void, Void, Void> {
     private LinearLayout detailHolder;
     private String artPath;
     private Integer colorFrom;
-    private ValueAnimator colorAnimation, colorAnimation1;
-    private Integer bgColor;
+    private ValueAnimator colorAnimation;
 
     public ColorChangeAnimation(Context context, LinearLayout detailHolder, String artPath) {
         this.context = context;
@@ -38,9 +37,9 @@ public abstract class ColorChangeAnimation extends AsyncTask<Void, Void, Void> {
                 new Palette.PaletteAsyncListener() {
                     @Override
                     public void onGenerated(final Palette palette) {
-                        bgColor = palette.getVibrantColor(context.getResources()
-                                .getColor(R.color.colorPrimary));
-                        Integer colorTo = bgColor;
+                        Integer colorTo = palette.getVibrantColor(palette.getDarkVibrantColor(
+                                palette.getDarkMutedColor(palette.getMutedColor(
+                                        context.getResources().getColor(R.color.colorPrimary)))));
                         onColorFetched(colorTo);
                         colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
                         colorAnimation.setDuration(2000);

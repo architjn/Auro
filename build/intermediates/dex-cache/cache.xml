@@ -9,25 +9,11 @@
         <dex dex="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/pre-dexed/release/classes-4bcbb1c5ef45e9ae16514a7a11a6038f0d8a24d3.jar" />
     </item>
     <item
-        jar="/Users/architjn/.gradle/caches/modules-2/files-2.1/com.squareup.picasso/picasso/2.5.3-SNAPSHOT/3187377c740f2db5a8033fad57cae6bbc8f6fa61/picasso-2.5.3-SNAPSHOT.jar"
+        jar="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/exploded-aar/com.sothree.slidinguppanel/library/3.2.0/jars/classes.jar"
         jumboMode="false"
         revision="23.0.1"
-        sha1="3187377c740f2db5a8033fad57cae6bbc8f6fa61">
-        <dex dex="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/pre-dexed/release/picasso-2.5.3-SNAPSHOT-99836de8fddbc881a9965440127b54ef53b0751a.jar" />
-    </item>
-    <item
-        jar="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/exploded-aar/com.android.support/palette-v7/23.1.1/jars/classes.jar"
-        jumboMode="false"
-        revision="23.0.1"
-        sha1="a978650837318cf056bf3383ff02fe7a3b891f20">
-        <dex dex="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/pre-dexed/release/classes-238171d0018209ab51071100fe5b653d64c87f7c.jar" />
-    </item>
-    <item
-        jar="/Applications/adt-bundle-mac-x86_64-20140702/sdk/extras/android/m2repository/com/android/support/support-annotations/23.1.1/support-annotations-23.1.1.jar"
-        jumboMode="false"
-        revision="23.0.1"
-        sha1="8d680ba5a623724d1fb0e81c36a790f023a6cede">
-        <dex dex="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/pre-dexed/release/support-annotations-23.1.1-1425e8117466129c487dee4b7a5a20e3373c427f.jar" />
+        sha1="6ca08eae09a2083fd5b430ce2a1faf86721a46bf">
+        <dex dex="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/pre-dexed/release/classes-0b6236ae673c65fc32687770bbdad508a33859b5.jar" />
     </item>
     <item
         jar="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.1/jars/classes.jar"
@@ -35,6 +21,13 @@
         revision="23.0.1"
         sha1="6cbc7773921fcfedbe55657578f0cbfe614778dc">
         <dex dex="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/pre-dexed/release/classes-ac05bbe5ccebc92b25ab001488ea51ae343d3a1b.jar" />
+    </item>
+    <item
+        jar="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/exploded-aar/com.android.support/cardview-v7/23.1.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="5e412e954a24c5310a459c09870e4e2081aceb03">
+        <dex dex="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/pre-dexed/release/classes-fd6d4635c3b2b464c87bd8931935bed105837327.jar" />
     </item>
     <item
         jar="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/23.1.1/jars/classes.jar"
@@ -51,20 +44,6 @@
         <dex dex="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/pre-dexed/release/classes-aa76b32d017b145798f6b330cd281f30fa570655.jar" />
     </item>
     <item
-        jar="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/exploded-aar/com.android.support/cardview-v7/23.1.1/jars/classes.jar"
-        jumboMode="false"
-        revision="23.0.1"
-        sha1="5e412e954a24c5310a459c09870e4e2081aceb03">
-        <dex dex="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/pre-dexed/release/classes-fd6d4635c3b2b464c87bd8931935bed105837327.jar" />
-    </item>
-    <item
-        jar="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.1/jars/classes.jar"
-        jumboMode="false"
-        revision="23.0.1"
-        sha1="5c5699834e9722f1c288fea2de82725d078ba127">
-        <dex dex="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/pre-dexed/release/classes-af7031b47366dae72ca14713eaff0b2cb7822187.jar" />
-    </item>
-    <item
         jar="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.1/jars/libs/internal_impl-23.1.1.jar"
         jumboMode="false"
         revision="23.0.1"
@@ -79,11 +58,39 @@
         <dex dex="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/pre-dexed/release/library-2.4.0-6d1444936ff966dc241ae611c608ab727f7cffc0.jar" />
     </item>
     <item
-        jar="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/exploded-aar/com.sothree.slidinguppanel/library/3.2.0/jars/classes.jar"
+        jar="/Users/architjn/.gradle/caches/modules-2/files-2.1/com.squareup.picasso/picasso/2.5.3-SNAPSHOT/3187377c740f2db5a8033fad57cae6bbc8f6fa61/picasso-2.5.3-SNAPSHOT.jar"
         jumboMode="false"
         revision="23.0.1"
-        sha1="6ca08eae09a2083fd5b430ce2a1faf86721a46bf">
-        <dex dex="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/pre-dexed/release/classes-0b6236ae673c65fc32687770bbdad508a33859b5.jar" />
+        sha1="3187377c740f2db5a8033fad57cae6bbc8f6fa61">
+        <dex dex="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/pre-dexed/release/picasso-2.5.3-SNAPSHOT-99836de8fddbc881a9965440127b54ef53b0751a.jar" />
+    </item>
+    <item
+        jar="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/exploded-aar/com.android.support/palette-v7/23.1.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="a978650837318cf056bf3383ff02fe7a3b891f20">
+        <dex dex="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/pre-dexed/release/classes-238171d0018209ab51071100fe5b653d64c87f7c.jar" />
+    </item>
+    <item
+        jar="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="5c5699834e9722f1c288fea2de82725d078ba127">
+        <dex dex="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/pre-dexed/release/classes-af7031b47366dae72ca14713eaff0b2cb7822187.jar" />
+    </item>
+    <item
+        jar="/Applications/adt-bundle-mac-x86_64-20140702/sdk/extras/android/m2repository/com/android/support/support-annotations/23.1.1/support-annotations-23.1.1.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="8d680ba5a623724d1fb0e81c36a790f023a6cede">
+        <dex dex="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/pre-dexed/release/support-annotations-23.1.1-1425e8117466129c487dee4b7a5a20e3373c427f.jar" />
+    </item>
+    <item
+        jar="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/exploded-aar/com.wnafee/vector-compat/1.0.5/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="efb6c83d14996769c65f060f81cbb5ab1f64ca75">
+        <dex dex="/Users/architjn/AndroidStudioProjects/amp/app/build/intermediates/pre-dexed/debug/classes-bb2eaf56de573391d3366a47affab02fe0a3813f.jar" />
     </item>
 
 </items>

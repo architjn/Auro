@@ -40,6 +40,8 @@ public class PlayerService extends Service {
     public static final String ACTION_PLAY_SINGLE = "ACTION_PLAY_SINGLE";
     public static final String ACTION_PLAY_ALL_SONGS = "ACTION_PLAY_ALL_SONGS";
     public static final String ACTION_PLAY_ALBUM = "ACTION_PLAY_ALBUM";
+    public static final String ACTION_PLAY_PLAYLIST = "ACTION_PLAY_PLAYLIST";
+    public static final String ACTION_PLAY_ARTIST = "ACTION_PLAY_ARTIST";
     public static final String ACTION_GET_SONG = "ACTION_GET_SONG";
     public static final String ACTION_CHANGE_SONG = "ACTION_CHANGE_SONG";
     public static final String ACTION_SEEK_SONG = "ACTION_SEEK_SONG";
@@ -62,6 +64,8 @@ public class PlayerService extends Service {
         filter.addAction(ACTION_PAUSE_SONG);
         filter.addAction(ACTION_SEEK_SONG);
         filter.addAction(ACTION_CHANGE_SONG);
+        filter.addAction(ACTION_PLAY_PLAYLIST);
+        filter.addAction(ACTION_PLAY_ARTIST);
         registerReceiver(playerServiceBroadcastReceiver, filter);
         return START_STICKY;
     }
@@ -99,6 +103,16 @@ public class PlayerService extends Service {
                 break;
             case ACTION_CHANGE_SONG:
                 musicPlayerHandler.playNextSong(intent.getIntExtra("pos", 0));
+                break;
+            case ACTION_PLAY_PLAYLIST:
+                musicPlayerHandler.playPlaylist(intent.getIntExtra("id", 0),
+                        intent.getIntExtra("pos", 0));
+                updatePlayer();
+                break;
+            case ACTION_PLAY_ARTIST:
+                musicPlayerHandler.playArtistSongs(intent.getStringExtra("name"),
+                        intent.getIntExtra("pos", 0));
+                updatePlayer();
                 break;
         }
     }

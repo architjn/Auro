@@ -32,5 +32,5 @@ dependencies {
     compile 'com.android.support:palette-v7:23.1.1'
     compile 'com.squareup.picasso:picasso:+'
     compile 'com.sothree.slidinguppanel:library:3.2.0'
-    compile 'com.github.carlonzo.stikkyheader:core:0.0.3-SNAPSHOT'
+    compile 'com.wnafee:vector-compat:1.0.5'
 }

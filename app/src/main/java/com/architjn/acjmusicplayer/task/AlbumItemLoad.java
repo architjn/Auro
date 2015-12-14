@@ -8,8 +8,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.graphics.Palette;
-import android.util.DisplayMetrics;
 
+import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.utils.adapters.AlbumListAdapter;
 
 /**
@@ -36,8 +36,10 @@ public class AlbumItemLoad extends AsyncTask<Void, Void, Void> {
                 new Palette.PaletteAsyncListener() {
                     @Override
                     public void onGenerated(final Palette palette) {
-                        Integer colorFrom = Color.parseColor("#ffffff");
-                        Integer colorTo = palette.getVibrantColor(Color.parseColor("#ffffff"));
+                        Integer colorFrom = context.getResources().getColor(R.color.colorPrimary);
+                        Integer colorTo = palette.getVibrantColor(palette.getDarkVibrantColor(
+                                palette.getDarkMutedColor(palette.getMutedColor(
+                                        context.getResources().getColor(R.color.colorPrimary)))));
                         colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
                         colorAnimation.setDuration(800);
                         colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -50,7 +52,7 @@ public class AlbumItemLoad extends AsyncTask<Void, Void, Void> {
                         });
                         colorAnimation.start();
                         try {
-                            Integer colorFrom1 = Color.parseColor("#000000");
+                            Integer colorFrom1 = Color.parseColor("#ffffff");
                             Integer colorTo1 = palette.getVibrantSwatch().getBodyTextColor();
                             colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom1, colorTo1);
                             colorAnimation.setDuration(800);
@@ -74,17 +76,17 @@ public class AlbumItemLoad extends AsyncTask<Void, Void, Void> {
                             colorAnimation.start();
                         } catch (NullPointerException e) {
                             e.printStackTrace();
+                            holder.bottomBg.setBackgroundColor(context.getResources()
+                                    .getColor(R.color.colorPrimary));
                         }
                     }
                 });
-//        bmp = ThumbnailUtils.extractThumbnail(bmp, dpToPx(180), dpToPx(180));
         return null;
     }
 
 
     @Override
     protected void onPostExecute(Void aVoid) {
-//        holder.img.setImageBitmap(bmp);
         super.onPostExecute(aVoid);
     }
 }

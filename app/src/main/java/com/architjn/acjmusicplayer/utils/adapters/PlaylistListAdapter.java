@@ -2,25 +2,29 @@ package com.architjn.acjmusicplayer.utils.adapters;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.architjn.acjmusicplayer.R;
+import com.architjn.acjmusicplayer.service.PlayerService;
 import com.architjn.acjmusicplayer.ui.layouts.activity.MainActivity;
+import com.architjn.acjmusicplayer.ui.layouts.activity.PlaylistActivity;
 import com.architjn.acjmusicplayer.ui.layouts.fragments.PlaylistListFragment;
 import com.architjn.acjmusicplayer.utils.PlaylistDBHelper;
 import com.architjn.acjmusicplayer.utils.items.Playlist;
-import com.architjn.acjmusicplayer.utils.items.Song;
 
 import java.util.ArrayList;
 
@@ -76,12 +80,9 @@ public class PlaylistListAdapter extends RecyclerView.Adapter<PlaylistListAdapte
                     }
                     expand(holder, position);
                 } else {
-                    ArrayList<Song> songList = new PlaylistDBHelper(context).getAllPlaylistSongs(
-                            items.get(position).getPlaylistId());
-                    Log.v(TAG, songList.size() + " << ");
-                    for (int i = 0; i < songList.size(); i++) {
-                        Log.v(TAG, songList.get(i).getName());
-                    }
+                    Intent playlistSongPage = new Intent(context, PlaylistActivity.class);
+                    playlistSongPage.putExtra("id", items.get(position).getPlaylistId());
+                    context.startActivity(playlistSongPage);
                 }
             }
         });
@@ -95,8 +96,12 @@ public class PlaylistListAdapter extends RecyclerView.Adapter<PlaylistListAdapte
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.popup_playlist_play:
+                                playPlaylist(position);
                                 break;
                             case R.id.popup_playlist_shuffle:
+                                break;
+                            case R.id.popup_playlist_rename:
+                                renameDialog(helper, position);
                                 break;
                             case R.id.popup_playlist_delete:
                                 helper.deletePlaylist(items.get(position).getPlaylistId());
@@ -115,7 +120,7 @@ public class PlaylistListAdapter extends RecyclerView.Adapter<PlaylistListAdapte
         holder.playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                playPlaylist(position);
             }
         });
         holder.shuffleButton.setOnClickListener(new View.OnClickListener() {
@@ -124,6 +129,46 @@ public class PlaylistListAdapter extends RecyclerView.Adapter<PlaylistListAdapte
 
             }
         });
+    }
+
+    public void playPlaylist(final int position) {
+        if (items.get(position).getSongCount() != 0)
+            new Thread(new Runnable() {
+                public void run() {
+                    Intent i = new Intent();
+                    i.setAction(PlayerService.ACTION_PLAY_PLAYLIST);
+                    i.putExtra("id", items.get(position).getPlaylistId());
+                    context.sendBroadcast(i);
+                }
+            }).start();
+    }
+
+    private void renameDialog(final PlaylistDBHelper helper, final int position) {
+        final EditText edittext = new EditText(context);
+        AlertDialog.Builder alert = new AlertDialog.Builder(context);
+        alert.setTitle("Rename");
+
+        alert.setView(edittext);
+
+        alert.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                if (edittext.getText().toString().matches("")) {
+                    renameDialog(helper, position);
+                } else {
+                    helper.renamePlaylist(edittext.getText().toString(),
+                            items.get(position).getPlaylistId());
+                    updateNewList(helper.getAllPlaylist());
+                    notifyDataSetChanged();
+                }
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+            }
+        });
+
+        alert.show();
     }
 
     private void expand(SimpleItemViewHolder holder, int position) {

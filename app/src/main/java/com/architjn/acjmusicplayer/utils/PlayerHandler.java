@@ -79,29 +79,24 @@ public class PlayerHandler {
 //        }
     }
 
+    public void playPlaylist(int id, final int currentPlayingPos) throws IOException {
+        PlaylistDBHelper dbHelper = new PlaylistDBHelper(context);
+        stopPlayer();
+        setCurrentPlayingSongs(dbHelper.getAllPlaylistSongs(id));
+        configurePlayer(currentPlayingPos);
+    }
+
+    public void playArtistSongs(String name, int pos) throws IOException {
+        stopPlayer();
+        setCurrentPlayingSongs(ListSongs.getSongsListOfArtist(context, name));
+        configurePlayer(pos);
+    }
 
     public void playAllSongs(long songId) throws IOException {
         stopPlayer();
         setCurrentPlayingSongs(ListSongs.getSongList(context));
         final int songToPlayPos = findForASongInArrayList(songId);
-        setPlayingPos(songToPlayPos);
-        mediaPlayer.reset();
-        mediaPlayer.setDataSource(currentPlayingSongs
-                .get(songToPlayPos).getPath());
-        mediaPlayer.prepare();
-        mediaPlayer.start();
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                try {
-                    playNextSong(getNextSongPosition(songToPlayPos));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Toast.makeText(context, R.string.cant_play_song,
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        configurePlayer(songToPlayPos);
     }
 
     public void playOrStop() {
@@ -128,60 +123,69 @@ public class PlayerHandler {
         }
     }
 
+    public void configurePlayer(final int pos) throws IOException {
+        stopPlayer();
+        setPlayingPos(pos);
+        mediaPlayer.reset();
+        mediaPlayer.setDataSource(currentPlayingSongs
+                .get(pos).getPath());
+        mediaPlayer.prepare();
+        mediaPlayer.start();
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                try {
+                    playNextSong(getNextSongPosition(pos));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
     public void playNextSong(final int nextSongPos) throws IOException {
-        if (nextSongPos < currentPlayingSongs.size()
-                || preferenceHandler.isRepeatAllEnabled()) {
+        if (nextSongPos < currentPlayingSongs.size()) {
             //If there is some song available play it or repeat is enabled.
+            configurePlayer(nextSongPos);
+        } else if (preferenceHandler.isRepeatAllEnabled()) {
+            configurePlayer(0);
+        }
+        service.updatePlayer();
+    }
+
+    public void playPrevSong(int prevSongPos) throws IOException {
+        if ((mediaPlayer.getCurrentPosition() / 1000) <= 2) {
+            int position = prevSongPos;
+            if (prevSongPos == -1 && preferenceHandler.isRepeatAllEnabled()) {
+                //If song pos is more than 0
+                position = getCurrentPlayingSongs().size() - 1;
+            } else
+                position = prevSongPos;
+            final int pos = position;
             stopPlayer();
-            setPlayingPos(nextSongPos);
+            setPlayingPos(pos);
             mediaPlayer.reset();
-            mediaPlayer.setDataSource(currentPlayingSongs
-                    .get(nextSongPos).getPath());
+            mediaPlayer.setDataSource(currentPlayingSongs.get(pos).getPath());
             mediaPlayer.prepare();
             mediaPlayer.start();
-            service.updatePlayer();
             mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mediaPlayer) {
                     try {
-                        playNextSong(getNextSongPosition(nextSongPos));
+                        if (pos == 0 && preferenceHandler.isRepeatAllEnabled()) {
+                            playPrevSong(currentPlayingSongs.size() - 1);
+                        } else if (pos == 0) {
+                            playPrevSong(0);
+                        } else {
+                            playPrevSong(pos - 1);
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
+                        Toast.makeText(context, R.string.cant_play_song,
+                                Toast.LENGTH_SHORT).show();
                     }
                 }
             });
-        }
-    }
-
-    public void playPrevSong(final int prevSongPos) throws IOException {
-        if ((mediaPlayer.getCurrentPosition() / 1000) <= 2) {
-            if (prevSongPos >= 0) {
-                //If song pos is more than 0
-                stopPlayer();
-                setPlayingPos(prevSongPos);
-                mediaPlayer.reset();
-                mediaPlayer.setDataSource(currentPlayingSongs.get(prevSongPos).getPath());
-                mediaPlayer.prepare();
-                mediaPlayer.start();
-                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer mediaPlayer) {
-                        try {
-                            if (prevSongPos == 0 && preferenceHandler.isRepeatAllEnabled()) {
-                                playPrevSong(currentPlayingSongs.size() - 1);
-                            } else if (prevSongPos == 0) {
-                                playPrevSong(0);
-                            } else {
-                                playPrevSong(prevSongPos - 1);
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            Toast.makeText(context, R.string.cant_play_song,
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-            }
         } else {
             mediaPlayer.seekTo(0);
         }
@@ -243,4 +247,5 @@ public class PlayerHandler {
     public void seek(int seek) {
         mediaPlayer.seekTo(seek);
     }
+
 }

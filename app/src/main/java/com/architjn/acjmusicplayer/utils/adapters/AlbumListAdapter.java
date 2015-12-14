@@ -3,7 +3,6 @@ package com.architjn.acjmusicplayer.utils.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -15,9 +14,11 @@ import android.widget.TextView;
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.task.AlbumItemLoad;
 import com.architjn.acjmusicplayer.ui.layouts.activity.AlbumActivity;
+import com.architjn.acjmusicplayer.utils.ListSongs;
 import com.architjn.acjmusicplayer.utils.items.Album;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -75,10 +76,8 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Simp
     }
 
     private void setAlbumArt(int position, SimpleItemViewHolder holder) {
-        final Uri sArtworkUri = Uri
-                .parse("content://media/external/audio/albumart/"
-                        + items.get(position).getAlbumId());
-        Picasso.with(context).load(sArtworkUri).resize(dpToPx(180),
+        Picasso.with(context).load(new File(ListSongs.getAlbumArt(context,
+                items.get(position).getAlbumId()))).resize(dpToPx(180),
                 dpToPx(180)).centerCrop().into(holder.img);
     }
 

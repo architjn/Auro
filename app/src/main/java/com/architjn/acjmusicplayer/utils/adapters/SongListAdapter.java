@@ -5,7 +5,6 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -20,10 +19,12 @@ import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.service.PlayerService;
 import com.architjn.acjmusicplayer.ui.layouts.activity.MainActivity;
 import com.architjn.acjmusicplayer.ui.layouts.fragments.SongsListFragment;
+import com.architjn.acjmusicplayer.utils.ListSongs;
 import com.architjn.acjmusicplayer.utils.Utils;
 import com.architjn.acjmusicplayer.utils.items.Song;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -33,7 +34,7 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.Simple
 
     private ArrayList<Song> items;
     private int selectedSongId = -1;
-    private View selectedView;
+    private SimpleItemViewHolder selectedHolder;
     private Context context;
     private SongsListFragment fragment;
 
@@ -59,19 +60,17 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.Simple
         //Load Image in Background
 //        new SongItemLoader(context, holder, items.get(position).getAlbumId(), dpToPx(50)).execute();
         setAlbumArt(position, holder);
-        if (selectedView != null)
-            selectedView.setBackgroundColor(context.getResources()
+        if (selectedHolder != null)
+            selectedHolder.mainView.setBackgroundColor(context.getResources()
                     .getColor(R.color.appBackground));
         selectedSongId = -1;
-        selectedView = null;
+        selectedHolder = null;
         setOnClicks(holder, position);
     }
 
     private void setAlbumArt(int position, SimpleItemViewHolder holder) {
-        final Uri sArtworkUri = Uri
-                .parse("content://media/external/audio/albumart/"
-                        + items.get(position).getAlbumId());
-        Picasso.with(context).load(sArtworkUri).resize(dpToPx(50),
+        Picasso.with(context).load(new File(ListSongs.getAlbumArt(context,
+                items.get(position).getAlbumId()))).resize(dpToPx(50),
                 dpToPx(50)).centerCrop().into(holder.img);
     }
 
@@ -84,18 +83,18 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.Simple
                     if (selectedSongId == -1) {
                         //nothing was focused
                         holder.mainView.setBackgroundColor(Color.parseColor("#ffffff"));
-                        animateElevation(0, 12, holder.mainView);
-                        selectedView = holder.mainView;
+                        animateElevation(0, 12, holder);
+                        selectedHolder = holder;
                         selectedSongId = position;
                     } else {
                         //something was focused
                         holder.mainView.setBackgroundColor(Color.parseColor("#ffffff"));
-                        animateElevation(0, 12, holder.mainView);
-                        selectedView.setBackgroundColor(context.getResources()
+                        animateElevation(0, 12, holder);
+                        selectedHolder.mainView.setBackgroundColor(context.getResources()
                                 .getColor(R.color.appBackground));
-                        animateElevation(12, 0, selectedView);
+                        animateElevation(12, 0, selectedHolder);
                         selectedSongId = position;
-                        selectedView = holder.mainView;
+                        selectedHolder = holder;
                     }
                 } else {
                     //focus is clicked again
@@ -172,7 +171,7 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.Simple
         }
     }
 
-    private void animateElevation(int from, int to, final View view) {
+    private void animateElevation(int from, int to, final SimpleItemViewHolder holder) {
         Integer elevationFrom = from;
         Integer elevationTo = to;
         ValueAnimator colorAnimation =
@@ -182,7 +181,7 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.Simple
                 new ValueAnimator.AnimatorUpdateListener() {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animator) {
-                        view.setElevation(
+                        holder.mainView.setElevation(
                                 (Integer) animator.getAnimatedValue());
                     }
 
@@ -191,21 +190,21 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.Simple
     }
 
     public void recyclerScrolled() {
-        if (selectedView != null && selectedSongId != -1) {
-            animateElevation(12, 0, selectedView);
+        if (selectedHolder != null && selectedSongId != -1) {
+            animateElevation(12, 0, selectedHolder);
             selectedSongId = -1;
-            selectedView.setBackgroundColor(context.getResources()
+            selectedHolder.mainView.setBackgroundColor(context.getResources()
                     .getColor(R.color.appBackground));
         }
     }
 
     public void onBackPressed() {
         if (selectedSongId != -1) {
-            animateElevation(12, 0, selectedView);
-            selectedView.setBackgroundColor(context.getResources()
+            animateElevation(12, 0, selectedHolder);
+            selectedHolder.mainView.setBackgroundColor(context.getResources()
                     .getColor(R.color.appBackground));
             selectedSongId = -1;
-            selectedView = null;
+            selectedHolder = null;
         } else {
             if ((fragment.getActivity()) != null)
                 ((MainActivity) fragment.getActivity()).killActivity();
