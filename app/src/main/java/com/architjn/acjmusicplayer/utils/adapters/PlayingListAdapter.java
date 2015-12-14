@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.service.PlayerService;
@@ -100,19 +99,24 @@ public class PlayingListAdapter extends RecyclerView.Adapter<PlayingListAdapter.
             @Override
             public void onClick(View view) {
                 if (position == 0) {
-
-                    Intent i = new Intent(PlayerService.ACTION_SEEK_SONG);
-                    i.putExtra("seek", 0);
-                    context.sendBroadcast(i);
-                    ((PlayerActivity) context).seekBar.setProgress(0);
+                    new Thread(new Runnable() {
+                        public void run() {
+                            Intent i = new Intent(PlayerService.ACTION_SEEK_SONG);
+                            i.putExtra("seek", 0);
+                            context.sendBroadcast(i);
+                            ((PlayerActivity) context).seekBar.setProgress(0);
+                        }
+                    }).start();
                     return;
                 }
-                Toast.makeText(context, "Working on it", Toast.LENGTH_SHORT).show();
-//                Intent i = new Intent();
-//                i.setAction(PlayerService.ACTION_CHANGE_SONG);
-//                i.putExtra("pos", items.getNormalIndex(originalPos));
-//                context.sendBroadcast(i);
-//                setPointOnShifted(items.getNormalIndex(originalPos));
+                new Thread(new Runnable() {
+                    public void run() {
+                        Intent i = new Intent();
+                        i.setAction(PlayerService.ACTION_CHANGE_SONG);
+                        i.putExtra("pos", items.getNormalIndex(position));
+                        context.sendBroadcast(i);
+                    }
+                }).start();
             }
         });
         holder.menu.setOnClickListener(new View.OnClickListener() {

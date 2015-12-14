@@ -24,10 +24,14 @@ public class PointShiftingArrayList<T> extends ArrayList<T> {
     }
 
     public int getNormalIndex(int index) {
-        int newIndex = index - pointOnShifted;
-        if (newIndex < 0)
-            newIndex = size() + newIndex;
+        int newIndex = index + pointOnShifted;
+        if (newIndex >= size())
+            newIndex -= size();
         return newIndex;
+    }
+
+    public T getNormal(int index) {
+        return super.get(index);
     }
 
     public void setPointOnShifted(int pointOnShifted) {

@@ -24,20 +24,25 @@ public class PlayingListDividerItemDecoration extends RecyclerView.ItemDecoratio
 
         int childCount = parent.getChildCount();
         for (int i = 0; i < childCount; i++) {
-            if (i == 1)
+            if (i == 1) {
                 left = parent.getPaddingLeft();
-            else
+                draw(left, right, parent, c, i);
+            } else if (i != 2) {
                 left = parent.getPaddingLeft() + (size * 2);
-            View child = parent.getChildAt(i);
-
-            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
-
-            int top = child.getBottom() + params.bottomMargin;
-            int bottom = top + mDivider.getIntrinsicHeight();
-
-            mDivider.setBounds(left, top, right, bottom);
-            if (i != 2)
-                mDivider.draw(c);
+                draw(left, right, parent, c, i);
+            }
         }
+    }
+
+    private void draw(int left, int right, RecyclerView parent, Canvas c, int i) {
+        View child = parent.getChildAt(i);
+
+        RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
+
+        int top = child.getBottom() + params.bottomMargin;
+        int bottom = top + mDivider.getIntrinsicHeight();
+
+        mDivider.setBounds(left, top, right, bottom);
+        mDivider.draw(c);
     }
 }

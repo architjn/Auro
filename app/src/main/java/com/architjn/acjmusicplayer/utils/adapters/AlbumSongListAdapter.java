@@ -52,11 +52,15 @@ public class AlbumSongListAdapter extends RecyclerView.Adapter<AlbumSongListAdap
         holder.mainView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent();
-                i.setAction(PlayerService.ACTION_PLAY_ALBUM);
-                i.putExtra("songPos", position);
-                i.putExtra("albumId", items.get(position).getAlbumId());
-                context.sendBroadcast(i);
+                new Thread(new Runnable() {
+                    public void run() {
+                        Intent i = new Intent();
+                        i.setAction(PlayerService.ACTION_PLAY_ALBUM);
+                        i.putExtra("songPos", position);
+                        i.putExtra("albumId", items.get(position).getAlbumId());
+                        context.sendBroadcast(i);
+                    }
+                }).start();
             }
         });
         holder.menu.setOnClickListener(new View.OnClickListener() {
