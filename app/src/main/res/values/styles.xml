@@ -4,7 +4,6 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="actionMenuTextColor">@android:color/white</item>
-        <item name="morphButtonStyle">@style/Widget.MorphButton</item>
         <!--<item name="colorAccent">@color/accent_color</item>-->
     </style>
 

@@ -45,4 +45,6 @@
     <string name="up_next">Up Next</string>
     <string name="rename">Rename</string>
     <string name="songs_uppercase">SONGS</string>
+    <string name="api">911da172e486f9339ebc82b65ee89993</string>
+    <string name="artist_fetch_url">http://ws.audioscrobbler.com/2.0/?method=artist.getinfo</string>
 </resources>

@@ -2,9 +2,11 @@ package com.architjn.acjmusicplayer.utils.adapters;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -21,9 +23,14 @@ import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.ui.layouts.activity.ArtistActivity;
 import com.architjn.acjmusicplayer.ui.layouts.activity.MainActivity;
 import com.architjn.acjmusicplayer.ui.layouts.fragments.ArtistListFragment;
+import com.architjn.acjmusicplayer.utils.ArtistImgHandler;
 import com.architjn.acjmusicplayer.utils.ArtistSubListSpacesItemDecoration;
+import com.architjn.acjmusicplayer.utils.ImageConverter;
 import com.architjn.acjmusicplayer.utils.items.Artist;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -57,10 +64,9 @@ public class ArtistsListAdapter extends RecyclerView.Adapter<ArtistsListAdapter.
     @Override
     public void onBindViewHolder(final ArtistsListAdapter.SimpleItemViewHolder holder,
                                  final int position) {
-        holder.img.setImageDrawable(new ColorDrawable(0xFFFFFFFF));
         holder.name.setText(items.get(position).getArtistName());
-//        Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(),R.drawable.circularimage);
-//        Bitmap circularBitmap = ImageConverter.getRoundedCornerBitmap(bitmap, 100);
+        holder.img.setImageDrawable(null);
+        getArtistImg(holder, position);
         holder.songCount.setText(context.getResources().getString(R.string.songs)
                 + " " + items.get(position).getNumberOfSongs() + " . "
                 + context.getResources().getString(R.string.albums) + " "
@@ -109,6 +115,26 @@ public class ArtistsListAdapter extends RecyclerView.Adapter<ArtistsListAdapter.
         holder.menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+            }
+        });
+    }
+
+    public void setImageToView(String url, final SimpleItemViewHolder holder) {
+        Picasso.with(context).load(new File(url)).into(new Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                Bitmap circularBitmap = ImageConverter.getRoundedCornerBitmap(bitmap, 100);
+                holder.img.setImageBitmap(circularBitmap);
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
+
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
 
             }
         });
@@ -214,6 +240,29 @@ public class ArtistsListAdapter extends RecyclerView.Adapter<ArtistsListAdapter.
         }
         extendedAdapter = new ArtistSubListAdapter(context, items.get(position).getArtistId());
         expandedHolder.rv.setAdapter(extendedAdapter);
+    }
+
+    public void getArtistImg(final SimpleItemViewHolder holder, int position) {
+        ArtistImgHandler imgHandler = new ArtistImgHandler(context) {
+            @Override
+            public void onDownloadComplete(final String url) {
+                if (url != null)
+                    ((Activity) context).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Picasso.with(context).load(new File(url)).into(holder.img);
+                        }
+                    });
+            }
+        };
+        String path = imgHandler.getArtistImgFromDB("name");
+        if (path != null && !path.matches("")) {
+            setImageToView(path, holder);
+        } else {
+            String urlIfAny = imgHandler.getArtistArtWork(items.get(position).getArtistName(), position);
+            if (urlIfAny != null)
+                setImageToView(urlIfAny, holder);
+        }
     }
 
     public class SimpleItemViewHolder extends RecyclerView.ViewHolder {
