@@ -30,6 +30,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -51,9 +53,15 @@ public abstract class FetchArtistArtWork extends AsyncTask<Void, Void, Void> {
         this.context = context;
         this.name = name;
         this.random = random;
+        if (name.matches("<unknown>"))
+            this.cancel(true);
         StringBuilder builder = new StringBuilder();
         builder.append(context.getResources().getString(R.string.artist_fetch_url));
-        builder.append("&artist=" + name.replace(" ", "+"));
+        try {
+            builder.append("&artist=" + URLEncoder.encode(name, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         builder.append("&api_key=" + context.getResources().getString(R.string.api));
         builder.append("&format=json");
         this.url = builder.toString();

@@ -3,6 +3,7 @@ package com.architjn.acjmusicplayer.utils.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -14,7 +15,6 @@ import android.widget.TextView;
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.task.AlbumItemLoad;
 import com.architjn.acjmusicplayer.ui.layouts.activity.AlbumActivity;
-import com.architjn.acjmusicplayer.utils.ListSongs;
 import com.architjn.acjmusicplayer.utils.items.Album;
 import com.squareup.picasso.Picasso;
 
@@ -27,6 +27,7 @@ import java.util.ArrayList;
 public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.SimpleItemViewHolder> {
     private static final int ITEM_VIEW_TYPE_HEADER = 0;
     private static final int ITEM_VIEW_TYPE_ITEM = 1;
+    private static final String TAG = "AlbumListAdapter-TAG";
 
     private ArrayList<Album> items;
     private Context context;
@@ -59,11 +60,9 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Simp
             return;
         }
         holder.bottomBg.setBackgroundColor(Color.parseColor("#ffffff"));
+        setArt(holder, position - 1);
         holder.name.setText(items.get(position - 1).getAlbumTitle());
         holder.artist.setText(items.get(position - 1).getAlbumArtist());
-
-        new AlbumItemLoad(context, items.get(position - 1).getAlbumArtPath(), holder).execute();
-        setAlbumArt(position - 1, holder);
         holder.mainView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -75,10 +74,24 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Simp
         });
     }
 
+    private void setArt(SimpleItemViewHolder holder, int position) {
+        if (items.get(position).getAlbumArtPath() != null) {
+            new AlbumItemLoad(context, items.get(position).getAlbumArtPath(), holder).execute();
+            setAlbumArt(position, holder);
+        } else {
+            int colorPrimary = context.getResources()
+                    .getColor(R.color.colorPrimary);
+            holder.img.setImageDrawable(new ColorDrawable(colorPrimary));
+            holder.bottomBg.setBackgroundColor(colorPrimary);
+        }
+    }
+
     private void setAlbumArt(int position, SimpleItemViewHolder holder) {
-        Picasso.with(context).load(new File(ListSongs.getAlbumArt(context,
-                items.get(position).getAlbumId()))).resize(dpToPx(180),
-                dpToPx(180)).centerCrop().into(holder.img);
+        String art = items.get(position).getAlbumArtPath();
+        if (art != null)
+            Picasso.with(context).load(new File(art)).resize(dpToPx(180),
+                    dpToPx(180)).centerCrop().into(holder.img);
+        else Picasso.with(context).load(R.drawable.default_art).into(holder.img);
     }
 
     public int dpToPx(int dp) {

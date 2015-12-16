@@ -32,29 +32,33 @@ public abstract class ColorChangeAnimation extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-        Bitmap bmp = BitmapFactory.decodeFile(artPath);
-        Palette.generateAsync(bmp,
-                new Palette.PaletteAsyncListener() {
-                    @Override
-                    public void onGenerated(final Palette palette) {
-                        Integer colorTo = palette.getVibrantColor(palette.getDarkVibrantColor(
-                                palette.getDarkMutedColor(palette.getMutedColor(
-                                        context.getResources().getColor(R.color.colorPrimary)))));
-                        onColorFetched(colorTo);
-                        colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-                        colorAnimation.setDuration(2000);
-                        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        try {
+            Bitmap bmp = BitmapFactory.decodeFile(artPath);
+            Palette.generateAsync(bmp,
+                    new Palette.PaletteAsyncListener() {
+                        @Override
+                        public void onGenerated(final Palette palette) {
+                            Integer colorTo = palette.getVibrantColor(palette.getDarkVibrantColor(
+                                    palette.getDarkMutedColor(palette.getMutedColor(
+                                            context.getResources().getColor(R.color.colorPrimary)))));
+                            onColorFetched(colorTo);
+                            colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+                            colorAnimation.setDuration(2000);
+                            colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 
-                            @Override
-                            public void onAnimationUpdate(ValueAnimator animator) {
-                                detailHolder.setBackgroundColor((Integer) animator.getAnimatedValue());
-                            }
+                                @Override
+                                public void onAnimationUpdate(ValueAnimator animator) {
+                                    detailHolder.setBackgroundColor((Integer) animator.getAnimatedValue());
+                                }
 
-                        });
-                        colorAnimation.start();
+                            });
+                            colorAnimation.start();
+                        }
                     }
-                }
-        );
+            );
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 

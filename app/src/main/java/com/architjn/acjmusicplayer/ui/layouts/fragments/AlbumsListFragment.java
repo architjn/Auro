@@ -2,24 +2,33 @@ package com.architjn.acjmusicplayer.ui.layouts.fragments;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.architjn.acjmusicplayer.R;
+import com.architjn.acjmusicplayer.task.AlbumItemLoad;
+import com.architjn.acjmusicplayer.ui.layouts.activity.AlbumActivity;
 import com.architjn.acjmusicplayer.ui.layouts.activity.MainActivity;
 import com.architjn.acjmusicplayer.utils.AlbumListSpacesItemDecoration;
 import com.architjn.acjmusicplayer.utils.ListSongs;
 import com.architjn.acjmusicplayer.utils.PermissionChecker;
 import com.architjn.acjmusicplayer.utils.adapters.AlbumListAdapter;
 import com.architjn.acjmusicplayer.utils.items.Album;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -27,6 +36,7 @@ import java.util.ArrayList;
  */
 public class AlbumsListFragment extends Fragment {
 
+    private static final String TAG = "AlbumsListFragment-TAG";
     private Context context;
     private View mainView;
     private RecyclerView gv;
@@ -38,6 +48,7 @@ public class AlbumsListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_albums,
                 container, false);
         mainView = view;
+        System.gc();
         context = mainView.getContext();
         initViews();
         return view;
@@ -66,22 +77,77 @@ public class AlbumsListFragment extends Fragment {
     }
 
     private void setList() {
-        ArrayList<Album> albumList = ListSongs.getAlbumList(context);
-        final GridLayoutManager gridLayoutManager = new GridLayoutManager(mainView.getContext(), 2);
-        gridLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        gridLayoutManager.scrollToPosition(0);
-        gv.setLayoutManager(gridLayoutManager);
-        gv.addItemDecoration(new AlbumListSpacesItemDecoration(2));
-        View header = LayoutInflater.from(context).inflate(
-                R.layout.album_list_header, gv, false);
-        adapter = new AlbumListAdapter(mainView.getContext(), albumList, header);
-        gv.setAdapter(adapter);
-        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+        new Thread(new Runnable() {
+            public void run() {
+                final ArrayList<Album> albumList = ListSongs.getAlbumList(context);
+                final GridLayoutManager gridLayoutManager = new GridLayoutManager(mainView.getContext(), 2);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        gridLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                        gridLayoutManager.scrollToPosition(0);
+                        gv.setLayoutManager(gridLayoutManager);
+                        gv.addItemDecoration(new AlbumListSpacesItemDecoration(2));
+                        final View header = LayoutInflater.from(context).inflate(
+                                R.layout.album_list_header, gv, false);
+                        Album lastAddedAlbum = ListSongs.getLastAddedAlbum(context);
+                        setHeaderView(lastAddedAlbum, header);
+                        adapter = new AlbumListAdapter(mainView.getContext(), albumList, header);
+                        gv.setAdapter(adapter);
+                    }
+                });
+                gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                    @Override
+                    public int getSpanSize(int position) {
+                        return adapter.isHeader(position) ? gridLayoutManager.getSpanCount() : 1;
+                    }
+                });
+            }
+        }).start();
+    }
+
+    private void setHeaderView(final Album lastAddedAlbum, View header) {
+        setArt(header, lastAddedAlbum);
+        ((TextView) header.findViewById(R.id.album_list_long_name))
+                .setText(lastAddedAlbum.getAlbumTitle());
+        ((TextView) header.findViewById(R.id.album_list_long_artist))
+                .setText(lastAddedAlbum.getAlbumArtist());
+        header.findViewById(R.id.album_list_long_view).setOnClickListener(new View.OnClickListener() {
             @Override
-            public int getSpanSize(int position) {
-                return adapter.isHeader(position) ? gridLayoutManager.getSpanCount() : 1;
+            public void onClick(View view) {
+                Intent i = new Intent(context, AlbumActivity.class);
+                i.putExtra("albumName", lastAddedAlbum.getAlbumTitle());
+                i.putExtra("albumId", lastAddedAlbum.getAlbumId());
+                context.startActivity(i);
             }
         });
+    }
+
+    private void setArt(View header, final Album lastAddedAlbum) {
+        if (lastAddedAlbum.getAlbumArtPath() != null) {
+            new AlbumItemLoad(context, lastAddedAlbum.getAlbumArtPath(), header).execute();
+            setAlbumArt(lastAddedAlbum, header);
+        } else {
+            int colorPrimary = context.getResources()
+                    .getColor(R.color.colorPrimary);
+            ((ImageView) header.findViewById(R.id.album_grid_header_img)).setImageDrawable(new ColorDrawable(colorPrimary));
+            header.findViewById(R.id.album_grid_header_bg).setBackgroundColor(colorPrimary);
+        }
+    }
+
+    private void setAlbumArt(Album lastAddedAlbum, View header) {
+        String art = lastAddedAlbum.getAlbumArtPath();
+        if (art != null)
+            Picasso.with(context).load(new File(art)).resize(dpToPx(180),
+                    dpToPx(180)).centerCrop().into((ImageView) header.findViewById(R.id.album_grid_header_img));
+        else
+            Picasso.with(context).load(R.drawable.default_art).into((ImageView) header.findViewById(R.id.album_grid_header_img));
+    }
+
+    public int dpToPx(int dp) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        return px;
     }
 
     @Override

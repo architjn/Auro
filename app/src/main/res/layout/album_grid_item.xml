@@ -14,6 +14,7 @@
         android:id="@+id/album_list_bottom"
         android:layout_width="180dp"
         android:layout_height="70dp"
+        android:background="@color/white"
         android:orientation="vertical"
         android:padding="13dp">
 
@@ -23,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp"
             android:singleLine="true"
-            android:textColor="#fff"
+            android:textColor="@color/album_grid_name_default"
             android:textSize="16sp" />
 
         <TextView
@@ -31,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
-            android:textColor="#e5e5e5"
+            android:textColor="@color/album_grid_artist_default"
             android:textSize="13sp" />
     </LinearLayout>
 </LinearLayout>

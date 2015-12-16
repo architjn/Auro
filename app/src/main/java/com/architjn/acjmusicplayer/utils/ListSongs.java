@@ -20,8 +20,9 @@ public class ListSongs {
     public static ArrayList<Album> getAlbumList(Context context) {
         final ArrayList<Album> albumList = new ArrayList<>();
         System.gc();
+        final String orderBy = MediaStore.Audio.Albums.ALBUM;
         Cursor musicCursor = context.getContentResolver().
-                query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, null, null, null, null);
+                query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, null, null, null, orderBy);
 
         if (musicCursor != null && musicCursor.moveToFirst()) {
             //get columns
@@ -46,6 +47,49 @@ public class ListSongs {
             while (musicCursor.moveToNext());
         }
         return albumList;
+    }
+
+    public static Album getLastAddedAlbum(Context context) {
+        System.gc();
+        final String where = MediaStore.Audio.Media.IS_MUSIC + "=1";
+        final String orderBy = MediaStore.Audio.Media.DATE_ADDED + " DESC LIMIT 1";
+        Cursor musicCursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                null, where, null, orderBy);
+        if (musicCursor != null && musicCursor.moveToFirst()) {
+            int albumColumn = musicCursor.getColumnIndex
+                    (MediaStore.Audio.Media.ALBUM_ID);
+            long albumId = musicCursor.getLong(albumColumn);
+            return getAlbumFromId(context, albumId);
+        }
+        return null;
+    }
+
+    public static Album getAlbumFromId(Context context, long albumId) {
+        System.gc();
+        final String where = MediaStore.Audio.Albums._ID + "='" + albumId + "'";
+        Cursor musicCursor = context.getContentResolver().
+                query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, null, where, null, null);
+
+        if (musicCursor != null && musicCursor.moveToFirst()) {
+            //get columns
+            int titleColumn = musicCursor.getColumnIndex
+                    (android.provider.MediaStore.Audio.Albums.ALBUM);
+            int idColumn = musicCursor.getColumnIndex
+                    (android.provider.MediaStore.Audio.Albums._ID);
+            int artistColumn = musicCursor.getColumnIndex
+                    (android.provider.MediaStore.Audio.Albums.ARTIST);
+            int numOfSongsColumn = musicCursor.getColumnIndex
+                    (android.provider.MediaStore.Audio.Albums.NUMBER_OF_SONGS);
+            int albumArtColumn = musicCursor.getColumnIndex
+                    (android.provider.MediaStore.Audio.Albums.ALBUM_ART);
+            //add albums to list
+            return new Album(musicCursor.getLong(idColumn),
+                    musicCursor.getString(titleColumn),
+                    musicCursor.getString(artistColumn),
+                    false, musicCursor.getString(albumArtColumn),
+                    musicCursor.getInt(numOfSongsColumn));
+        }
+        return null;
     }
 
     public static ArrayList<Artist> getArtistList(Context context) {
@@ -118,7 +162,6 @@ public class ListSongs {
     }
 
     public static Song getSong(Context context, long songId) {
-        ArrayList<Song> songList = new ArrayList<>();
         System.gc();
         final String where = MediaStore.Audio.Media.IS_MUSIC + "=1 AND "
                 + MediaStore.Audio.Media._ID + "='" + songId + "'";

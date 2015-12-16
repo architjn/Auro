@@ -11,4 +11,7 @@
     <dimen name="parallax_label_bg_height">100dp</dimen>
     <dimen name="cardview_compat_inset_shadow">1dp</dimen>
     <dimen name="controller_button_size">28dp</dimen>
+    <dimen name="noti_big_img">130dp</dimen>
+    <dimen name="noti_big_height">130dp</dimen>
+    <dimen name="noti_button_height">45dp</dimen>
 </resources>

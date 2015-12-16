@@ -250,7 +250,8 @@ public class ArtistsListAdapter extends RecyclerView.Adapter<ArtistsListAdapter.
                     ((Activity) context).runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Picasso.with(context).load(new File(url)).into(holder.img);
+//                            Picasso.with(context).load(new File(url)).into(holder.img);
+                            setImageToView(url, holder);
                         }
                     });
             }

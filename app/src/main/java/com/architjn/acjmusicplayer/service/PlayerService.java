@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.ui.layouts.activity.PlayerActivity;
+import com.architjn.acjmusicplayer.utils.NotificationHandler;
 import com.architjn.acjmusicplayer.utils.PlayerHandler;
 
 import java.io.IOException;
@@ -43,17 +44,21 @@ public class PlayerService extends Service {
     public static final String ACTION_PLAY_PLAYLIST = "ACTION_PLAY_PLAYLIST";
     public static final String ACTION_PLAY_ARTIST = "ACTION_PLAY_ARTIST";
     public static final String ACTION_GET_SONG = "ACTION_GET_SONG";
+    public static final String ACTION_NOTI_CLICK = "ACTION_NOTI_CLICK";
+    public static final String ACTION_NOTI_REMOVE = "ACTION_NOTI_REMOVE";
     public static final String ACTION_CHANGE_SONG = "ACTION_CHANGE_SONG";
     public static final String ACTION_SEEK_SONG = "ACTION_SEEK_SONG";
     public static final String ACTION_NEXT_SONG = "ACTION_NEXT_SONG";
     public static final String ACTION_PREV_SONG = "ACTION_PREV_SONG";
     public static final String ACTION_PAUSE_SONG = "ACTION_PAUSE_SONG";
 
+    private NotificationHandler notificationHandler;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         context = this;
-        musicPlayerHandler = new PlayerHandler(context, this);
+        if (musicPlayerHandler == null)
+            musicPlayerHandler = new PlayerHandler(context, this);
         IntentFilter filter = new IntentFilter();
         filter.addAction(ACTION_PLAY_SINGLE);
         filter.addAction(ACTION_PLAY_ALL_SONGS);
@@ -66,11 +71,14 @@ public class PlayerService extends Service {
         filter.addAction(ACTION_CHANGE_SONG);
         filter.addAction(ACTION_PLAY_PLAYLIST);
         filter.addAction(ACTION_PLAY_ARTIST);
+        filter.addAction(ACTION_NOTI_CLICK);
+        filter.addAction(ACTION_NOTI_REMOVE);
         registerReceiver(playerServiceBroadcastReceiver, filter);
-        return START_STICKY;
+        notificationHandler = new NotificationHandler(context, this);
+        return START_NOT_STICKY;
     }
 
-    private void handleBroadcastReceived(Context context, Intent intent) throws IOException {
+    private void handleBroadcastReceived(Context context, final Intent intent) throws IOException {
         switch (intent.getAction()) {
             case ACTION_PLAY_SINGLE:
                 musicPlayerHandler.playSingleSong(intent.getLongExtra("songId", 0));
@@ -86,7 +94,11 @@ public class PlayerService extends Service {
                 updatePlayer();
                 break;
             case ACTION_GET_SONG:
-                updatePlayer();
+                try {
+                    updatePlayer();
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    e.printStackTrace();
+                }
                 break;
             case ACTION_NEXT_SONG:
                 musicPlayerHandler.playNextSong(musicPlayerHandler.getCurrentPlayingPos() + 1);
@@ -96,7 +108,7 @@ public class PlayerService extends Service {
                 updatePlayer();
                 break;
             case ACTION_PAUSE_SONG:
-                musicPlayerHandler.playOrStop();
+                musicPlayerHandler.playOrStop(notificationHandler);
                 break;
             case ACTION_SEEK_SONG:
                 musicPlayerHandler.seek(intent.getIntExtra("seek", 0));
@@ -114,6 +126,14 @@ public class PlayerService extends Service {
                         intent.getIntExtra("pos", 0));
                 updatePlayer();
                 break;
+            case ACTION_NOTI_CLICK:
+                Intent i = new Intent(context, PlayerActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+                break;
+            case ACTION_NOTI_REMOVE:
+                notificationHandler.setNotificationActive(false);
+                break;
         }
     }
 
@@ -126,6 +146,17 @@ public class PlayerService extends Service {
         i.putExtra("seek", musicPlayerHandler.getMediaPlayer().getCurrentPosition());
         i.putExtra("pos", musicPlayerHandler.getCurrentPlayingPos());
         sendBroadcast(i);
+        updateNotificationPlayer();
+    }
+
+    private void updateNotificationPlayer() {
+        if (!notificationHandler.isNotificationActive())
+            notificationHandler.setNotificationPlayer(false);
+        notificationHandler.changeNotificationDetails(musicPlayerHandler
+                .getCurrentPlayingSong().getName(), musicPlayerHandler
+                .getCurrentPlayingSong().getArtist(), musicPlayerHandler
+                .getCurrentPlayingSong().getAlbumId(), musicPlayerHandler
+                .getMediaPlayer().isPlaying());
     }
 
     @Nullable

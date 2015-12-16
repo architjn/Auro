@@ -13,6 +13,8 @@ public class PointShiftingArrayList<T> extends ArrayList<T> {
     }
 
     public int getNewShiftedPoint(int index) {
+        if (size() == 0)
+            return 0;
         int newIndex = index + pointOnShifted;
         if (newIndex != size() - 1) {
             if (newIndex >= size() - 1)

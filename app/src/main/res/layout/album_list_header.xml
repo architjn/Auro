@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/album_list_long_view"
     android:layout_width="500dp"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
     <ImageView
+        android:id="@+id/album_grid_header_img"
         android:layout_width="match_parent"
         android:layout_height="180dp"
         android:layout_weight="1"
         android:src="#000" />
 
     <LinearLayout
+        android:id="@+id/album_grid_header_bg"
         android:layout_width="match_parent"
         android:layout_height="180dp"
         android:layout_weight="1"
-        android:background="#ff653e"
         android:orientation="vertical"
         android:paddingTop="10dp">
 
@@ -33,14 +33,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:singleLine="true"
-                android:textColor="#fff" />
+                android:textColor="@color/white"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/album_list_long_artist"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
-                android:textColor="#fff" />
+                android:textColor="@color/light_grey"
+                android:textSize="14sp" />
         </LinearLayout>
 
         <LinearLayout

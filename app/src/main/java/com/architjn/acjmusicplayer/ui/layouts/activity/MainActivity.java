@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
         setPlayer();
         songFragment = new SongsListFragment();
         fragmentSwitcher(songFragment, 0, FragmentName.Songs);
+        sendBroadcast(new Intent(PlayerService.ACTION_GET_SONG));
     }
 
     private void init() {
@@ -222,8 +224,20 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
 
         if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
-            drawerLayout.closeDrawer(Gravity.LEFT);
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    drawerLayout.closeDrawer(Gravity.LEFT);
+                }
+            }, 200);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(br);
     }
 
     public void killActivity() {

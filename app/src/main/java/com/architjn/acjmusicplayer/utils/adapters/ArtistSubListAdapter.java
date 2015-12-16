@@ -58,36 +58,40 @@ public class ArtistSubListAdapter extends RecyclerView.Adapter<ArtistSubListAdap
     }
 
     private void setAlbumArt(final int position, final SimpleItemViewHolder holder) {
-        Picasso.with(context).load(new File(ListSongs.getAlbumArt(context,
-                items.get(position).getAlbumId()))).resize(dpToPx(50),
-                dpToPx(50)).centerCrop().into(new Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                holder.img.setImageBitmap(bitmap);
-                Palette.generateAsync(bitmap,
-                        new Palette.PaletteAsyncListener() {
-                            @Override
-                            public void onGenerated(final Palette palette) {
-                                holder.nameHolder.setBackgroundColor(palette.getVibrantColor(
-                                        palette.getDarkVibrantColor(
-                                                palette.getDarkMutedColor(palette.getMutedColor(
-                                                        context.getResources()
-                                                                .getColor(R.color.colorPrimary))))));
+        String path = ListSongs.getAlbumArt(context,
+                items.get(position).getAlbumId());
+        if (path != null)
+            Picasso.with(context).load(new File(path)).resize(dpToPx(50),
+                    dpToPx(50)).centerCrop().into(new Target() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                    holder.img.setImageBitmap(bitmap);
+                    Palette.generateAsync(bitmap,
+                            new Palette.PaletteAsyncListener() {
+                                @Override
+                                public void onGenerated(final Palette palette) {
+                                    holder.nameHolder.setBackgroundColor(palette.getVibrantColor(
+                                            palette.getDarkVibrantColor(
+                                                    palette.getDarkMutedColor(palette.getMutedColor(
+                                                            context.getResources()
+                                                                    .getColor(R.color.colorPrimary))))));
+                                }
                             }
-                        }
-                );
-            }
+                    );
+                }
 
-            @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
+                @Override
+                public void onBitmapFailed(Drawable errorDrawable) {
 
-            }
+                }
 
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
+                @Override
+                public void onPrepareLoad(Drawable placeHolderDrawable) {
 
-            }
-        });
+                }
+            });
+        else
+            holder.nameHolder.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
     }
 
     private void setOnClickListeners(SimpleItemViewHolder holder, final int position) {

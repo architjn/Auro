@@ -2,13 +2,13 @@ package com.architjn.acjmusicplayer.utils;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.support.v7.app.AlertDialog;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
-import android.widget.EditText;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.utils.adapters.AddToPlaylistDialogListAdapter;
 
@@ -25,7 +25,7 @@ public class Utils {
         playlistDbHelper = new PlaylistDBHelper(context);
     }
 
-    public int dpToPx(int dp, Context context) {
+    public int dpToPx(int dp) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
         return px;
@@ -34,53 +34,44 @@ public class Utils {
     public void addToPlaylist(final Activity activity, final long songId) {
         final AddToPlaylistDialogListAdapter adapter = new AddToPlaylistDialogListAdapter(context,
                 playlistDbHelper.getAllPlaylist(), songId);
-        AlertDialog.Builder alert = new AlertDialog.Builder(context);
-
-        alert.setTitle(R.string.choose_playlist);
-        alert.setPositiveButton(R.string.new_playlist, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                newPlaylistDialog(activity, songId);
-            }
-        });
-        alert.setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                dialog.dismiss();
-            }
-        });
         RecyclerView rv = (RecyclerView) activity.getLayoutInflater()
                 .inflate(R.layout.addtoplaylist, null);
         rv.setLayoutManager(new LinearLayoutManager(context));
         rv.addItemDecoration(new SimpleDividerItemDecoration(context, 0));
         rv.setAdapter(adapter);
-        alert.setView(rv);
-        AlertDialog dialog = alert.create();
+        MaterialDialog dialog = new MaterialDialog.Builder(context)
+                .title(R.string.add_to_playlist)
+                .customView(rv, false)
+                .positiveText(R.string.new_playlist)
+                .negativeText(R.string.close)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
+                        newPlaylistDialog(activity, songId);
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
+                        materialDialog.dismiss();
+                    }
+                })
+                .show();
         adapter.setDialog(dialog);
-        dialog.show();
     }
 
     private void newPlaylistDialog(final Activity activity, final long songId) {
-        final EditText edittext = new EditText(context);
-        android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(context);
-        alert.setTitle("New Playlist");
-
-        alert.setView(edittext);
-
-        alert.setPositiveButton("Done", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                //What ever you want to do with the value
-                new PlaylistDBHelper(context).createPlaylist(edittext.getText().toString());
-                addToPlaylist(activity, songId);
-            }
-        });
-
-        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                // what ever you want to do with No option.
-            }
-        });
-
-        alert.show();
+        new MaterialDialog.Builder(context)
+                .title(R.string.new_playlist)
+                .input(null, null, new MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(MaterialDialog dialog, CharSequence input) {
+                        if (!input.toString().matches("")) {
+                            new PlaylistDBHelper(context).createPlaylist(input.toString());
+                            addToPlaylist(activity, songId);
+                        }
+                    }
+                }).show();
     }
 
 }

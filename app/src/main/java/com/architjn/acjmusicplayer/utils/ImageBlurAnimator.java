@@ -39,8 +39,13 @@ public class ImageBlurAnimator {
                 new ValueAnimator.AnimatorUpdateListener() {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animator) {
-                        imgView.setImageBitmap(createBitmap_ScriptIntrinsicBlur(bmp,
-                                (Integer) animator.getAnimatedValue()));
+                        try {
+                            imgView.setImageBitmap(createBitmap_ScriptIntrinsicBlur(bmp,
+                                    (Integer) animator.getAnimatedValue()));
+                        } catch (NullPointerException e) {
+                            e.printStackTrace();
+                            imgView.setImageBitmap(bmp);
+                        }
                     }
 
                 });
@@ -54,8 +59,13 @@ public class ImageBlurAnimator {
                 new ValueAnimator.AnimatorUpdateListener() {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animator) {
-                        imgView.setImageBitmap(createBitmap_ScriptIntrinsicBlur(newBitmap,
-                                (Integer) animator.getAnimatedValue()));
+                        try {
+                            imgView.setImageBitmap(createBitmap_ScriptIntrinsicBlur(newBitmap,
+                                    (Integer) animator.getAnimatedValue()));
+                        } catch (NullPointerException e) {
+                            e.printStackTrace();
+                            imgView.setImageBitmap(newBitmap);
+                        }
                     }
 
                 });

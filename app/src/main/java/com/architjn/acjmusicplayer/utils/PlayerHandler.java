@@ -74,9 +74,9 @@ public class PlayerHandler {
 
     public void stopPlayer() {
 //        setPlayingPos(-1);
-//        if (mediaPlayer != null) {
-//            mediaPlayer.stop();
-//        }
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+        }
     }
 
     public void playPlaylist(int id, final int currentPlayingPos) throws IOException {
@@ -99,11 +99,21 @@ public class PlayerHandler {
         configurePlayer(songToPlayPos);
     }
 
-    public void playOrStop() {
-        if (mediaPlayer.isPlaying())
+    public void playOrStop(NotificationHandler notifactionHandler) {
+        boolean state;
+        if (mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
-        else
+            state = false;
+            service.stopForeground(false);
+            notifactionHandler.setNotificationPlayer(true);
+        } else {
             mediaPlayer.start();
+            state = true;
+            notifactionHandler.setNotificationPlayer(false);
+        }
+        notifactionHandler.updateNotificationView();
+        notifactionHandler.changeNotificationDetails(getCurrentPlayingSong().getName(),
+                getCurrentPlayingSong().getArtist(), getCurrentPlayingSong().getAlbumId(), state);
     }
 
     public int getNextSongPosition(int currentPos) {
@@ -153,7 +163,7 @@ public class PlayerHandler {
         service.updatePlayer();
     }
 
-    public void playPrevSong(int prevSongPos) throws IOException {
+    public void playPrevSong(final int prevSongPos) throws IOException {
         if ((mediaPlayer.getCurrentPosition() / 1000) <= 2) {
             int position = prevSongPos;
             if (prevSongPos == -1 && preferenceHandler.isRepeatAllEnabled()) {
@@ -172,13 +182,7 @@ public class PlayerHandler {
                 @Override
                 public void onCompletion(MediaPlayer mediaPlayer) {
                     try {
-                        if (pos == 0 && preferenceHandler.isRepeatAllEnabled()) {
-                            playPrevSong(currentPlayingSongs.size() - 1);
-                        } else if (pos == 0) {
-                            playPrevSong(0);
-                        } else {
-                            playPrevSong(pos - 1);
-                        }
+                        playNextSong(getNextSongPosition(prevSongPos));
                     } catch (IOException e) {
                         e.printStackTrace();
                         Toast.makeText(context, R.string.cant_play_song,

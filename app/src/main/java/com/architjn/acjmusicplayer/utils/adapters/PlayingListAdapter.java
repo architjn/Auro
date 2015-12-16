@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -86,9 +87,13 @@ public class PlayingListAdapter extends RecyclerView.Adapter<PlayingListAdapter.
             holder.img.setImageDrawable(context.getResources()
                     .getDrawable(R.drawable.ic_speaker_48dp, null));
         } else {
-            Picasso.with(context).load(new File(ListSongs.getAlbumArt(context,
-                    items.get(getPosition(position)).getAlbumId()))).resize(dpToPx(50),
-                    dpToPx(50)).centerCrop().into(holder.img);
+            String path = ListSongs.getAlbumArt(context,
+                    items.get(getPosition(position)).getAlbumId());
+            if (path != null)
+                Picasso.with(context).load(new File(path)).resize(dpToPx(50),
+                        dpToPx(50)).centerCrop().into(holder.img);
+            else
+                Picasso.with(context).load(R.drawable.default_art).into(holder.img);
         }
         setOnClick(holder, getPosition(position));
     }
@@ -127,6 +132,14 @@ public class PlayingListAdapter extends RecyclerView.Adapter<PlayingListAdapter.
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.popup_song_play:
+                                new Thread(new Runnable() {
+                                    public void run() {
+                                        Intent i = new Intent(PlayerService.ACTION_PLAY_SINGLE);
+                                        i.putExtra("songId", items.get(position).getSongId());
+                                        context.sendBroadcast(i);
+                                        ((PlayerActivity) context).seekBar.setProgress(0);
+                                    }
+                                }).start();
                                 break;
                             case R.id.popup_song_addtoplaylist:
                                 break;
@@ -141,6 +154,7 @@ public class PlayingListAdapter extends RecyclerView.Adapter<PlayingListAdapter.
     }
 
     private int getPosition(int position) {
+        Log.v(TAG, position + " <<");
         if (position > 2)
             return position - 2;
         return position - 1;

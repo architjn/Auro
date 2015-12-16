@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/noti_album_art"
+        android:layout_width="@dimen/noti_big_img"
+        android:layout_height="@dimen/noti_big_height"
+        android:layout_weight="0"
+        android:scaleType="centerCrop"
+        android:src="@drawable/default_art" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/noti_big_height"
+        android:layout_weight="1"
+        android:background="@color/colorPrimary"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/noti_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:singleLine="true"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/noti_artist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textColor="@color/light_grey"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/noti_button_height"
+            android:layout_gravity="bottom"
+            android:layout_weight="0"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingBottom="10dp">
+
+            <ImageView
+                android:id="@+id/noti_prev_button"
+                android:layout_width="@dimen/noti_button_height"
+                android:layout_height="@dimen/noti_button_height"
+                android:layout_weight="1"
+                android:background="@drawable/unbounded_ripple"
+                android:padding="5dp"
+                android:src="@drawable/ic_skip_previous_white_48dp" />
+
+            <ImageView
+                android:id="@+id/noti_play_button"
+                android:layout_width="@dimen/noti_button_height"
+                android:layout_height="@dimen/noti_button_height"
+                android:layout_weight="1"
+                android:background="@drawable/unbounded_ripple"
+                android:padding="5dp"
+                android:src="@drawable/ic_play_arrow_white_48dp" />
+
+            <ImageView
+                android:id="@+id/noti_next_button"
+                android:layout_width="@dimen/noti_button_height"
+                android:layout_height="@dimen/noti_button_height"
+                android:layout_weight="1"
+                android:background="@drawable/unbounded_ripple"
+                android:padding="5dp"
+                android:src="@drawable/ic_skip_next_white_48dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

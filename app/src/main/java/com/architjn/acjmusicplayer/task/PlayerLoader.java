@@ -35,6 +35,8 @@ public class PlayerLoader extends AsyncTask<Long, Void, Void> {
 
     public Bitmap getAlbumart(Long album_id) {
         Bitmap bm = null;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = Math.max(options.outWidth/img.getWidth(), options.outHeight/img.getHeight());
         try {
             final Uri sArtworkUri = Uri
                     .parse("content://media/external/audio/albumart");
@@ -46,7 +48,7 @@ public class PlayerLoader extends AsyncTask<Long, Void, Void> {
 
             if (pfd != null) {
                 FileDescriptor fd = pfd.getFileDescriptor();
-                bm = BitmapFactory.decodeFileDescriptor(fd);
+                bm = BitmapFactory.decodeFileDescriptor(fd,null,options);
             }
         } catch (Exception e) {
         }
@@ -59,8 +61,10 @@ public class PlayerLoader extends AsyncTask<Long, Void, Void> {
             img.setImageBitmap(bmp);
             return;
         }
-        ImageBlurAnimator animator = new ImageBlurAnimator(context, img, 20, bmp);
-        animator.animate();
+        if (bmp != null) {
+            ImageBlurAnimator animator = new ImageBlurAnimator(context, img, 20, bmp);
+            animator.animate();
+        }
         super.onPostExecute(aVoid);
     }
 }

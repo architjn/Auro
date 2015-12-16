@@ -1,9 +1,7 @@
 package com.architjn.acjmusicplayer.ui.layouts.fragments;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -17,9 +15,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.utils.PermissionChecker;
 import com.architjn.acjmusicplayer.utils.PlaylistDBHelper;
@@ -123,32 +121,18 @@ public class PlaylistListFragment extends Fragment {
     }
 
     private void newPlaylistDialog() {
-        final EditText edittext = new EditText(context);
-        AlertDialog.Builder alert = new AlertDialog.Builder(context);
-        alert.setTitle("New Playlist");
-
-        alert.setView(edittext);
-
-        alert.setPositiveButton("Done", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                //What ever you want to do with the value
-                if (edittext.getText().toString().matches("")) {
-                    newPlaylistDialog();
-                } else {
-                    playlistDBHelper.createPlaylist(edittext.getText().toString());
-                    listNoMoreEmpty();
-                    adapter.updateNewList(playlistDBHelper.getAllPlaylist());
-                }
-            }
-        });
-
-        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                // what ever you want to do with No option.
-            }
-        });
-
-        alert.show();
+        new MaterialDialog.Builder(context)
+                .title(R.string.new_playlist)
+                .input(null, null, new MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(MaterialDialog dialog, CharSequence input) {
+                        if (!input.toString().matches("")) {
+                            playlistDBHelper.createPlaylist(input.toString());
+                            listNoMoreEmpty();
+                            adapter.updateNewList(playlistDBHelper.getAllPlaylist());
+                        }
+                    }
+                }).show();
     }
 
     @Override
