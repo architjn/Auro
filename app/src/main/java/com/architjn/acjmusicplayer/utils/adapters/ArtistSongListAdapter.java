@@ -81,8 +81,8 @@ public class ArtistSongListAdapter extends RecyclerView.Adapter<ArtistSongListAd
                 new Thread(new Runnable() {
                     public void run() {
                         Intent i = new Intent();
-                        i.setAction(PlayerService.ACTION_PLAY_PLAYLIST);
-                        i.putExtra("name", items.get(position).getName());
+                        i.setAction(PlayerService.ACTION_PLAY_ARTIST);
+                        i.putExtra("name", items.get(position).getArtist());
                         i.putExtra("pos", position);
                         context.sendBroadcast(i);
                     }

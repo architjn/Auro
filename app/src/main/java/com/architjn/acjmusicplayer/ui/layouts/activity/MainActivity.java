@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -13,7 +14,9 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
@@ -39,9 +42,11 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity-TAG";
     private LinearLayout smallPlayer;
+    private FragmentName lastExpanded;
+    private int lastItem;
 
     public enum FragmentName {
-        Albums, Songs, Artists, Playlists
+        Albums, Songs, Artists, Playlists, Search
     }
 
     private DrawerLayout drawerLayout;
@@ -136,7 +141,6 @@ public class MainActivity extends AppCompatActivity {
         new ColorChangeAnimation(this, smallPlayer, new PlayerDBHandler(this).setAlbumArt(albumId)) {
             @Override
             public void onColorFetched(Integer colorPrimary) {
-                return;
             }
         }.execute();
     }
@@ -218,10 +222,15 @@ public class MainActivity extends AppCompatActivity {
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(String.valueOf(fname));
 
-        getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(android.R.anim.slide_in_left, 0)
-                .replace(R.id.main_fragment_holder, fragment)
-                .commit();
+        if (itemId >= 0)
+            getSupportFragmentManager().beginTransaction()
+                    .setCustomAnimations(android.R.anim.slide_in_left, 0)
+                    .replace(R.id.main_fragment_holder, fragment)
+                    .commit();
+        else
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.main_fragment_holder, fragment)
+                    .commit();
 
         if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
             final Handler handler = new Handler();
@@ -240,8 +249,70 @@ public class MainActivity extends AppCompatActivity {
         unregisterReceiver(br);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        // Retrieve the SearchView and plug it into SearchManager
+//        setSearchView(menu);
+        return true;
+    }
+
+    private void setSearchView(Menu menu) {
+//        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+//        final SearchViewFragment searchViewFragment = new SearchViewFragment();
+//        searchViewFragment.setSearchView(searchView);
+//        MenuItemCompat.setOnActionExpandListener(menu.findItem(R.id.action_search), new MenuItemCompat.OnActionExpandListener() {
+//            @Override
+//            public boolean onMenuItemActionExpand(MenuItem item) {
+//                lastExpanded = currentFragment;
+//                lastItem = currentItem;
+////                toolbar.setBackgroundColor(getResources().getColor(R.color.white));
+////                changeToolbarColorLight(searchView);
+//                fragmentSwitcher(searchViewFragment, -1, FragmentName.Search);
+//                return true;
+//            }
+//
+//            @Override
+//            public boolean onMenuItemActionCollapse(MenuItem item) {
+//                fragmentSwitcher(getFragmentFromName(lastExpanded), lastItem, lastExpanded);
+////                toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+//                return true;
+//            }
+//        });
+//        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+//        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+    }
+
+    private void changeToolbarColorLight(View view) {
+        if (view != null) {
+            if (view instanceof TextView) {
+                ((TextView) view).setTextColor(Color.BLACK);
+                return;
+            } else if (view instanceof ViewGroup) {
+                ViewGroup viewGroup = (ViewGroup) view;
+                for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                    changeToolbarColorLight(viewGroup.getChildAt(i));
+                }
+            }
+        }
+    }
+
     public void killActivity() {
         super.onBackPressed();
+    }
+
+    public Fragment getFragmentFromName(FragmentName name) {
+        switch (name) {
+            case Songs:
+                return songFragment;
+            case Albums:
+                return albumFragment;
+            case Artists:
+                return artistFragment;
+            case Playlists:
+                return playlistFragment;
+        }
+        return null;
     }
 
     @Override

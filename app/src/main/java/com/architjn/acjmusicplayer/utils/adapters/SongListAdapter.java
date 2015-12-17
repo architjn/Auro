@@ -104,14 +104,11 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.Simple
                 } else {
                     //focus is clicked again
                     //Play all the songs starting from this
-                    new Thread(new Runnable() {
-                        public void run() {
-                            Intent i = new Intent();
-                            i.setAction(PlayerService.ACTION_PLAY_ALL_SONGS);
-                            i.putExtra("songId", items.get(position).getSongId());
-                            context.sendBroadcast(i);
-                        }
-                    }).start();
+                    Intent i = new Intent();
+                    i.setAction(PlayerService.ACTION_PLAY_ALL_SONGS);
+                    i.putExtra("songId", items.get(position).getSongId());
+                    i.putExtra("pos", position);
+                    context.sendBroadcast(i);
                 }
             }
         });

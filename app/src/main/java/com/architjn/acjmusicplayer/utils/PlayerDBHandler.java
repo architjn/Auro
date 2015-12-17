@@ -3,11 +3,12 @@ package com.architjn.acjmusicplayer.utils;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteCantOpenDatabaseException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.MediaStore;
-import android.util.Log;
 
+import com.architjn.acjmusicplayer.task.AddToPlayingList;
 import com.architjn.acjmusicplayer.utils.items.Song;
 
 import java.util.ArrayList;
@@ -20,14 +21,14 @@ public class PlayerDBHandler extends SQLiteOpenHelper {
     private static final String TAG = "PlayerDBHandler-TAG";
     private Context context;
 
-    private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "PlaybackDB";
+    public static final int DATABASE_VERSION = 1;
+    public static final String DATABASE_NAME = "PlaybackDB";
 
-    private static final String TABLE_PLAYBACK = "songs";
+    public static final String TABLE_PLAYBACK = "songs";
 
-    private static final String SONG_KEY_ID = "song_id";
-    private static final String SONG_KEY_REAL_ID = "song_real_id";
-    private static final String SONG_KEY_LAST_PLAYED = "song_last_played";
+    public static final String SONG_KEY_ID = "song_id";
+    public static final String SONG_KEY_REAL_ID = "song_real_id";
+    public static final String SONG_KEY_LAST_PLAYED = "song_last_played";
     private int fetchedPlayingPos = -1;
 
 
@@ -96,20 +97,22 @@ public class PlayerDBHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PLAYBACK);
     }
 
-    public void changePlaybackList(ArrayList<Song> songs, int currentPlaying) {
-        clearList();
-        SQLiteDatabase db = this.getWritableDatabase();
-        for (int i = 0; i < songs.size(); i++) {
-            ContentValues values = new ContentValues();
-            values.putNull(SONG_KEY_ID);
-            values.put(SONG_KEY_REAL_ID, songs.get(i).getSongId());
-            if (i == currentPlaying)
-                values.put(SONG_KEY_LAST_PLAYED, true);
-            values.put(SONG_KEY_LAST_PLAYED, false);
-
-            db.insert(TABLE_PLAYBACK, null, values);
-        }
-        db.close();
+    public void changePlaybackList(final ArrayList<Song> songs, final int currentPlaying) {
+        new AddToPlayingList(this, songs, currentPlaying).execute();
+//        clearList();
+//        final SQLiteDatabase db = this.getWritableDatabase();
+//        for (int i = 0; i < songs.size(); i++) {
+//            ContentValues values = new ContentValues();
+//            values.putNull(SONG_KEY_ID);
+//            values.put(SONG_KEY_REAL_ID, songs.get(i).getSongId());
+//            if (i == currentPlaying)
+//                values.put(SONG_KEY_LAST_PLAYED, true);
+//            else
+//                values.put(SONG_KEY_LAST_PLAYED, false);
+//
+//            db.insert(TABLE_PLAYBACK, null, values);
+//        }
+//        db.close();
     }
 
     public ArrayList<Song> getAllPlaybackSongs() {
@@ -153,9 +156,13 @@ public class PlayerDBHandler extends SQLiteOpenHelper {
     }
 
     private void clearList() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DELETE FROM " + TABLE_PLAYBACK);
-        db.close();
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.execSQL("DELETE FROM " + TABLE_PLAYBACK);
+            db.close();
+        } catch (SQLiteCantOpenDatabaseException e) {
+            e.printStackTrace();
+        }
     }
 
 }

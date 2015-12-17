@@ -252,7 +252,7 @@ public class ListSongs {
             int addedDateColumn = musicCursor.getColumnIndex
                     (MediaStore.Audio.Media.DATE_ADDED);
             int songDurationColumn = musicCursor.getColumnIndex
-                    (MediaStore.Audio.Media.DATE_ADDED);
+                    (MediaStore.Audio.Media.DURATION);
             do {
                 songList.add(new Song(musicCursor.getLong(idColumn),
                         musicCursor.getString(titleColumn),

@@ -22,6 +22,14 @@ import java.io.IOException;
  */
 public class PlayerService extends Service {
 
+    /*
+    ListType is used to check if previously played list was same
+    If same, then just switch to new Song. To avoid loading list of songs again and again
+     */
+    public enum ListType {
+        ALL, ALBUM, ARTIST, SINGLE, PLAYLIST
+    }
+
     private static final String TAG = "PlayerService-TAG";
     private BroadcastReceiver playerServiceBroadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -37,6 +45,8 @@ public class PlayerService extends Service {
 
     private PlayerHandler musicPlayerHandler;
     private Context context;
+
+    private ListType listType;
 
     public static final String ACTION_PLAY_SINGLE = "ACTION_PLAY_SINGLE";
     public static final String ACTION_PLAY_ALL_SONGS = "ACTION_PLAY_ALL_SONGS";
@@ -82,15 +92,26 @@ public class PlayerService extends Service {
         switch (intent.getAction()) {
             case ACTION_PLAY_SINGLE:
                 musicPlayerHandler.playSingleSong(intent.getLongExtra("songId", 0));
+                listType = ListType.SINGLE;
                 updatePlayer();
                 break;
             case ACTION_PLAY_ALL_SONGS:
-                musicPlayerHandler.playAllSongs(intent.getLongExtra("songId", 0));
+                if (listType != null && listType == ListType.ALL)
+                    musicPlayerHandler.playNextSong(intent.getIntExtra("pos", 0));
+                else
+                    musicPlayerHandler.playAllSongs(intent.getLongExtra("songId", 0));
+                listType = ListType.ALL;
                 updatePlayer();
                 break;
             case ACTION_PLAY_ALBUM:
-                musicPlayerHandler.playAlbumSongs(intent.getLongExtra("albumId", 0),
-                        intent.getIntExtra("songPos", 0));
+                if (listType != null && listType == ListType.ALBUM
+                        && intent.getLongExtra("albumId", 0) ==
+                        musicPlayerHandler.getCurrentPlayingSong().getAlbumId()) {
+                    musicPlayerHandler.playNextSong(intent.getIntExtra("songPos", 0));
+                } else
+                    musicPlayerHandler.playAlbumSongs(intent.getLongExtra("albumId", 0),
+                            intent.getIntExtra("songPos", 0));
+                listType = ListType.ALBUM;
                 updatePlayer();
                 break;
             case ACTION_GET_SONG:
@@ -119,11 +140,18 @@ public class PlayerService extends Service {
             case ACTION_PLAY_PLAYLIST:
                 musicPlayerHandler.playPlaylist(intent.getIntExtra("id", 0),
                         intent.getIntExtra("pos", 0));
+                listType = ListType.PLAYLIST;
                 updatePlayer();
                 break;
             case ACTION_PLAY_ARTIST:
-                musicPlayerHandler.playArtistSongs(intent.getStringExtra("name"),
-                        intent.getIntExtra("pos", 0));
+                if (listType == ListType.ARTIST &&
+                        musicPlayerHandler.getCurrentPlayingSong()
+                                .getArtist().matches(intent.getStringExtra("name")))
+                    musicPlayerHandler.playNextSong(intent.getIntExtra("pos", 0));
+                else
+                    musicPlayerHandler.playArtistSongs(intent.getStringExtra("name"),
+                            intent.getIntExtra("pos", 0));
+                listType = ListType.ARTIST;
                 updatePlayer();
                 break;
             case ACTION_NOTI_CLICK:
@@ -133,6 +161,7 @@ public class PlayerService extends Service {
                 break;
             case ACTION_NOTI_REMOVE:
                 notificationHandler.setNotificationActive(false);
+                musicPlayerHandler.getMediaPlayer().stop();
                 break;
         }
     }

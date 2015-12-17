@@ -1,5 +1,6 @@
 package com.architjn.acjmusicplayer.task;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -65,6 +66,10 @@ public abstract class FetchArtistArtWork extends AsyncTask<Void, Void, Void> {
         builder.append("&api_key=" + context.getResources().getString(R.string.api));
         builder.append("&format=json");
         this.url = builder.toString();
+    }
+
+    private boolean isActivityRunning() {
+        return ((Activity) context).isFinishing();
     }
 
     @Override

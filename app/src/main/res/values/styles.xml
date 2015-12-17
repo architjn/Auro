@@ -3,19 +3,30 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="actionMenuTextColor">@android:color/white</item>
-        <!--<item name="colorAccent">@color/accent_color</item>-->
+    </style>
+
+    <style name="CustomSearchView" parent="Widget.AppCompat.SearchView">
+        <item name="searchIcon">@null</item>
+        <item name="queryBackground">@null</item>
+        <item name="queryHint">@string/search_hint</item>
+        <item name="searchHintIcon">@null</item>
     </style>
 
     <style name="ToolbarTheme">
+        <item name="searchViewStyle">@style/CustomSearchView</item>
         <item name="android:textColorPrimary">@android:color/white</item>
         <item name="android:textColorSecondary">@android:color/white</item>
+    </style>
+
+    <style name="WidgetTheme">
+        <item name="android:textColorHint">@android:color/white</item>
     </style>
 
     <style name="AppTheme.Main" parent="AppTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:actionBarWidgetTheme">@style/WidgetTheme</item>
     </style>
 
     <style name="DialogLight" parent="@android:style/Theme.Dialog">
@@ -32,4 +43,5 @@
         <item name="android:textSize">24sp</item>
     </style>
 
+    <string name="search_hint">Search</string>
 </resources>

@@ -74,9 +74,9 @@ public class PlayerHandler {
 
     public void stopPlayer() {
 //        setPlayingPos(-1);
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-        }
+//        if (mediaPlayer != null) {
+//            mediaPlayer.stop();
+//        }
     }
 
     public void playPlaylist(int id, final int currentPlayingPos) throws IOException {
@@ -88,7 +88,8 @@ public class PlayerHandler {
 
     public void playArtistSongs(String name, int pos) throws IOException {
         stopPlayer();
-        setCurrentPlayingSongs(ListSongs.getSongsListOfArtist(context, name));
+        ArrayList<Song> songs = ListSongs.getSongsListOfArtist(context, name);
+        setCurrentPlayingSongs(songs);
         configurePlayer(pos);
     }
 

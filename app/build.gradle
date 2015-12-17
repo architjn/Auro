@@ -8,8 +8,8 @@ android {
         applicationId "com.architjn.acjmusicplayer"
         minSdkVersion 21
         targetSdkVersion 23
-        versionCode 5
-        versionName "0.5.5beta"
+        versionCode 6
+        versionName "0.5.6beta"
     }
     buildTypes {
         release {
