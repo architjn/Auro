@@ -39,6 +39,7 @@ public class ArtistActivity extends AppCompatActivity {
         rv = (RecyclerView) findViewById(R.id.songsListContainer);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getIntent().getStringExtra("name"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         addSongList();
     }

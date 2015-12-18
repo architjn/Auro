@@ -2,6 +2,8 @@ package com.architjn.acjmusicplayer.ui.layouts.fragments;
 
 import android.Manifest;
 import android.content.Context;
+import android.graphics.drawable.Animatable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -11,12 +13,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.ImageView;
 
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.utils.ListSongs;
 import com.architjn.acjmusicplayer.utils.PermissionChecker;
 import com.architjn.acjmusicplayer.utils.SimpleDividerItemDecoration;
 import com.architjn.acjmusicplayer.utils.adapters.ArtistsListAdapter;
+import com.architjn.acjmusicplayer.utils.items.Artist;
+
+import java.util.ArrayList;
 
 /**
  * Created by architjn on 27/11/15.
@@ -28,6 +34,7 @@ public class ArtistListFragment extends Fragment {
     private RecyclerView rv;
     private ArtistsListAdapter adapter;
     private PermissionChecker permissionChecker;
+    private View emptyView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,6 +48,7 @@ public class ArtistListFragment extends Fragment {
 
     private void init() {
         rv = (RecyclerView) mainView.findViewById(R.id.songsListContainer);
+        emptyView = mainView.findViewById(R.id.artist_empty_view);
         checkPermissions();
     }
 
@@ -64,7 +72,8 @@ public class ArtistListFragment extends Fragment {
     private void setArtistList() {
         rv.setLayoutManager(new LinearLayoutManager(context));
         rv.addItemDecoration(new SimpleDividerItemDecoration(context, 75));
-        adapter = new ArtistsListAdapter(context, ListSongs.getArtistList(context), this);
+        ArrayList<Artist> items = ListSongs.getArtistList(context);
+        adapter = new ArtistsListAdapter(context,items , this);
         rv.setAdapter(adapter);
         rv.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -86,6 +95,18 @@ public class ArtistListFragment extends Fragment {
                 }
             }
         });
+        if (items.size() < 1)
+            listIsEmpty();
+    }
+
+    public void listIsEmpty() {
+        emptyView.setVisibility(View.VISIBLE);
+        rv.setVisibility(View.GONE);
+    }
+
+    public void listNoMoreEmpty() {
+        rv.setVisibility(View.VISIBLE);
+        emptyView.setVisibility(View.GONE);
     }
 
     @Override

@@ -98,7 +98,7 @@ public class PlayerDBHandler extends SQLiteOpenHelper {
     }
 
     public void changePlaybackList(final ArrayList<Song> songs, final int currentPlaying) {
-        new AddToPlayingList(this, songs, currentPlaying).execute();
+        new AddToPlayingList(this.getWritableDatabase(), songs, currentPlaying).execute();
 //        clearList();
 //        final SQLiteDatabase db = this.getWritableDatabase();
 //        for (int i = 0; i < songs.size(); i++) {
@@ -129,7 +129,7 @@ public class PlayerDBHandler extends SQLiteOpenHelper {
                 counter++;
             } while (cursor.moveToNext());
         }
-        db.close();
+        //db.close();
         return playbackSongs;
     }
 
@@ -144,7 +144,7 @@ public class PlayerDBHandler extends SQLiteOpenHelper {
         values.put(SONG_KEY_REAL_ID, song.getSongId());
         values.put(SONG_KEY_LAST_PLAYED, false);
         db.insert(TABLE_PLAYBACK, null, values);
-        db.close();
+        //db.close();
     }
 
     public void updatePlayingPosition(long songId) {
@@ -152,14 +152,14 @@ public class PlayerDBHandler extends SQLiteOpenHelper {
         db.execSQL("UPDATE " + TABLE_PLAYBACK + " SET " + SONG_KEY_LAST_PLAYED + "='0' WHERE " + SONG_KEY_LAST_PLAYED + "='1'");
         db.execSQL("UPDATE " + TABLE_PLAYBACK + " SET " + SONG_KEY_LAST_PLAYED + "='1' WHERE "
                 + SONG_KEY_REAL_ID + "='" + songId + "'");
-        db.close();
+        //db.close();
     }
 
     private void clearList() {
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             db.execSQL("DELETE FROM " + TABLE_PLAYBACK);
-            db.close();
+            //db.close();
         } catch (SQLiteCantOpenDatabaseException e) {
             e.printStackTrace();
         }

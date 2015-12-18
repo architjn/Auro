@@ -1,6 +1,5 @@
 package com.architjn.acjmusicplayer.task;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,6 +8,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.architjn.acjmusicplayer.R;
+import com.architjn.acjmusicplayer.ui.layouts.activity.MainActivity;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -54,7 +54,9 @@ public abstract class FetchArtistArtWork extends AsyncTask<Void, Void, Void> {
         this.context = context;
         this.name = name;
         this.random = random;
-        if (name.matches("<unknown>"))
+        if (!isFragmentSame())
+            cancel(true);
+        if (name == null || name.matches("<unknown>"))
             this.cancel(true);
         StringBuilder builder = new StringBuilder();
         builder.append(context.getResources().getString(R.string.artist_fetch_url));
@@ -69,13 +71,19 @@ public abstract class FetchArtistArtWork extends AsyncTask<Void, Void, Void> {
     }
 
     private boolean isActivityRunning() {
-        return ((Activity) context).isFinishing();
+        return ((MainActivity) context).isFinishing();
+    }
+
+    private boolean isFragmentSame() {
+        return ((MainActivity) context).currentFragment == MainActivity.FragmentName.Artists;
     }
 
     @Override
     protected Void doInBackground(Void... voids) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         HttpClient httpclient = new DefaultHttpClient();
+        if (!isFragmentSame())
+            cancel(true);
         HttpPost httppost = new HttpPost(url);
         try {
             httppost.setEntity(new UrlEncodedFormEntity(params));

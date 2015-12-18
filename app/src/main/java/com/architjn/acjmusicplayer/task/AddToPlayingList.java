@@ -15,20 +15,19 @@ import java.util.ArrayList;
  */
 public class AddToPlayingList extends AsyncTask<Void, Void, Void> {
 
-    private PlayerDBHandler helper;
     private ArrayList<Song> songs;
     private int currentPlaying;
+    private SQLiteDatabase db;
 
-    public AddToPlayingList(PlayerDBHandler helper, ArrayList<Song> songs, int currentPlaying) {
-        this.helper = helper;
+    public AddToPlayingList(SQLiteDatabase db, ArrayList<Song> songs, int currentPlaying) {
+        this.db = db;
         this.songs = songs;
         this.currentPlaying = currentPlaying;
     }
 
     @Override
     protected Void doInBackground(Void... voids) {
-        clearList();
-        final SQLiteDatabase db = helper.getWritableDatabase();
+        clearList(db);
         for (int i = 0; i < songs.size(); i++) {
             ContentValues values = new ContentValues();
             values.putNull(PlayerDBHandler.SONG_KEY_ID);
@@ -40,15 +39,13 @@ public class AddToPlayingList extends AsyncTask<Void, Void, Void> {
 
             db.insert(PlayerDBHandler.TABLE_PLAYBACK, null, values);
         }
-        db.close();
+//        db.close();
         return null;
     }
 
-    private void clearList() {
+    private void clearList(SQLiteDatabase db) {
         try {
-            SQLiteDatabase db = helper.getWritableDatabase();
             db.execSQL("DELETE FROM " + PlayerDBHandler.TABLE_PLAYBACK);
-//            db.close();
         } catch (SQLiteCantOpenDatabaseException e) {
             e.printStackTrace();
         }

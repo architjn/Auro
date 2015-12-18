@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private ArtistListFragment artistFragment;
     private PlaylistListFragment playlistFragment;
 
-    private FragmentName currentFragment;
+    public FragmentName currentFragment;
 
 
     private BroadcastReceiver br = new BroadcastReceiver() {

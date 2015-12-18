@@ -42,6 +42,7 @@ public class AlbumsListFragment extends Fragment {
     private RecyclerView gv;
     private AlbumListAdapter adapter;
     private PermissionChecker permissionChecker;
+    private View emptyView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -56,6 +57,7 @@ public class AlbumsListFragment extends Fragment {
 
     private void initViews() {
         gv = (RecyclerView) mainView.findViewById(R.id.albumsListContainer);
+        emptyView = mainView.findViewById(R.id.album_empty_view);
         checkPermissions();
     }
 
@@ -91,7 +93,8 @@ public class AlbumsListFragment extends Fragment {
                         final View header = LayoutInflater.from(context).inflate(
                                 R.layout.album_list_header, gv, false);
                         Album lastAddedAlbum = ListSongs.getLastAddedAlbum(context);
-                        setHeaderView(lastAddedAlbum, header);
+                        if (lastAddedAlbum != null)
+                            setHeaderView(lastAddedAlbum, header);
                         adapter = new AlbumListAdapter(mainView.getContext(), albumList, header);
                         gv.setAdapter(adapter);
                     }
@@ -102,6 +105,14 @@ public class AlbumsListFragment extends Fragment {
                         return adapter.isHeader(position) ? gridLayoutManager.getSpanCount() : 1;
                     }
                 });
+                if(albumList.size()<1) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            listIsEmpty();
+                        }
+                    });
+                }
             }
         }).start();
     }
@@ -121,6 +132,16 @@ public class AlbumsListFragment extends Fragment {
                 context.startActivity(i);
             }
         });
+    }
+
+    public void listIsEmpty() {
+        emptyView.setVisibility(View.VISIBLE);
+        gv.setVisibility(View.GONE);
+    }
+
+    public void listNoMoreEmpty() {
+        gv.setVisibility(View.VISIBLE);
+        emptyView.setVisibility(View.GONE);
     }
 
     private void setArt(View header, final Album lastAddedAlbum) {

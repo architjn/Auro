@@ -86,7 +86,7 @@ public abstract class ArtistImgHandler extends SQLiteOpenHelper {
     public String getArtistImgFromDB(String name) {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT  * FROM " + TABLE_PLAYBACK + " WHERE "
-                + ARTIST_KEY_NAME + "='" + name + "'";
+                + ARTIST_KEY_NAME + "='" + name.replace("'", "''") + "'";
         Cursor cursor = db.rawQuery(query, null);
         if (cursor.moveToFirst()) {
             return cursor.getString(2);

@@ -232,7 +232,7 @@ public class ListSongs {
         ArrayList<Song> songList = new ArrayList<>();
         System.gc();
         final String where = MediaStore.Audio.Media.IS_MUSIC + "=1 AND "
-                + MediaStore.Audio.Media.ARTIST + "='" + artistName + "'";
+                + MediaStore.Audio.Media.ARTIST + "='" + artistName.replace("'", "''") + "'";
         final String orderBy = MediaStore.Audio.Media.TITLE;
         Cursor musicCursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 null, where, null, orderBy);

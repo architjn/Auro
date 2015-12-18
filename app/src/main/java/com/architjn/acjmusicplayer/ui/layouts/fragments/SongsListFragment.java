@@ -32,6 +32,7 @@ public class SongsListFragment extends Fragment {
     private SongListAdapter adapter;
 
     private PermissionChecker permissionChecker;
+    private View emptyView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,6 +46,7 @@ public class SongsListFragment extends Fragment {
 
     private void init() {
         rv = (RecyclerView) mainView.findViewById(R.id.songsListContainer);
+        emptyView = mainView.findViewById(R.id.songs_empty_view);
         checkPermissions();
     }
 
@@ -92,12 +94,21 @@ public class SongsListFragment extends Fragment {
         });
         adapter = new SongListAdapter(context, this, songList);
         rv.setAdapter(adapter);
-        Song dateAdded = songList.get(0);
-        for (int i = 0; i < songList.size(); i++) {
-            if (dateAdded.getDateAdded() > songList.get(i).getDateAdded())
-                dateAdded = songList.get(i);
+        if (songList.size() < 1) {
+            listIsEmpty();
         }
     }
+
+    public void listIsEmpty() {
+        emptyView.setVisibility(View.VISIBLE);
+        rv.setVisibility(View.GONE);
+    }
+
+//    public void listNoMoreEmpty() {
+//        rv.setVisibility(View.VISIBLE);
+//        emptyView.setVisibility(View.GONE);
+//    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
