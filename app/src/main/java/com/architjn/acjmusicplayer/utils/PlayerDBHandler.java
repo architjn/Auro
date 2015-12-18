@@ -7,8 +7,10 @@ import android.database.sqlite.SQLiteCantOpenDatabaseException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import com.architjn.acjmusicplayer.task.AddToPlayingList;
+import com.afollestad.async.Action;
 import com.architjn.acjmusicplayer.utils.items.Song;
 
 import java.util.ArrayList;
@@ -98,7 +100,37 @@ public class PlayerDBHandler extends SQLiteOpenHelper {
     }
 
     public void changePlaybackList(final ArrayList<Song> songs, final int currentPlaying) {
-        new AddToPlayingList(this.getWritableDatabase(), songs, currentPlaying).execute();
+        final SQLiteDatabase db = this.getWritableDatabase();
+        new Action<String>() {
+            @NonNull
+            @Override
+            public String id() {
+                return null;
+            }
+
+            @Nullable
+            @Override
+            protected String run() throws InterruptedException {
+                clearList(db);
+                for (int i = 0; i < songs.size(); i++) {
+                    ContentValues values = new ContentValues();
+                    values.putNull(PlayerDBHandler.SONG_KEY_ID);
+                    values.put(PlayerDBHandler.SONG_KEY_REAL_ID, songs.get(i).getSongId());
+                    if (i == currentPlaying)
+                        values.put(PlayerDBHandler.SONG_KEY_LAST_PLAYED, true);
+                    else
+                        values.put(PlayerDBHandler.SONG_KEY_LAST_PLAYED, false);
+
+                    db.insert(PlayerDBHandler.TABLE_PLAYBACK, null, values);
+                }
+                return null;
+            }
+        }.execute();
+
+
+        //new AddToPlayingList(this.getWritableDatabase(), songs, currentPlaying).execute();
+
+
 //        clearList();
 //        final SQLiteDatabase db = this.getWritableDatabase();
 //        for (int i = 0; i < songs.size(); i++) {
@@ -155,9 +187,8 @@ public class PlayerDBHandler extends SQLiteOpenHelper {
         //db.close();
     }
 
-    private void clearList() {
+    private void clearList(SQLiteDatabase db) {
         try {
-            SQLiteDatabase db = this.getWritableDatabase();
             db.execSQL("DELETE FROM " + TABLE_PLAYBACK);
             //db.close();
         } catch (SQLiteCantOpenDatabaseException e) {

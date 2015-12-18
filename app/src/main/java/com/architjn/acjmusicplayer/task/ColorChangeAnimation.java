@@ -6,16 +6,18 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.graphics.Palette;
 import android.widget.LinearLayout;
 
+import com.afollestad.async.Action;
 import com.architjn.acjmusicplayer.R;
 
 /**
  * Created by architjn on 13/12/15.
  */
-public abstract class ColorChangeAnimation extends AsyncTask<Void, Void, Void> {
+public abstract class ColorChangeAnimation extends Action {
 
     private Context context;
     private LinearLayout detailHolder;
@@ -30,8 +32,15 @@ public abstract class ColorChangeAnimation extends AsyncTask<Void, Void, Void> {
         colorFrom = ((ColorDrawable) detailHolder.getBackground()).getColor();
     }
 
+    @NonNull
     @Override
-    protected Void doInBackground(Void... params) {
+    public String id() {
+        return artPath;
+    }
+
+    @Nullable
+    @Override
+    protected Object run() throws InterruptedException {
         try {
             Bitmap bmp = BitmapFactory.decodeFile(artPath);
             Palette.generateAsync(bmp,
@@ -64,8 +73,4 @@ public abstract class ColorChangeAnimation extends AsyncTask<Void, Void, Void> {
 
     public abstract void onColorFetched(Integer colorPrimary);
 
-    @Override
-    protected void onPostExecute(Void aVoid) {
-        super.onPostExecute(aVoid);
-    }
 }

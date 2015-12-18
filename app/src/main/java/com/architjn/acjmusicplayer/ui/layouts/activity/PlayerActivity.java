@@ -139,8 +139,7 @@ public class PlayerActivity extends AppCompatActivity {
     private void updateView(Context context, Intent intent) {
         currentSong = new PlayerDBHandler(context)
                 .getSongFromId(intent.getLongExtra("songId", 0));
-        new PlayerLoader(context, artHolder)
-                .execute(currentSong.getAlbumId());
+        new PlayerLoader(context, artHolder, currentSong.getAlbumId()).execute();
         totalSeekText.setText(currentSong.getDuration());
         seekBar.setMax((int) currentSong.getDurationLong());
         seekBar.setProgress(intent.getIntExtra("seek", 0));

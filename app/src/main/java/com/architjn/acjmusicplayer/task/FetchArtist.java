@@ -3,12 +3,14 @@ package com.architjn.acjmusicplayer.task;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.afollestad.async.Action;
 import com.architjn.acjmusicplayer.R;
-import com.architjn.acjmusicplayer.ui.layouts.activity.MainActivity;
+import com.architjn.acjmusicplayer.utils.ArtistImgHandler;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -38,52 +40,64 @@ import java.util.Calendar;
 import java.util.List;
 
 /**
- * Created by architjn on 15/12/15.
+ * Created by architjn on 18/12/15.
  */
-public abstract class FetchArtistArtWork extends AsyncTask<Void, Void, Void> {
-
-    private static final String TAG = "FetchArtistArtWork-TAG";
+public class FetchArtist {
+    private int random;
+    private ArtistImgHandler handler;
+    private String url;
     private Context context;
     private String name;
-    private int random;
-    private String url;
     private String jsonResult;
     private Bitmap downloadedImg;
 
-    public FetchArtistArtWork(Context context, String name, int random) {
+    public FetchArtist(Context context, String name, int random, ArtistImgHandler handler) {
+        this.context = context;
+        this.name = name;
         this.context = context;
         this.name = name;
         this.random = random;
-        if (!isFragmentSame())
-            cancel(true);
-        if (name == null || name.matches("<unknown>"))
-            this.cancel(true);
-        StringBuilder builder = new StringBuilder();
-        builder.append(context.getResources().getString(R.string.artist_fetch_url));
-        try {
-            builder.append("&artist=" + URLEncoder.encode(name, "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        this.handler = handler;
+        if (name == null || name.matches("<unknown>")) {
+        } else {
+            StringBuilder builder = new StringBuilder();
+            builder.append(context.getResources().getString(R.string.artist_fetch_url));
+            try {
+                builder.append("&artist=" + URLEncoder.encode(name, "UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            builder.append("&api_key=" + context.getResources().getString(R.string.api));
+            builder.append("&format=json");
+            this.url = builder.toString();
+            runTask();
         }
-        builder.append("&api_key=" + context.getResources().getString(R.string.api));
-        builder.append("&format=json");
-        this.url = builder.toString();
     }
 
-    private boolean isActivityRunning() {
-        return ((MainActivity) context).isFinishing();
+    public void runTask() {
+        new Action<String>() {
+            @NonNull
+            @Override
+            public String id() {
+                return name; //some unique Id
+            }
+
+            @Nullable
+            @Override
+            protected String run() throws InterruptedException {
+                backgroundTask();
+                return null;
+            }
+
+            @Override
+            protected void done(@Nullable String result) {
+            }
+        }.execute();
     }
 
-    private boolean isFragmentSame() {
-        return ((MainActivity) context).currentFragment == MainActivity.FragmentName.Artists;
-    }
-
-    @Override
-    protected Void doInBackground(Void... voids) {
+    private void backgroundTask() {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         HttpClient httpclient = new DefaultHttpClient();
-        if (!isFragmentSame())
-            cancel(true);
         HttpPost httppost = new HttpPost(url);
         try {
             httppost.setEntity(new UrlEncodedFormEntity(params));
@@ -96,9 +110,12 @@ public abstract class FetchArtistArtWork extends AsyncTask<Void, Void, Void> {
                     JSONArray imageArray = jsonResponse.getJSONObject("artist").getJSONArray("image");
                     for (int i = 0; i < imageArray.length(); i++) {
                         JSONObject image = imageArray.getJSONObject(i);
-                        if (image.optString("size").matches("large") && !image.optString("#text").matches("")) {
+                        if (image.optString("size").matches("large") &&
+                                !image.optString("#text").matches("")) {
                             downloadedImg = downloadBitmap(image.optString("#text"));
-                            onDownloadComplete(saveImageToStorage(downloadedImg));
+                            String newUrl = saveImageToStorage(downloadedImg);
+                            handler.updateArtistArtWorkInDB(name, newUrl);
+                            handler.onDownloadComplete(newUrl);
                         }
                     }
                 } catch (JSONException e) {
@@ -112,27 +129,6 @@ public abstract class FetchArtistArtWork extends AsyncTask<Void, Void, Void> {
             Log.e("e", "error2");
             e.printStackTrace();
         }
-        return null;
-    }
-
-    private StringBuilder inputStreamToString(InputStream is) {
-        String rLine = "";
-        StringBuilder answer = new StringBuilder();
-        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-        try {
-            while ((rLine = rd.readLine()) != null) {
-                answer.append(rLine);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return answer;
-    }
-
-    @Override
-    protected void onPostExecute(Void aVoid) {
-        super.onPostExecute(aVoid);
     }
 
     private String saveImageToStorage(Bitmap bitmap) {
@@ -217,6 +213,19 @@ public abstract class FetchArtistArtWork extends AsyncTask<Void, Void, Void> {
         return null;
     }
 
-    public abstract void onDownloadComplete(String url);
+    private StringBuilder inputStreamToString(InputStream is) {
+        String rLine = "";
+        StringBuilder answer = new StringBuilder();
+        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+        try {
+            while ((rLine = rd.readLine()) != null) {
+                answer.append(rLine);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return answer;
+    }
 
 }

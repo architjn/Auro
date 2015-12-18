@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -154,7 +153,6 @@ public class PlayingListAdapter extends RecyclerView.Adapter<PlayingListAdapter.
     }
 
     private int getPosition(int position) {
-        Log.v(TAG, position + " <<");
         if (position > 2)
             return position - 2;
         return position - 1;

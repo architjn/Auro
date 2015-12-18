@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.afollestad.async.Async;
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.task.AlbumItemLoad;
 import com.architjn.acjmusicplayer.ui.layouts.activity.AlbumActivity;
@@ -105,7 +106,7 @@ public class AlbumsListFragment extends Fragment {
                         return adapter.isHeader(position) ? gridLayoutManager.getSpanCount() : 1;
                     }
                 });
-                if(albumList.size()<1) {
+                if (albumList.size() < 1) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -169,6 +170,12 @@ public class AlbumsListFragment extends Fragment {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
         return px;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Async.cancelAll();
     }
 
     @Override

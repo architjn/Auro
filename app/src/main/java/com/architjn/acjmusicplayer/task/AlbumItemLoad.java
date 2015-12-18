@@ -5,26 +5,28 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.graphics.Palette;
 import android.view.View;
 import android.widget.TextView;
 
+import com.afollestad.async.Action;
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.utils.adapters.AlbumListAdapter;
 
 /**
- * Created by architjn on 29/11/15.
+ * Created by architjn on 18/12/15.
  */
-public class AlbumItemLoad extends AsyncTask<Void, Void, Void> {
+public class AlbumItemLoad extends Action{
 
-    private Context context;
     private String artPath;
+    private long duration = 800;
+    private Context context;
     private TextView name, artist;
     private View bgView;
-    private ValueAnimator colorAnimation;
     private Bitmap bmp;
-    private long duration = 800;
+    private ValueAnimator colorAnimation;
 
     public AlbumItemLoad(Context context, String artPath, View header) {
         this.context = context;
@@ -42,25 +44,31 @@ public class AlbumItemLoad extends AsyncTask<Void, Void, Void> {
         this.bgView = holder.bottomBg;
     }
 
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
+    private ValueAnimator setAnimator(int colorFrom, int colorTo) {
+        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+        colorAnimation.setDuration(duration);
+        return colorAnimation;
     }
 
+    @NonNull
     @Override
-    protected Void doInBackground(Void... voids) {
+    public String id() {
+        return artPath;
+    }
+
+    @Nullable
+    @Override
+    protected Object run() throws InterruptedException {
         bmp = BitmapFactory.decodeFile(artPath);
         Palette.generateAsync(bmp,
                 new Palette.PaletteAsyncListener() {
                     @Override
                     public void onGenerated(final Palette palette) {
                         try {
-                            Integer colorFrom = context.getResources().getColor(android.R.color.white);
-                            Integer colorTo = palette.getVibrantColor(palette.getDarkVibrantColor(
-                                    palette.getDarkMutedColor(palette.getMutedColor(
-                                            context.getResources().getColor(R.color.colorPrimary)))));
-                            colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-                            colorAnimation.setDuration(duration);
+                            colorAnimation = setAnimator(context.getResources().getColor(android.R.color.white),
+                                    palette.getVibrantColor(palette.getDarkVibrantColor(
+                                            palette.getDarkMutedColor(palette.getMutedColor(
+                                                    context.getResources().getColor(R.color.colorPrimary))))));
                             colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 
                                 @Override
@@ -70,10 +78,8 @@ public class AlbumItemLoad extends AsyncTask<Void, Void, Void> {
 
                             });
                             colorAnimation.start();
-                            Integer colorFrom1 = context.getResources().getColor(R.color.album_grid_name_default);
-                            Integer colorTo1 = palette.getVibrantSwatch().getBodyTextColor();
-                            colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom1, colorTo1);
-                            colorAnimation.setDuration(duration);
+                            colorAnimation = setAnimator(context.getResources().getColor(R.color.album_grid_name_default),
+                                    palette.getVibrantSwatch().getBodyTextColor());
                             colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                                 @Override
                                 public void onAnimationUpdate(ValueAnimator animator) {
@@ -81,10 +87,8 @@ public class AlbumItemLoad extends AsyncTask<Void, Void, Void> {
                                 }
                             });
                             colorAnimation.start();
-                            Integer colorFrom2 = context.getResources().getColor(R.color.album_grid_artist_default);
-                            Integer colorTo2 = palette.getVibrantSwatch().getTitleTextColor();
-                            colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom2, colorTo2);
-                            colorAnimation.setDuration(duration);
+                            colorAnimation = setAnimator(context.getResources().getColor(R.color.album_grid_artist_default),
+                                    palette.getVibrantSwatch().getTitleTextColor());
                             colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                                 @Override
                                 public void onAnimationUpdate(ValueAnimator animator) {
@@ -100,11 +104,5 @@ public class AlbumItemLoad extends AsyncTask<Void, Void, Void> {
                     }
                 });
         return null;
-    }
-
-
-    @Override
-    protected void onPostExecute(Void aVoid) {
-        super.onPostExecute(aVoid);
     }
 }

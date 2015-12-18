@@ -2,8 +2,6 @@ package com.architjn.acjmusicplayer.ui.layouts.fragments;
 
 import android.Manifest;
 import android.content.Context;
-import android.graphics.drawable.Animatable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -13,8 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.ImageView;
 
+import com.afollestad.async.Async;
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.utils.ListSongs;
 import com.architjn.acjmusicplayer.utils.PermissionChecker;
@@ -69,11 +67,17 @@ public class ArtistListFragment extends Fragment {
                 });
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Async.cancelAll();
+    }
+
     private void setArtistList() {
         rv.setLayoutManager(new LinearLayoutManager(context));
         rv.addItemDecoration(new SimpleDividerItemDecoration(context, 75));
         ArrayList<Artist> items = ListSongs.getArtistList(context);
-        adapter = new ArtistsListAdapter(context,items , this);
+        adapter = new ArtistsListAdapter(context, items, this);
         rv.setAdapter(adapter);
         rv.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

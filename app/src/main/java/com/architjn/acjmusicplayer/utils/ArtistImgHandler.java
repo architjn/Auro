@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.architjn.acjmusicplayer.task.FetchArtistArtWork;
+import com.architjn.acjmusicplayer.task.FetchArtist;
 
 import java.io.File;
 import java.util.Arrays;
@@ -59,13 +59,14 @@ public abstract class ArtistImgHandler extends SQLiteOpenHelper {
             else
                 removeArtistImgFromDB(name);
         } else {
-            new FetchArtistArtWork(context, name, randomNumbers[pos]) {
-                @Override
-                public void onDownloadComplete(String url) {
-                    updateArtistArtWorkInDB(name, url);
-                    ArtistImgHandler.this.onDownloadComplete(url);
-                }
-            }.execute();
+            new FetchArtist(context, name, randomNumbers[pos], this);
+//            new FetchArtistArtWork(context, name, randomNumbers[pos]) {
+//                @Override
+//                public void onDownloadComplete(String url) {
+//                    updateArtistArtWorkInDB(name, url);
+//                    ArtistImgHandler.this.onDownloadComplete(url);
+//                }
+//            }.execute();
         }
         return null;
     }
