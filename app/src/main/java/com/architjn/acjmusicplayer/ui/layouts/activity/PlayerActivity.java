@@ -42,21 +42,21 @@ import java.util.TimerTask;
  */
 public class PlayerActivity extends AppCompatActivity {
 
+    public static final String ACTION_RECIEVE_SONG = "action_recieve_song";
+    private static final String TAG = "PlayerActivity-TAG";
+    public AppCompatSeekBar seekBar;
     private TimerTask task;
     private ImageView artHolder;
     private PointShiftingArrayList<Song> songPointShiftingArrayList;
-
-    private enum PlayerState {
-        PLAYING, PAUSED
-    }
-
-    private static final String TAG = "PlayerActivity-TAG";
     private RecyclerView rv;
     private Song currentSong;
     private PlayerState playerState;
-
-    public static final String ACTION_RECIEVE_SONG = "action_recieve_song";
-
+    private PlayingListAdapter adapter;
+    private TextView currentSeekText;
+    private TextView totalSeekText;
+    private Timer timer;
+    private UserPreferenceHandler preferenceHandler;
+    private ImageView pause, repeat, shuffle;
     private BroadcastReceiver br = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -73,13 +73,15 @@ public class PlayerActivity extends AppCompatActivity {
             }
         }
     };
-    private PlayingListAdapter adapter;
-    public AppCompatSeekBar seekBar;
-    private TextView currentSeekText;
-    private TextView totalSeekText;
-    private Timer timer;
-    private UserPreferenceHandler preferenceHandler;
-    private ImageView pause, repeat, shuffle;
+
+    public static Drawable convertDrawableToGrayScale(Drawable drawable) {
+        if (drawable == null)
+            return null;
+
+        Drawable res = drawable.mutate();
+        res.setColorFilter(Color.parseColor("#9cffffff"), PorterDuff.Mode.SRC_IN);
+        return res;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -139,8 +141,7 @@ public class PlayerActivity extends AppCompatActivity {
     private void updateView(Context context, Intent intent) {
         currentSong = new PlayerDBHandler(context)
                 .getSongFromId(intent.getLongExtra("songId", 0));
-        new PlayerLoader(context, artHolder)
-                .execute(currentSong.getAlbumId());
+        new PlayerLoader(context, artHolder, currentSong.getAlbumId()).execute();
         totalSeekText.setText(currentSong.getDuration());
         seekBar.setMax((int) currentSong.getDurationLong());
         seekBar.setProgress(intent.getIntExtra("seek", 0));
@@ -282,15 +283,6 @@ public class PlayerActivity extends AppCompatActivity {
                     .getDrawable(R.drawable.ic_shuffle_white_48dp, null)));
     }
 
-    public static Drawable convertDrawableToGrayScale(Drawable drawable) {
-        if (drawable == null)
-            return null;
-
-        Drawable res = drawable.mutate();
-        res.setColorFilter(Color.parseColor("#9cffffff"), PorterDuff.Mode.SRC_IN);
-        return res;
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -311,5 +303,9 @@ public class PlayerActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private enum PlayerState {
+        PLAYING, PAUSED
     }
 }
