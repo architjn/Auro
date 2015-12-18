@@ -2,22 +2,21 @@ package com.architjn.acjmusicplayer.task;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.afollestad.async.Action;
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.ui.layouts.activity.MainActivity;
+import com.squareup.picasso.Picasso;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
@@ -26,7 +25,6 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,12 +35,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-/**
- * Created by architjn on 15/12/15.
- */
-public abstract class FetchArtistArtWork extends AsyncTask<Void, Void, Void> {
+public abstract class FetchArtistArtWork extends Action {
 
-    private static final String TAG = "FetchArtistArtWork-TAG";
     private Context context;
     private String name;
     private int random;
@@ -54,10 +48,8 @@ public abstract class FetchArtistArtWork extends AsyncTask<Void, Void, Void> {
         this.context = context;
         this.name = name;
         this.random = random;
-        if (!isFragmentSame())
-            cancel(true);
-        if (name == null || name.matches("<unknown>"))
-            this.cancel(true);
+        if (!isFragmentSame()) cancel();
+        if (name == null || name.matches("<unknown>")) cancel();
         StringBuilder builder = new StringBuilder();
         builder.append(context.getResources().getString(R.string.artist_fetch_url));
         try {
@@ -70,40 +62,40 @@ public abstract class FetchArtistArtWork extends AsyncTask<Void, Void, Void> {
         this.url = builder.toString();
     }
 
-    private boolean isActivityRunning() {
-        return ((MainActivity) context).isFinishing();
-    }
-
     private boolean isFragmentSame() {
         return ((MainActivity) context).currentFragment == MainActivity.FragmentName.Artists;
     }
 
+    @NonNull
     @Override
-    protected Void doInBackground(Void... voids) {
+    public String id() {
+        return this.getClass().getSimpleName();
+    }
+
+    @Nullable
+    @Override
+    protected Object run() throws InterruptedException {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         HttpClient httpclient = new DefaultHttpClient();
-        if (!isFragmentSame())
-            cancel(true);
+        if (!isFragmentSame()) cancel();
         HttpPost httppost = new HttpPost(url);
         try {
             httppost.setEntity(new UrlEncodedFormEntity(params));
             HttpResponse response = httpclient.execute(httppost);
             jsonResult = inputStreamToString(response.getEntity().getContent())
                     .toString();
-            if (jsonResult != null) {
-                try {
-                    JSONObject jsonResponse = new JSONObject(jsonResult);
-                    JSONArray imageArray = jsonResponse.getJSONObject("artist").getJSONArray("image");
-                    for (int i = 0; i < imageArray.length(); i++) {
-                        JSONObject image = imageArray.getJSONObject(i);
-                        if (image.optString("size").matches("large") && !image.optString("#text").matches("")) {
-                            downloadedImg = downloadBitmap(image.optString("#text"));
-                            onDownloadComplete(saveImageToStorage(downloadedImg));
-                        }
+            try {
+                JSONObject jsonResponse = new JSONObject(jsonResult);
+                JSONArray imageArray = jsonResponse.getJSONObject("artist").getJSONArray("image");
+                for (int i = 0; i < imageArray.length(); i++) {
+                    JSONObject image = imageArray.getJSONObject(i);
+                    if (image.optString("size").matches("large") && !image.optString("#text").matches("")) {
+                        downloadedImg = downloadBitmap(image.optString("#text"));
+                        onDownloadComplete(saveImageToStorage(downloadedImg));
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         } catch (ClientProtocolException e) {
             Log.e("e", "error1");
@@ -116,7 +108,7 @@ public abstract class FetchArtistArtWork extends AsyncTask<Void, Void, Void> {
     }
 
     private StringBuilder inputStreamToString(InputStream is) {
-        String rLine = "";
+        String rLine;
         StringBuilder answer = new StringBuilder();
         BufferedReader rd = new BufferedReader(new InputStreamReader(is));
 
@@ -128,11 +120,6 @@ public abstract class FetchArtistArtWork extends AsyncTask<Void, Void, Void> {
             e.printStackTrace();
         }
         return answer;
-    }
-
-    @Override
-    protected void onPostExecute(Void aVoid) {
-        super.onPostExecute(aVoid);
     }
 
     private String saveImageToStorage(Bitmap bitmap) {
@@ -154,66 +141,25 @@ public abstract class FetchArtistArtWork extends AsyncTask<Void, Void, Void> {
         (new File(filePath)).mkdirs();
         File image = new File(filePath, fileName.toString());
         if (image.exists()) image.delete();
-//                FileOutputStream outStream;
         try {
             FileOutputStream out = new FileOutputStream(image);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
             out.flush();
             out.close();
             return image.getPath();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
 
     private Bitmap downloadBitmap(String url) {
-        // initilize the default HTTP client object
-        final DefaultHttpClient client = new DefaultHttpClient();
-
-        //forming a HttoGet request
-        final HttpGet getRequest = new HttpGet(url);
         try {
-
-            HttpResponse response = client.execute(getRequest);
-
-            //check 200 OK for success
-            final int statusCode = response.getStatusLine().getStatusCode();
-
-            if (statusCode != HttpStatus.SC_OK) {
-                Log.w("ImageDownloader", "Error " + statusCode +
-                        " while retrieving bitmap from " + url);
-                return null;
-
-            }
-
-            final HttpEntity entity = response.getEntity();
-            if (entity != null) {
-                InputStream inputStream = null;
-                try {
-                    // getting contents from the stream
-                    inputStream = entity.getContent();
-
-                    // decoding stream data back into image Bitmap that android understands
-                    final Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-
-                    return bitmap;
-                } finally {
-                    if (inputStream != null) {
-                        inputStream.close();
-                    }
-                    entity.consumeContent();
-                }
-            }
+            return Picasso.with(context).load(url).get();
         } catch (Exception e) {
-            // You Could provide a more explicit error message for IOException
-            getRequest.abort();
             Log.e("ImageDownloader", "Something went wrong while" +
                     " retrieving bitmap from " + url + e.toString());
         }
-
         return null;
     }
 
