@@ -13,6 +13,10 @@ public class Song {
     private long duration;
     private boolean fav;
 
+    public Song() {
+        super();
+    }
+
     public Song(long songId, String name, String artist,
                 String path, boolean fav, long albumId,
                 String albumName, long dateAdded, long duration) {

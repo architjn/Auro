@@ -57,9 +57,6 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.Simple
         holder.name.setText(items.get(position).getName());
         holder.artistName.setText(items.get(position).getArtist());
         holder.mainView.setElevation(0);
-//        holder.img.setImageDrawable(null);
-        //Load Image in Background
-//        new SongItemLoader(context, holder, items.get(position).getAlbumId(), dpToPx(50)).execute();
         setAlbumArt(position, holder);
         if (selectedHolder != null)
             selectedHolder.mainView.setBackgroundColor(context.getResources()

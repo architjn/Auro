@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.afollestad.async.Action;
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.utils.adapters.AlbumListAdapter;
+import com.architjn.acjmusicplayer.utils.adapters.SearchListAdapter;
 
 /**
  * Created by architjn on 18/12/15.
@@ -42,6 +43,15 @@ public class AlbumItemLoad extends Action{
         this.name = holder.name;
         this.artist = holder.artist;
         this.bgView = holder.bottomBg;
+    }
+
+
+    public AlbumItemLoad(Context context, String artPath, SearchListAdapter.SimpleItemViewHolder holder) {
+        this.context = context;
+        this.artPath = artPath;
+        this.name = holder.albumName;
+        this.artist = holder.albumArtist;
+        this.bgView = holder.bgView;
     }
 
     private ValueAnimator setAnimator(int colorFrom, int colorTo) {

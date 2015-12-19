@@ -96,19 +96,19 @@ public class PlayerService extends Service {
                 updatePlayer();
                 break;
             case ACTION_PLAY_ALL_SONGS:
-                if (listType != null && listType == ListType.ALL)
-                    musicPlayerHandler.playNextSong(intent.getIntExtra("pos", 0));
-                else
+//                if (listType != null && listType == ListType.ALL)
+//                    musicPlayerHandler.playNextSong(intent.getIntExtra("pos", 0));
+//                else
                     musicPlayerHandler.playAllSongs(intent.getLongExtra("songId", 0));
                 listType = ListType.ALL;
                 updatePlayer();
                 break;
             case ACTION_PLAY_ALBUM:
-                if (listType != null && listType == ListType.ALBUM
-                        && intent.getLongExtra("albumId", 0) ==
-                        musicPlayerHandler.getCurrentPlayingSong().getAlbumId()) {
-                    musicPlayerHandler.playNextSong(intent.getIntExtra("songPos", 0));
-                } else
+//                if (listType != null && listType == ListType.ALBUM
+//                        && intent.getLongExtra("albumId", 0) ==
+//                        musicPlayerHandler.getCurrentPlayingSong().getAlbumId()) {
+//                    musicPlayerHandler.playNextSong(intent.getIntExtra("songPos", 0));
+//                } else
                     musicPlayerHandler.playAlbumSongs(intent.getLongExtra("albumId", 0),
                             intent.getIntExtra("songPos", 0));
                 listType = ListType.ALBUM;
@@ -144,11 +144,11 @@ public class PlayerService extends Service {
                 updatePlayer();
                 break;
             case ACTION_PLAY_ARTIST:
-                if (listType == ListType.ARTIST &&
-                        musicPlayerHandler.getCurrentPlayingSong()
-                                .getArtist().matches(intent.getStringExtra("name")))
-                    musicPlayerHandler.playNextSong(intent.getIntExtra("pos", 0));
-                else
+//                if (listType == ListType.ARTIST &&
+//                        musicPlayerHandler.getCurrentPlayingSong()
+//                                .getArtist().matches(intent.getStringExtra("name")))
+//                    musicPlayerHandler.playNextSong(intent.getIntExtra("pos", 0));
+//                else
                     musicPlayerHandler.playArtistSongs(intent.getStringExtra("name"),
                             intent.getIntExtra("pos", 0));
                 listType = ListType.ARTIST;

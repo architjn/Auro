@@ -1,5 +1,6 @@
 package com.architjn.acjmusicplayer.ui.layouts.activity;
 
+import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,12 +10,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -29,6 +33,7 @@ import com.architjn.acjmusicplayer.task.ColorChangeAnimation;
 import com.architjn.acjmusicplayer.ui.layouts.fragments.AlbumsListFragment;
 import com.architjn.acjmusicplayer.ui.layouts.fragments.ArtistListFragment;
 import com.architjn.acjmusicplayer.ui.layouts.fragments.PlaylistListFragment;
+import com.architjn.acjmusicplayer.ui.layouts.fragments.SearchViewFragment;
 import com.architjn.acjmusicplayer.ui.layouts.fragments.SongsListFragment;
 import com.architjn.acjmusicplayer.ui.widget.OnSwipeListener;
 import com.architjn.acjmusicplayer.ui.widget.SwipeInterface;
@@ -92,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         initDrawer();
         setPlayer();
         songFragment = new SongsListFragment();
-        fragmentSwitcher(songFragment, 0, FragmentName.Songs);
+        fragmentSwitcher(songFragment, 0, FragmentName.Songs, true);
         sendBroadcast(new Intent(PlayerService.ACTION_GET_SONG));
     }
 
@@ -168,25 +173,25 @@ public class MainActivity extends AppCompatActivity {
                         if (songFragment == null)
                             songFragment = new SongsListFragment();
                         fragmentSwitcher(songFragment, i,
-                                FragmentName.Songs);
+                                FragmentName.Songs, true);
                         break;
                     case 1:
                         if (albumFragment == null)
                             albumFragment = new AlbumsListFragment();
                         fragmentSwitcher(albumFragment, i,
-                                FragmentName.Albums);
+                                FragmentName.Albums, true);
                         break;
                     case 2:
                         if (artistFragment == null)
                             artistFragment = new ArtistListFragment();
                         fragmentSwitcher(artistFragment, i,
-                                FragmentName.Artists);
+                                FragmentName.Artists, true);
                         break;
                     case 3:
                         if (playlistFragment == null)
                             playlistFragment = new PlaylistListFragment();
                         fragmentSwitcher(playlistFragment, i,
-                                FragmentName.Playlists);
+                                FragmentName.Playlists, true);
                         break;
                 }
             }
@@ -212,7 +217,8 @@ public class MainActivity extends AppCompatActivity {
         drawerToggle.syncState();
     }
 
-    private void fragmentSwitcher(Fragment fragment, int itemId, FragmentName fname) {
+    private void fragmentSwitcher(Fragment fragment, int itemId,
+                                  FragmentName fname, boolean slideAnimate) {
         currentFragment = fname;
         if (currentItem == itemId) {
             // Don't allow re-selection of the currently active item
@@ -222,13 +228,14 @@ public class MainActivity extends AppCompatActivity {
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(String.valueOf(fname));
 
-        if (itemId >= 0)
+        if (slideAnimate)
             getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(android.R.anim.slide_in_left, 0)
                     .replace(R.id.main_fragment_holder, fragment)
                     .commit();
         else
             getSupportFragmentManager().beginTransaction()
+                    .setCustomAnimations(android.R.anim.fade_in, 0)
                     .replace(R.id.main_fragment_holder, fragment)
                     .commit();
 
@@ -253,34 +260,31 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         // Retrieve the SearchView and plug it into SearchManager
-//        setSearchView(menu);
+        setSearchView(menu);
         return true;
     }
 
     private void setSearchView(Menu menu) {
-//        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
-//        final SearchViewFragment searchViewFragment = new SearchViewFragment();
-//        searchViewFragment.setSearchView(searchView);
-//        MenuItemCompat.setOnActionExpandListener(menu.findItem(R.id.action_search), new MenuItemCompat.OnActionExpandListener() {
-//            @Override
-//            public boolean onMenuItemActionExpand(MenuItem item) {
-//                lastExpanded = currentFragment;
-//                lastItem = currentItem;
-////                toolbar.setBackgroundColor(getResources().getColor(R.color.white));
-////                changeToolbarColorLight(searchView);
-//                fragmentSwitcher(searchViewFragment, -1, FragmentName.Search);
-//                return true;
-//            }
-//
-//            @Override
-//            public boolean onMenuItemActionCollapse(MenuItem item) {
-//                fragmentSwitcher(getFragmentFromName(lastExpanded), lastItem, lastExpanded);
-////                toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-//                return true;
-//            }
-//        });
-//        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
-//        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+        final SearchViewFragment searchViewFragment = new SearchViewFragment();
+        searchViewFragment.setSearchView(searchView);
+        MenuItemCompat.setOnActionExpandListener(menu.findItem(R.id.action_search), new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                lastExpanded = currentFragment;
+                lastItem = currentItem;
+                fragmentSwitcher(searchViewFragment, -1, FragmentName.Search, false);
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                fragmentSwitcher(getFragmentFromName(lastExpanded), lastItem, lastExpanded, false);
+                return true;
+            }
+        });
+        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
     }
 
     private void changeToolbarColorLight(View view) {

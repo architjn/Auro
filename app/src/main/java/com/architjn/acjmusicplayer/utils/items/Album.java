@@ -10,6 +10,10 @@ public class Album {
     private boolean fav;
     private int songNumber;
 
+    public Album() {
+        super();
+    }
+
     public Album(long albumId, String albumTitle, String albumArtist, boolean fav, String albumArtPath, int songNumber) {
         this.albumId = albumId;
         this.albumTitle = albumTitle;

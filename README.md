@@ -13,6 +13,9 @@
 ######Thanks to
 - <a href="https://plus.google.com/+aleksandartesic">Aleksandar Tešić</a> for concept design
 
+#Donate
+Paypal Donation id - architjn93@gmail.com
+
 #Screenshots
 <img src="https://raw.githubusercontent.com/architjn/Auro/master/SCREENSHOTS/songs.png" height="500"/>
 &nbsp;&nbsp;&nbsp;&nbsp;

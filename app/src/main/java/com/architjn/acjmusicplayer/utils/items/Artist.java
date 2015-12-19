@@ -5,10 +5,14 @@ package com.architjn.acjmusicplayer.utils.items;
  */
 public class Artist {
 
-    private final long artistId;
-    private final String artistName;
-    private final int numberOfAlbums;
-    private final int numberOfSongs;
+    private long artistId;
+    private String artistName;
+    private int numberOfAlbums;
+    private int numberOfSongs;
+
+    public Artist() {
+        super();
+    }
 
     public Artist(long artistId, String artistName, int numberOfAlbums, int numberOfSongs) {
         this.artistId = artistId;
