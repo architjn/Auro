@@ -18,18 +18,15 @@ import java.util.Collections;
 public abstract class ArtistImgHandler extends SQLiteOpenHelper {
 
     private static final String TAG = "ArtistImgHandler-TAG";
-    private final Integer[] randomNumbers;
-    private int pos = 0;
-    private Context context;
-
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "ArtistDB";
-
     private static final String TABLE_PLAYBACK = "artist";
-
     private static final String ARTIST_KEY_ID = "artist_id";
     private static final String ARTIST_KEY_NAME = "artist_name";
     private static final String ARTIST_KEY_URL = "artist_img";
+    private final Integer[] randomNumbers;
+    private int pos = 0;
+    private Context context;
 
     public ArtistImgHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

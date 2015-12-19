@@ -260,6 +260,13 @@ public class PlaylistListAdapter extends RecyclerView.Adapter<PlaylistListAdapte
         notifyDataSetChanged();
     }
 
+    public void onBackPressed() {
+        if (expandedPosition != -1)
+            collapse();
+        else
+            ((MainActivity) fragment.getActivity()).killActivity();
+    }
+
     public class SimpleItemViewHolder extends RecyclerView.ViewHolder {
 
         public TextView name, songCount, playButton, shuffleButton;
@@ -276,14 +283,6 @@ public class PlaylistListAdapter extends RecyclerView.Adapter<PlaylistListAdapte
             playButton = (TextView) itemView.findViewById(R.id.playlist_play_button);
             shuffleButton = (TextView) itemView.findViewById(R.id.playlist_shuffle_button);
         }
-    }
-
-
-    public void onBackPressed() {
-        if (expandedPosition != -1)
-            collapse();
-        else
-            ((MainActivity) fragment.getActivity()).killActivity();
     }
 
 }

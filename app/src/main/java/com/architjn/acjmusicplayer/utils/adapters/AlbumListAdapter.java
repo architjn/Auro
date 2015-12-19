@@ -105,6 +105,11 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Simp
         return items.size() + 1;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return isHeader(position) ? ITEM_VIEW_TYPE_HEADER : ITEM_VIEW_TYPE_ITEM;
+    }
+
     public class SimpleItemViewHolder extends RecyclerView.ViewHolder {
 
         public TextView name, artist;
@@ -119,11 +124,6 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Simp
             artist = (TextView) itemView.findViewById(R.id.album_list_artist);
             img = (ImageView) itemView.findViewById(R.id.album_list_img);
         }
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return isHeader(position) ? ITEM_VIEW_TYPE_HEADER : ITEM_VIEW_TYPE_ITEM;
     }
 
 }

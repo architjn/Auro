@@ -66,12 +66,6 @@ public class PlayerHandler {
         setCurrentPlayingSongs(newSongsList);
     }
 
-    public void setCurrentPlayingSongs(ArrayList<Song> currentPlayingSongs) {
-        this.currentPlayingSongs.clear();
-        this.currentPlayingSongs = currentPlayingSongs;
-        dbHandler.changePlaybackList(currentPlayingSongs, getCurrentPlayingPos());
-    }
-
     public void stopPlayer() {
 //        setPlayingPos(-1);
 //        if (mediaPlayer != null) {
@@ -231,6 +225,12 @@ public class PlayerHandler {
 
     public ArrayList<Song> getCurrentPlayingSongs() {
         return currentPlayingSongs;
+    }
+
+    public void setCurrentPlayingSongs(ArrayList<Song> currentPlayingSongs) {
+        this.currentPlayingSongs.clear();
+        this.currentPlayingSongs = currentPlayingSongs;
+        dbHandler.changePlaybackList(currentPlayingSongs, getCurrentPlayingPos());
     }
 
     public Song getCurrentPlayingSong() {

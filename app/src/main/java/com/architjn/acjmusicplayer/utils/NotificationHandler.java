@@ -142,12 +142,12 @@ public class NotificationHandler {
         notificationManager.notify(NOTIFICATION_ID, notificationCompat);
     }
 
-    public void setNotificationActive(boolean notificationActive) {
-        this.notificationActive = notificationActive;
-    }
-
     public boolean isNotificationActive() {
         return notificationActive;
+    }
+
+    public void setNotificationActive(boolean notificationActive) {
+        this.notificationActive = notificationActive;
     }
 
     public Notification getNotificationCompat() {

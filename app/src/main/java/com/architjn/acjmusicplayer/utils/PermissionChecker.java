@@ -20,18 +20,9 @@ public class PermissionChecker {
     public static final int REQUEST_CODE = 7;
     private static final String TAG = "PermissionChecker";
     private OnPermissionResponse response;
-
-
-    public interface OnPermissionResponse {
-        void onAccepted();
-
-        void onDecline();
-    }
-
     private Context context;
     private Activity activity;
     private View baseView;
-
     public PermissionChecker(Context context, Activity activity, View baseView) {
         this.context = context;
         this.activity = activity;
@@ -94,6 +85,12 @@ public class PermissionChecker {
                 }
             });
         }
+    }
+
+    public interface OnPermissionResponse {
+        void onAccepted();
+
+        void onDecline();
     }
 
 }

@@ -266,6 +266,13 @@ public class ArtistsListAdapter extends RecyclerView.Adapter<ArtistsListAdapter.
         }
     }
 
+    public void onBackPressed() {
+        if (expandedPosition != -1)
+            collapse();
+        else
+            ((MainActivity) fragment.getActivity()).killActivity();
+    }
+
     public class SimpleItemViewHolder extends RecyclerView.ViewHolder {
 
         public TextView name, songCount, songsButton, shuffleButton;
@@ -286,14 +293,6 @@ public class ArtistsListAdapter extends RecyclerView.Adapter<ArtistsListAdapter.
             songCount = (TextView) itemView.findViewById(R.id.artist_item_song_count);
             rv = (RecyclerView) itemView.findViewById(R.id.artist_sub_rv);
         }
-    }
-
-
-    public void onBackPressed() {
-        if (expandedPosition != -1)
-            collapse();
-        else
-            ((MainActivity) fragment.getActivity()).killActivity();
     }
 
 }

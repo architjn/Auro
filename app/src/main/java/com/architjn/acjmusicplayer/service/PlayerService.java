@@ -22,32 +22,6 @@ import java.io.IOException;
  */
 public class PlayerService extends Service {
 
-    /*
-    ListType is used to check if previously played list was same
-    If same, then just switch to new Song. To avoid loading list of songs again and again
-     */
-    public enum ListType {
-        ALL, ALBUM, ARTIST, SINGLE, PLAYLIST
-    }
-
-    private static final String TAG = "PlayerService-TAG";
-    private BroadcastReceiver playerServiceBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            try {
-                handleBroadcastReceived(context, intent);
-            } catch (IOException e) {
-                e.printStackTrace();
-                Toast.makeText(PlayerService.this, R.string.cant_play_song, Toast.LENGTH_SHORT).show();
-            }
-        }
-    };
-
-    private PlayerHandler musicPlayerHandler;
-    private Context context;
-
-    private ListType listType;
-
     public static final String ACTION_PLAY_SINGLE = "ACTION_PLAY_SINGLE";
     public static final String ACTION_PLAY_ALL_SONGS = "ACTION_PLAY_ALL_SONGS";
     public static final String ACTION_PLAY_ALBUM = "ACTION_PLAY_ALBUM";
@@ -61,8 +35,22 @@ public class PlayerService extends Service {
     public static final String ACTION_NEXT_SONG = "ACTION_NEXT_SONG";
     public static final String ACTION_PREV_SONG = "ACTION_PREV_SONG";
     public static final String ACTION_PAUSE_SONG = "ACTION_PAUSE_SONG";
-
+    private static final String TAG = "PlayerService-TAG";
+    private PlayerHandler musicPlayerHandler;
+    private Context context;
+    private ListType listType;
     private NotificationHandler notificationHandler;
+    private BroadcastReceiver playerServiceBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                handleBroadcastReceived(context, intent);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(PlayerService.this, R.string.cant_play_song, Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -99,7 +87,7 @@ public class PlayerService extends Service {
 //                if (listType != null && listType == ListType.ALL)
 //                    musicPlayerHandler.playNextSong(intent.getIntExtra("pos", 0));
 //                else
-                    musicPlayerHandler.playAllSongs(intent.getLongExtra("songId", 0));
+                musicPlayerHandler.playAllSongs(intent.getLongExtra("songId", 0));
                 listType = ListType.ALL;
                 updatePlayer();
                 break;
@@ -109,8 +97,8 @@ public class PlayerService extends Service {
 //                        musicPlayerHandler.getCurrentPlayingSong().getAlbumId()) {
 //                    musicPlayerHandler.playNextSong(intent.getIntExtra("songPos", 0));
 //                } else
-                    musicPlayerHandler.playAlbumSongs(intent.getLongExtra("albumId", 0),
-                            intent.getIntExtra("songPos", 0));
+                musicPlayerHandler.playAlbumSongs(intent.getLongExtra("albumId", 0),
+                        intent.getIntExtra("songPos", 0));
                 listType = ListType.ALBUM;
                 updatePlayer();
                 break;
@@ -149,8 +137,8 @@ public class PlayerService extends Service {
 //                                .getArtist().matches(intent.getStringExtra("name")))
 //                    musicPlayerHandler.playNextSong(intent.getIntExtra("pos", 0));
 //                else
-                    musicPlayerHandler.playArtistSongs(intent.getStringExtra("name"),
-                            intent.getIntExtra("pos", 0));
+                musicPlayerHandler.playArtistSongs(intent.getStringExtra("name"),
+                        intent.getIntExtra("pos", 0));
                 listType = ListType.ARTIST;
                 updatePlayer();
                 break;
@@ -202,5 +190,13 @@ public class PlayerService extends Service {
             mp.stop();
             mp.release();
         }
+    }
+
+    /*
+    ListType is used to check if previously played list was same
+    If same, then just switch to new Song. To avoid loading list of songs again and again
+     */
+    public enum ListType {
+        ALL, ALBUM, ARTIST, SINGLE, PLAYLIST
     }
 }
