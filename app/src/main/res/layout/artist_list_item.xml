@@ -93,19 +93,20 @@
             android:paddingRight="10dp">
 
             <TextView
+                android:id="@+id/artist_song_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:foreground="?android:attr/selectableItemBackground"
                 android:paddingBottom="6dp"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:id="@+id/artist_song_button"
                 android:paddingTop="6dp"
                 android:text="@string/songs_uppercase"
                 android:textColor="@color/accent_material_light"
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/artist_shuffle_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:foreground="?android:attr/selectableItemBackground"
@@ -113,7 +114,6 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:paddingTop="6dp"
-                android:id="@+id/artist_shuffle_button"
                 android:text="@string/shuffle_caps"
                 android:textColor="@color/accent_material_light"
                 android:textStyle="bold" />

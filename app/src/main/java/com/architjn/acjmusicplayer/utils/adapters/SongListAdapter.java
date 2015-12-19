@@ -154,22 +154,6 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.Simple
         return items.size();
     }
 
-    public class SimpleItemViewHolder extends RecyclerView.ViewHolder {
-
-        public TextView name, artistName;
-        public View mainView, menu;
-        public ImageView img;
-
-        public SimpleItemViewHolder(View itemView) {
-            super(itemView);
-            mainView = itemView;
-            img = (ImageView) itemView.findViewById(R.id.song_item_img);
-            name = (TextView) itemView.findViewById(R.id.song_item_name);
-            menu = itemView.findViewById(R.id.song_item_menu);
-            artistName = (TextView) itemView.findViewById(R.id.song_item_artist);
-        }
-    }
-
     private void animateElevation(int from, int to, final SimpleItemViewHolder holder) {
         Integer elevationFrom = from;
         Integer elevationTo = to;
@@ -207,6 +191,22 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.Simple
         } else {
             if ((fragment.getActivity()) != null)
                 ((MainActivity) fragment.getActivity()).killActivity();
+        }
+    }
+
+    public class SimpleItemViewHolder extends RecyclerView.ViewHolder {
+
+        public TextView name, artistName;
+        public View mainView, menu;
+        public ImageView img;
+
+        public SimpleItemViewHolder(View itemView) {
+            super(itemView);
+            mainView = itemView;
+            img = (ImageView) itemView.findViewById(R.id.song_item_img);
+            name = (TextView) itemView.findViewById(R.id.song_item_name);
+            menu = itemView.findViewById(R.id.song_item_menu);
+            artistName = (TextView) itemView.findViewById(R.id.song_item_artist);
         }
     }
 

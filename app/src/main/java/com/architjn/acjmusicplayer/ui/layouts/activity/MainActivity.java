@@ -46,14 +46,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     private static final String TAG = "MainActivity-TAG";
+    public FragmentName currentFragment;
     private LinearLayout smallPlayer;
     private FragmentName lastExpanded;
     private int lastItem;
-
-    public enum FragmentName {
-        Albums, Songs, Artists, Playlists, Search
-    }
-
     private DrawerLayout drawerLayout;
     private ListView drawerList;
     private ArrayAdapter<String> navigationDrawerAdapter;
@@ -64,10 +60,6 @@ public class MainActivity extends AppCompatActivity {
     private AlbumsListFragment albumFragment;
     private ArtistListFragment artistFragment;
     private PlaylistListFragment playlistFragment;
-
-    public FragmentName currentFragment;
-
-
     private BroadcastReceiver br = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -335,5 +327,9 @@ public class MainActivity extends AppCompatActivity {
                 playlistFragment.onBackPress();
                 break;
         }
+    }
+
+    public enum FragmentName {
+        Albums, Songs, Artists, Playlists, Search
     }
 }

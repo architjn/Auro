@@ -19,7 +19,7 @@ import com.architjn.acjmusicplayer.utils.adapters.SearchListAdapter;
 /**
  * Created by architjn on 18/12/15.
  */
-public class AlbumItemLoad extends Action{
+public class AlbumItemLoad extends Action {
 
     private String artPath;
     private long duration = 800;

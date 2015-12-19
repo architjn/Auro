@@ -128,6 +128,14 @@ public class ArtistSongListAdapter extends RecyclerView.Adapter<ArtistSongListAd
         return items.size() + 1;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if (isHeader(position))
+            return ITEM_VIEW_TYPE_HEADER;
+        else
+            return ITEM_VIEW_TYPE_ITEM;
+    }
+
     public class SimpleItemViewHolder extends RecyclerView.ViewHolder {
 
         public TextView name, artistName;
@@ -142,14 +150,6 @@ public class ArtistSongListAdapter extends RecyclerView.Adapter<ArtistSongListAd
             menu = itemView.findViewById(R.id.song_item_menu);
             artistName = (TextView) itemView.findViewById(R.id.song_item_artist);
         }
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        if (isHeader(position))
-            return ITEM_VIEW_TYPE_HEADER;
-        else
-            return ITEM_VIEW_TYPE_ITEM;
     }
 
 }

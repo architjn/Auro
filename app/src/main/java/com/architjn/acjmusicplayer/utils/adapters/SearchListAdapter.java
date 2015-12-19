@@ -36,15 +36,13 @@ import java.util.ArrayList;
  * Created by architjn on 28/11/15.
  */
 public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.SimpleItemViewHolder> {
-    private static final String TAG = "SearchListAdapter-TAG";
-
     public static final int ITEM_VIEW_TYPE_HEADER_ARTISTS = 0;
     public static final int ITEM_VIEW_TYPE_HEADER_ALBUMS = 1;
     public static final int ITEM_VIEW_TYPE_HEADER_SONGS = 2;
     public static final int ITEM_VIEW_TYPE_LIST_ARTIST = 3;
     public static final int ITEM_VIEW_TYPE_LIST_ALBUM = 4;
     public static final int ITEM_VIEW_TYPE_LIST_SONG = 5;
-
+    private static final String TAG = "SearchListAdapter-TAG";
     private ArrayList<Song> songs;
     private ArrayList<Album> albums;
     private ArrayList<Artist> artists;
@@ -329,6 +327,11 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Si
         return totalSize;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return whatView(position);
+    }
+
     public class SimpleItemViewHolder extends RecyclerView.ViewHolder {
 
         public View mainView;
@@ -374,11 +377,6 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Si
             albumArt = (ImageView) itemView.findViewById(R.id.album_list_img);
             bgView = itemView.findViewById(R.id.album_list_bottom);
         }
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return whatView(position);
     }
 
 }

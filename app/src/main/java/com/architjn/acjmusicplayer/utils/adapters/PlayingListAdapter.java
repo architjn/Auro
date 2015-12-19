@@ -163,6 +163,21 @@ public class PlayingListAdapter extends RecyclerView.Adapter<PlayingListAdapter.
         return items.size() + 2;
     }
 
+    public void setPointOnShifted(int pointOnShifted) {
+        items.setPointOnShifted(pointOnShifted);
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (isHeader(position))
+            return ITEM_VIEW_TYPE_HEADER;
+        else if (isUpNextHeader(position))
+            return ITEM_VIEW_TYPE_UP_NEXT_HEADER;
+        else
+            return ITEM_VIEW_TYPE_ITEM;
+    }
+
     public class SimpleItemViewHolder extends RecyclerView.ViewHolder {
 
         public TextView name, artistName;
@@ -177,20 +192,5 @@ public class PlayingListAdapter extends RecyclerView.Adapter<PlayingListAdapter.
             menu = itemView.findViewById(R.id.song_item_menu);
             artistName = (TextView) itemView.findViewById(R.id.song_item_artist);
         }
-    }
-
-    public void setPointOnShifted(int pointOnShifted) {
-        items.setPointOnShifted(pointOnShifted);
-        notifyDataSetChanged();
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        if (isHeader(position))
-            return ITEM_VIEW_TYPE_HEADER;
-        else if (isUpNextHeader(position))
-            return ITEM_VIEW_TYPE_UP_NEXT_HEADER;
-        else
-            return ITEM_VIEW_TYPE_ITEM;
     }
 }
