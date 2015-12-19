@@ -14,7 +14,12 @@ import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.utils.ListSongs;
 import com.architjn.acjmusicplayer.utils.SearchListSpacesItemDecoration;
 import com.architjn.acjmusicplayer.utils.adapters.SearchListAdapter;
+import com.architjn.acjmusicplayer.utils.items.Album;
+import com.architjn.acjmusicplayer.utils.items.Artist;
 import com.architjn.acjmusicplayer.utils.items.Search;
+import com.architjn.acjmusicplayer.utils.items.Song;
+
+import java.util.ArrayList;
 
 /**
  * Created by architjn on 17/12/15.
@@ -25,7 +30,7 @@ public class SearchViewFragment extends Fragment {
     private SearchView searchView;
     private RecyclerView rv;
     private Context context;
-    private View mainView;
+    private View mainView, emptyView;
     private SearchListAdapter adapter;
 
     @Override
@@ -39,8 +44,10 @@ public class SearchViewFragment extends Fragment {
     }
 
     private void setRecyclerView() {
-        Search searchRes = ListSongs.getSearchResults(context, "Pharrell");
+        Search searchRes = new Search(new ArrayList<Song>(), new ArrayList<Album>(),
+                new ArrayList<Artist>());
         rv = (RecyclerView) mainView.findViewById(R.id.search_view_results);
+        emptyView = mainView.findViewById(R.id.search_empty_view);
         final GridLayoutManager manager = new GridLayoutManager(context, 2);
         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -57,6 +64,8 @@ public class SearchViewFragment extends Fragment {
                 searchRes.getAlbums(), searchRes.getArtists());
         rv.addItemDecoration(new SearchListSpacesItemDecoration(2, adapter));
         rv.setAdapter(adapter);
+        emptyView.setVisibility(View.VISIBLE);
+        rv.setVisibility(View.GONE);
     }
 
     public void setSearchView(SearchView searchView) {
@@ -73,8 +82,15 @@ public class SearchViewFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if (newText.matches(""))
+                if (newText.matches("")) {
+                    if (emptyView != null) {
+                        emptyView.setVisibility(View.VISIBLE);
+                        rv.setVisibility(View.GONE);
+                    }
                     return false;
+                }
+                emptyView.setVisibility(View.GONE);
+                rv.setVisibility(View.VISIBLE);
                 Search searchRes = ListSongs.getSearchResults(context, newText);
                 adapter.updateList(searchRes);
                 return true;

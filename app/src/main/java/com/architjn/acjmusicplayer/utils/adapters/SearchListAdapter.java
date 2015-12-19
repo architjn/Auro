@@ -183,6 +183,7 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Si
         } else if (whatView(position) == ITEM_VIEW_TYPE_LIST_ARTIST) {
             if (artists.size() == 0)
                 return;
+            holder.artistArt.setImageDrawable(new ColorDrawable(0xffffffff));
             getArtistImg(holder, getPosition(position));
             holder.expandView.setVisibility(View.GONE);
             holder.artistName.setText(artists.get(getPosition(position)).getArtistName());
@@ -202,6 +203,7 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Si
         } else if (whatView(position) == ITEM_VIEW_TYPE_LIST_ALBUM) {
             if (albums.size() == 0)
                 return;
+            holder.albumArt.setImageDrawable(new ColorDrawable(0xffffffff));
             holder.albumName.setText(albums.get(getPosition(position)).getAlbumTitle());
             holder.albumArtist.setText(albums.get(getPosition(position)).getAlbumArtist());
             setArt(holder, getPosition(position));
@@ -217,6 +219,7 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Si
         } else {
             if (songs.size() == 0)
                 return;
+            holder.songArt.setImageDrawable(new ColorDrawable(0xffffffff));
             setSongArt(getPosition(position), holder);
             holder.songName.setText(songs.get(getPosition(position)).getName());
             holder.songArtist.setText(songs.get(getPosition(position)).getArtist());
