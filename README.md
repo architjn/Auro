@@ -53,8 +53,4 @@ Step 3 - Download from playstore <a href="https://play.google.com/store/apps/det
 #####(If any of the points above is not followed, we can take any legal action)
  
 #License
-This work is licences under <a href="https://github.com/architjn/Auro/blob/master/LICENSE.md">CC 4.0 International</a>
-
-With the following additional condition(s)
-
-1. Any derivative, work must not have a similar icon to the source work (Auro Music Player), and must not contain 'Auro' anywhere in the title.
+<a href="https://github.com/architjn/Auro/blob/master/LICENSE">Check here</a>
