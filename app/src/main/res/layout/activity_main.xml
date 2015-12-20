@@ -11,14 +11,6 @@
         android:fitsSystemWindows="false">
 
         <!-- activity view -->
-        <!--<com.sothree.slidinguppanel.SlidingUpPanelLayout-->
-        <!--android:id="@+id/sliding_layout"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:gravity="bottom"-->
-        <!--sothree:umanoPanelHeight="@dimen/small_sliding_player_height"-->
-        <!--sothree:umanoShadowHeight="4dp">-->
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -62,17 +54,6 @@
 
             </LinearLayout>
         </LinearLayout>
-
-        <!--<FrameLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:gravity="center|top">-->
-
-        <!--&lt;!&ndash;<include layout="@layout/mini_player" />&ndash;&gt;-->
-
-        <!--<include layout="@layout/large_player" />-->
-        <!--</FrameLayout>-->
-        <!--</com.sothree.slidinguppanel.SlidingUpPanelLayout>-->
 
         <!-- navigation drawer -->
         <LinearLayout

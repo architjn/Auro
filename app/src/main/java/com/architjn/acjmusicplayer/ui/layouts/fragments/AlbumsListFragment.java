@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -150,8 +151,8 @@ public class AlbumsListFragment extends Fragment {
             new AlbumItemLoad(context, lastAddedAlbum.getAlbumArtPath(), header).execute();
             setAlbumArt(lastAddedAlbum, header);
         } else {
-            int colorPrimary = context.getResources()
-                    .getColor(R.color.colorPrimary);
+            int colorPrimary = ContextCompat
+                    .getColor(context, R.color.colorPrimary);
             ((ImageView) header.findViewById(R.id.album_grid_header_img)).setImageDrawable(new ColorDrawable(colorPrimary));
             header.findViewById(R.id.album_grid_header_bg).setBackgroundColor(colorPrimary);
         }

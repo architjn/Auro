@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -73,8 +74,8 @@ public class ArtistSubListAdapter extends RecyclerView.Adapter<ArtistSubListAdap
                                     holder.nameHolder.setBackgroundColor(palette.getVibrantColor(
                                             palette.getDarkVibrantColor(
                                                     palette.getDarkMutedColor(palette.getMutedColor(
-                                                            context.getResources()
-                                                                    .getColor(R.color.colorPrimary))))));
+                                                            ContextCompat.getColor(context,
+                                                                    R.color.colorPrimary))))));
                                 }
                             }
                     );
@@ -91,7 +92,7 @@ public class ArtistSubListAdapter extends RecyclerView.Adapter<ArtistSubListAdap
                 }
             });
         else
-            holder.nameHolder.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+            holder.nameHolder.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
     }
 
     private void setOnClickListeners(SimpleItemViewHolder holder, final int position) {

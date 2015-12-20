@@ -426,7 +426,7 @@ public class ListSongs {
                 new String[]{String.valueOf(albumdId)},
                 null);
         String imagePath = "";
-        if (cursor.moveToFirst()) {
+        if (cursor != null && cursor.moveToFirst()) {
             imagePath = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
         }
         return imagePath;

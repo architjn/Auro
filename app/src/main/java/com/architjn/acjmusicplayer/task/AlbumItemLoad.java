@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
 import android.view.View;
 import android.widget.TextView;
@@ -75,10 +76,10 @@ public class AlbumItemLoad extends Action {
                     @Override
                     public void onGenerated(final Palette palette) {
                         try {
-                            colorAnimation = setAnimator(context.getResources().getColor(android.R.color.white),
+                            colorAnimation = setAnimator(ContextCompat.getColor(context, android.R.color.white),
                                     palette.getVibrantColor(palette.getDarkVibrantColor(
                                             palette.getDarkMutedColor(palette.getMutedColor(
-                                                    context.getResources().getColor(R.color.colorPrimary))))));
+                                                    ContextCompat.getColor(context, R.color.colorPrimary))))));
                             colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 
                                 @Override
@@ -88,7 +89,8 @@ public class AlbumItemLoad extends Action {
 
                             });
                             colorAnimation.start();
-                            colorAnimation = setAnimator(context.getResources().getColor(R.color.album_grid_name_default),
+                            colorAnimation = setAnimator(ContextCompat.getColor(context,
+                                    R.color.album_grid_name_default),
                                     palette.getVibrantSwatch().getBodyTextColor());
                             colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                                 @Override
@@ -97,7 +99,8 @@ public class AlbumItemLoad extends Action {
                                 }
                             });
                             colorAnimation.start();
-                            colorAnimation = setAnimator(context.getResources().getColor(R.color.album_grid_artist_default),
+                            colorAnimation = setAnimator(ContextCompat.getColor(context,
+                                    R.color.album_grid_artist_default),
                                     palette.getVibrantSwatch().getTitleTextColor());
                             colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                                 @Override
@@ -108,8 +111,8 @@ public class AlbumItemLoad extends Action {
                             colorAnimation.start();
                         } catch (NullPointerException e) {
                             e.printStackTrace();
-                            bgView.setBackgroundColor(context.getResources()
-                                    .getColor(R.color.colorPrimary));
+                            bgView.setBackgroundColor(ContextCompat
+                                    .getColor(context, R.color.colorPrimary));
                         }
                     }
                 });

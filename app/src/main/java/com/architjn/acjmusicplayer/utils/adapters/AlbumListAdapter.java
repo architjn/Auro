@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -79,8 +80,8 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Simp
             new AlbumItemLoad(context, items.get(position).getAlbumArtPath(), holder).execute();
             setAlbumArt(position, holder);
         } else {
-            int colorPrimary = context.getResources()
-                    .getColor(R.color.colorPrimary);
+            int colorPrimary = ContextCompat
+                    .getColor(context, R.color.colorPrimary);
             holder.img.setImageDrawable(new ColorDrawable(colorPrimary));
             holder.bottomBg.setBackgroundColor(colorPrimary);
         }

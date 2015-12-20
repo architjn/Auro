@@ -2,6 +2,7 @@ package com.architjn.acjmusicplayer.utils.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -83,8 +84,7 @@ public class PlayingListAdapter extends RecyclerView.Adapter<PlayingListAdapter.
         if (getPosition(position) == 0) {
             int padding = 10;
             holder.img.setPadding(dpToPx(padding), dpToPx(padding), dpToPx(padding), dpToPx(padding));
-            holder.img.setImageDrawable(context.getResources()
-                    .getDrawable(R.drawable.ic_speaker_48dp, null));
+            holder.img.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_speaker_48dp));
         } else {
             String path = ListSongs.getAlbumArt(context,
                     items.get(getPosition(position)).getAlbumId());

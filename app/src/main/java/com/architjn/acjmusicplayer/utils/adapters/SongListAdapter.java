@@ -5,6 +5,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -59,8 +60,8 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.Simple
         holder.mainView.setElevation(0);
         setAlbumArt(position, holder);
         if (selectedHolder != null)
-            selectedHolder.mainView.setBackgroundColor(context.getResources()
-                    .getColor(R.color.appBackground));
+            selectedHolder.mainView.setBackgroundColor(ContextCompat
+                    .getColor(context, R.color.appBackground));
         selectedSongId = -1;
         selectedHolder = null;
         setOnClicks(holder, position);
@@ -92,8 +93,8 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.Simple
                         //something was focused
                         holder.mainView.setBackgroundColor(Color.parseColor("#ffffff"));
                         animateElevation(0, 12, holder);
-                        selectedHolder.mainView.setBackgroundColor(context.getResources()
-                                .getColor(R.color.appBackground));
+                        selectedHolder.mainView.setBackgroundColor(ContextCompat
+                                .getColor(context, R.color.appBackground));
                         animateElevation(12, 0, selectedHolder);
                         selectedSongId = position;
                         selectedHolder = holder;
@@ -176,16 +177,16 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.Simple
         if (selectedHolder != null && selectedSongId != -1) {
             animateElevation(12, 0, selectedHolder);
             selectedSongId = -1;
-            selectedHolder.mainView.setBackgroundColor(context.getResources()
-                    .getColor(R.color.appBackground));
+            selectedHolder.mainView.setBackgroundColor(ContextCompat
+                    .getColor(context, R.color.appBackground));
         }
     }
 
     public void onBackPressed() {
         if (selectedSongId != -1) {
             animateElevation(12, 0, selectedHolder);
-            selectedHolder.mainView.setBackgroundColor(context.getResources()
-                    .getColor(R.color.appBackground));
+            selectedHolder.mainView.setBackgroundColor(ContextCompat
+                    .getColor(context, R.color.appBackground));
             selectedSongId = -1;
             selectedHolder = null;
         } else {

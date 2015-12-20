@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
 import android.widget.LinearLayout;
 
@@ -49,7 +50,8 @@ public abstract class ColorChangeAnimation extends Action {
                         public void onGenerated(final Palette palette) {
                             Integer colorTo = palette.getVibrantColor(palette.getDarkVibrantColor(
                                     palette.getDarkMutedColor(palette.getMutedColor(
-                                            context.getResources().getColor(R.color.colorPrimary)))));
+                                            ContextCompat.getColor(context,
+                                                    R.color.colorPrimary)))));
                             onColorFetched(colorTo);
                             colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
                             colorAnimation.setDuration(2000);

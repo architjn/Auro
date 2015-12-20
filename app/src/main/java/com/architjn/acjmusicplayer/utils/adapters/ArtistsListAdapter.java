@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -64,8 +65,8 @@ public class ArtistsListAdapter extends RecyclerView.Adapter<ArtistsListAdapter.
     @Override
     public void onBindViewHolder(final ArtistsListAdapter.SimpleItemViewHolder holder,
                                  final int position) {
-        holder.img.setImageDrawable(context.getResources()
-                .getDrawable(R.drawable.default_artist_art, null));
+        holder.img.setImageDrawable(ContextCompat
+                .getDrawable(context, R.drawable.default_artist_art));
         holder.name.setText(items.get(position).getArtistName());
         getArtistImg(holder, position);
         holder.songCount.setText(context.getResources().getString(R.string.songs)

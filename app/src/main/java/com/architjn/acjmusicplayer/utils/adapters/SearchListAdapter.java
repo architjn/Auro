@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -164,8 +165,8 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Si
         } else if (whatView(position) == ITEM_VIEW_TYPE_LIST_ARTIST) {
             if (artists.size() == 0)
                 return;
-            holder.artistArt.setImageDrawable(context.getResources()
-                    .getDrawable(R.drawable.default_artist_art, null));
+            holder.artistArt.setImageDrawable(ContextCompat
+                    .getDrawable(context, R.drawable.default_artist_art));
             getArtistImg(holder, getPosition(position));
             holder.expandView.setVisibility(View.GONE);
             holder.artistName.setText(artists.get(getPosition(position)).getArtistName());
@@ -221,7 +222,7 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Si
     }
 
     private void setHeaderBg(SimpleItemViewHolder holder) {
-        holder.mainView.setBackgroundColor(context.getResources().getColor(R.color.appBackground));
+        holder.mainView.setBackgroundColor(ContextCompat.getColor(context, R.color.appBackground));
         holder.mainView.setElevation(dpToPx(0));
     }
 
@@ -286,8 +287,8 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Si
             new AlbumItemLoad(context, albums.get(position).getAlbumArtPath(), holder).execute();
             setAlbumArt(position, holder);
         } else {
-            int colorPrimary = context.getResources()
-                    .getColor(R.color.colorPrimary);
+            int colorPrimary = ContextCompat
+                    .getColor(context,R.color.colorPrimary);
             holder.albumArt.setImageDrawable(new ColorDrawable(colorPrimary));
             holder.bgView.setBackgroundColor(colorPrimary);
         }
