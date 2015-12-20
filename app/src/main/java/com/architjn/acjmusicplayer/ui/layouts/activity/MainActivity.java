@@ -11,13 +11,13 @@ import android.os.Handler;
 import android.support.annotation.AnimRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -47,21 +47,18 @@ public class MainActivity extends AppCompatActivity {
 
 
     private static final String TAG = "MainActivity-TAG";
-    public FragmentName currentFragment;
+    private FragmentName currentFragment;
     private LinearLayout smallPlayer;
     private FragmentName lastExpanded;
     private int lastItem;
     private DrawerLayout drawerLayout;
-    private ListView drawerList;
-    private ArrayAdapter<String> navigationDrawerAdapter;
-    private ActionBarDrawerToggle drawerToggle;
     private Toolbar toolbar;
     private int currentItem = -1;
     private SongsListFragment songFragment;
     private AlbumsListFragment albumFragment;
     private ArtistListFragment artistFragment;
     private PlaylistListFragment playlistFragment;
-    private BroadcastReceiver br = new BroadcastReceiver() {
+    private final BroadcastReceiver br = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()) {
@@ -135,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
                         }));
     }
 
-    public void updatePlayer(String name, long albumId) {
+    private void updatePlayer(String name, long albumId) {
         ((TextView) findViewById(R.id.mini_player_song_name)).setText(name);
         new ColorChangeAnimation(this, smallPlayer, new PlayerDBHandler(this).setAlbumArt(albumId)) {
             @Override
@@ -149,13 +146,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initDrawer() {
-        drawerList = (ListView) findViewById(R.id.left_drawer);
+        ListView drawerList = (ListView) findViewById(R.id.left_drawer);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         String[] leftSliderData = {getResources().getString(R.string.songs),
                 getResources().getString(R.string.albums),
                 getResources().getString(R.string.artists),
                 getResources().getString(R.string.playlist)};
-        navigationDrawerAdapter = new ArrayAdapter<String>(
+        ArrayAdapter<String> navigationDrawerAdapter = new ArrayAdapter<>(
                 MainActivity.this, R.layout.drawer_list_item, leftSliderData);
         drawerList.setAdapter(navigationDrawerAdapter);
         drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -194,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
                 toolbar, 0, 0) {
 
             @Override
@@ -216,8 +213,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void fragmentSwitcher(Fragment fragment, int itemId,
-                                  FragmentName fname, @Nullable @AnimRes int animationEnter,
-                                  @Nullable @AnimRes int animationExit) {
+                                  FragmentName fname, @AnimRes int animationEnter,
+                                  @AnimRes int animationExit) {
         currentFragment = fname;
         if (currentItem == itemId) {
             // Don't allow re-selection of the currently active item
@@ -232,12 +229,12 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.main_fragment_holder, fragment)
                 .commit();
 
-        if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             final Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    drawerLayout.closeDrawer(Gravity.LEFT);
+                    drawerLayout.closeDrawer(GravityCompat.START);
                 }
             }, 200);
         }
@@ -286,7 +283,6 @@ public class MainActivity extends AppCompatActivity {
         if (view != null) {
             if (view instanceof TextView) {
                 ((TextView) view).setTextColor(Color.BLACK);
-                return;
             } else if (view instanceof ViewGroup) {
                 ViewGroup viewGroup = (ViewGroup) view;
                 for (int i = 0; i < viewGroup.getChildCount(); i++) {
@@ -300,7 +296,7 @@ public class MainActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    public Fragment getFragmentFromName(FragmentName name) {
+    private Fragment getFragmentFromName(FragmentName name) {
         switch (name) {
             case Songs:
                 return songFragment;
