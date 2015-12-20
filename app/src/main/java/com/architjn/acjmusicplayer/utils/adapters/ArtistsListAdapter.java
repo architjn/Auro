@@ -64,8 +64,9 @@ public class ArtistsListAdapter extends RecyclerView.Adapter<ArtistsListAdapter.
     @Override
     public void onBindViewHolder(final ArtistsListAdapter.SimpleItemViewHolder holder,
                                  final int position) {
+        holder.img.setImageDrawable(context.getResources()
+                .getDrawable(R.drawable.default_artist_art, null));
         holder.name.setText(items.get(position).getArtistName());
-        holder.img.setImageDrawable(null);
         getArtistImg(holder, position);
         holder.songCount.setText(context.getResources().getString(R.string.songs)
                 + " " + items.get(position).getNumberOfSongs() + " . "

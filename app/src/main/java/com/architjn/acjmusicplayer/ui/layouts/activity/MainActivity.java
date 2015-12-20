@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.AnimRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
@@ -89,7 +90,8 @@ public class MainActivity extends AppCompatActivity {
         initDrawer();
         setPlayer();
         songFragment = new SongsListFragment();
-        fragmentSwitcher(songFragment, 0, FragmentName.Songs, true);
+        fragmentSwitcher(songFragment, 0, FragmentName.Songs,
+                android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         sendBroadcast(new Intent(PlayerService.ACTION_GET_SONG));
     }
 
@@ -165,25 +167,29 @@ public class MainActivity extends AppCompatActivity {
                         if (songFragment == null)
                             songFragment = new SongsListFragment();
                         fragmentSwitcher(songFragment, i,
-                                FragmentName.Songs, true);
+                                FragmentName.Songs,
+                                android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                         break;
                     case 1:
                         if (albumFragment == null)
                             albumFragment = new AlbumsListFragment();
                         fragmentSwitcher(albumFragment, i,
-                                FragmentName.Albums, true);
+                                FragmentName.Albums,
+                                android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                         break;
                     case 2:
                         if (artistFragment == null)
                             artistFragment = new ArtistListFragment();
                         fragmentSwitcher(artistFragment, i,
-                                FragmentName.Artists, true);
+                                FragmentName.Artists,
+                                android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                         break;
                     case 3:
                         if (playlistFragment == null)
                             playlistFragment = new PlaylistListFragment();
                         fragmentSwitcher(playlistFragment, i,
-                                FragmentName.Playlists, true);
+                                FragmentName.Playlists,
+                                android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                         break;
                 }
             }
@@ -210,7 +216,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void fragmentSwitcher(Fragment fragment, int itemId,
-                                  FragmentName fname, boolean slideAnimate) {
+                                  FragmentName fname, @Nullable @AnimRes int animationEnter,
+                                  @Nullable @AnimRes int animationExit) {
         currentFragment = fname;
         if (currentItem == itemId) {
             // Don't allow re-selection of the currently active item
@@ -220,16 +227,10 @@ public class MainActivity extends AppCompatActivity {
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(String.valueOf(fname));
 
-        if (slideAnimate)
-            getSupportFragmentManager().beginTransaction()
-                    .setCustomAnimations(android.R.anim.slide_in_left, 0)
-                    .replace(R.id.main_fragment_holder, fragment)
-                    .commit();
-        else
-            getSupportFragmentManager().beginTransaction()
-                    .setCustomAnimations(android.R.anim.fade_in, 0)
-                    .replace(R.id.main_fragment_holder, fragment)
-                    .commit();
+        getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(animationEnter, animationExit)
+                .replace(R.id.main_fragment_holder, fragment)
+                .commit();
 
         if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
             final Handler handler = new Handler();
@@ -265,13 +266,15 @@ public class MainActivity extends AppCompatActivity {
             public boolean onMenuItemActionExpand(MenuItem item) {
                 lastExpanded = currentFragment;
                 lastItem = currentItem;
-                fragmentSwitcher(searchViewFragment, -1, FragmentName.Search, false);
+                fragmentSwitcher(searchViewFragment, -1, FragmentName.Search,
+                        android.R.anim.fade_in, android.R.anim.fade_out);
                 return true;
             }
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                fragmentSwitcher(getFragmentFromName(lastExpanded), lastItem, lastExpanded, false);
+                fragmentSwitcher(getFragmentFromName(lastExpanded), lastItem,
+                        lastExpanded, android.R.anim.fade_in, android.R.anim.fade_out);
                 return true;
             }
         });

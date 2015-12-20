@@ -98,26 +98,7 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Si
 
     @Override
     public SearchListAdapter.SimpleItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//        if (viewType == ITEM_VIEW_TYPE_HEADER_ALBUMS
-//                || viewType == ITEM_VIEW_TYPE_HEADER_SONGS
-//                || viewType == ITEM_VIEW_TYPE_HEADER_ARTISTS) {
-//            View itemView = LayoutInflater.from(parent.getContext()).
-//                    inflate(R.layout.search_header, parent, false);
-//            return new SimpleItemViewHolder(itemView);
-//        } else if (viewType == ITEM_VIEW_TYPE_LIST_SONG) {
-//            View itemView = LayoutInflater.from(parent.getContext()).
-//                    inflate(R.layout.songs_list_item, parent, false);
-//            return new SimpleItemViewHolder(itemView);
-//        } else if (viewType == ITEM_VIEW_TYPE_LIST_ARTIST) {
-//            View itemView = LayoutInflater.from(parent.getContext()).
-//                    inflate(R.layout.artist_list_item, parent, false);
-//            return new SimpleItemViewHolder(itemView);
-//        } else if (viewType == ITEM_VIEW_TYPE_LIST_ALBUM) {
-//            View itemView = LayoutInflater.from(parent.getContext()).
-//                    inflate(R.layout.album_grid_item, parent, false);
-//            return new SimpleItemViewHolder(itemView);
-//        }
-        View itemView = null;
+        View itemView;
         switch (viewType) {
             case ITEM_VIEW_TYPE_HEADER_ALBUMS:
                 itemView = LayoutInflater.from(parent.getContext()).
@@ -183,7 +164,8 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Si
         } else if (whatView(position) == ITEM_VIEW_TYPE_LIST_ARTIST) {
             if (artists.size() == 0)
                 return;
-            holder.artistArt.setImageDrawable(new ColorDrawable(0xffffffff));
+            holder.artistArt.setImageDrawable(context.getResources()
+                    .getDrawable(R.drawable.default_artist_art, null));
             getArtistImg(holder, getPosition(position));
             holder.expandView.setVisibility(View.GONE);
             holder.artistName.setText(artists.get(getPosition(position)).getArtistName());
