@@ -37,4 +37,5 @@ dependencies {
         transitive = true
     }
     compile 'com.github.afollestad:async:0.2.1'
+    compile 'com.cocosw:bottomsheet:1.+@aar'
 }

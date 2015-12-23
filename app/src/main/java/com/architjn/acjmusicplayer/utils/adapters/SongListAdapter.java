@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +22,7 @@ import com.architjn.acjmusicplayer.service.PlayerService;
 import com.architjn.acjmusicplayer.ui.layouts.activity.MainActivity;
 import com.architjn.acjmusicplayer.ui.layouts.fragments.SongsListFragment;
 import com.architjn.acjmusicplayer.utils.ListSongs;
+import com.architjn.acjmusicplayer.utils.PermissionChecker;
 import com.architjn.acjmusicplayer.utils.Utils;
 import com.architjn.acjmusicplayer.utils.items.Song;
 import com.squareup.picasso.Picasso;
@@ -35,15 +37,18 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.Simple
 
     private static final String TAG = "SongListAdapter-TAG";
     private ArrayList<Song> items;
+    private PermissionChecker permissionChecker;
     private int selectedSongId = -1;
     private SimpleItemViewHolder selectedHolder;
     private Context context;
     private SongsListFragment fragment;
 
-    public SongListAdapter(Context context, SongsListFragment fragment, ArrayList<Song> items) {
+    public SongListAdapter(Context context, SongsListFragment fragment,
+                           ArrayList<Song> items, PermissionChecker permissionChecker) {
         this.context = context;
         this.fragment = fragment;
         this.items = items;
+        this.permissionChecker = permissionChecker;
     }
 
     @Override
@@ -107,6 +112,7 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.Simple
                     i.putExtra("songId", items.get(position).getSongId());
                     i.putExtra("pos", position);
                     context.sendBroadcast(i);
+                    Log.v(TAG, items.get(position).getName());
                 }
             }
         });
@@ -118,17 +124,10 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.Simple
                 pm.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.popup_song_play:
-                                intent.setAction(PlayerService.ACTION_PLAY_SINGLE);
-                                intent.putExtra("songId", items.get(position).getSongId());
-                                context.sendBroadcast(intent);
-                                break;
-                            case R.id.popup_song_addtoplaylist:
-                                new Utils(context).addToPlaylist(fragment.getActivity(),
-                                        items.get(position).getSongId());
-                                break;
-                        }
+                        new Utils(context).handleSongMenuClick(item, items,
+                                intent, position, fragment.getActivity(), permissionChecker);
+                        items = ListSongs.getSongList(context);
+                        notifyDataSetChanged();
                         return false;
                     }
                 });
@@ -140,8 +139,7 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.Simple
 
     public int dpToPx(int dp) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return px;
+        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
     @Override

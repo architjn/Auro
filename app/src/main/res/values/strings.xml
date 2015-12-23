@@ -32,6 +32,7 @@
     <string name="shuffle">Shuffle</string>
     <string name="shuffle_caps">SHUFFLE</string>
     <string name="play">Play</string>
+    <string name="play_next">Play Next</string>
     <string name="add">Add</string>
     <string name="add_to_playlist">Add to playlist</string>
     <string name="choose_playlist">Choose playlist</string>
@@ -49,4 +50,33 @@
     <string name="artist_fetch_url">http://ws.audioscrobbler.com/2.0/?method=artist.getinfo</string>
     <string name="dont_leave_blank">Don\'t leave blank</string>
     <string name="okay">Okay</string>
+    <string name="play_only">Play only</string>
+    <string name="add_playing_queue">Add to playing queue</string>
+    <string name="open_album">Open album</string>
+    <string name="open_artist">Open Artist</string>
+    <string name="share">Share</string>
+    <string name="details">Details</string>
+    <string name="set_as_ringtone">Set as ringtone</string>
+    <string name="delete_from_device">Delete from device</string>
+    <string name="text">Text</string>
+    <string name="file">File</string>
+    <string name="share_song_file">Share Song File</string>
+    <string name="currently_listening_to">Currently listening to&#160;</string>
+    <string name="by">&#160;by&#160;</string>
+    <string name="share_using">Share using</string>
+    <string name="share_as">Share as</string>
+    <string name="song_name"><![CDATA[<b>Song name:&nbsp;</b>]]></string>
+    <string name="album_name"><![CDATA[<b>Album name:&nbsp;</b>]]></string>
+    <string name="artist_name"><![CDATA[<b>Artist Name:&nbsp;</b>]]></string>
+    <string name="file_path"><![CDATA[<b>File Path:&nbsp;</b>]]></string>
+    <string name="file_name"><![CDATA[<b>File name:&nbsp;</b>]]></string>
+    <string name="file_size"><![CDATA[<b>File size:&nbsp;</b>]]></string>
+    <string name="bitrate"><![CDATA[<b>Bitrate:&nbsp;]]></string>
+    <string name="samplingrate"><![CDATA[<b>Sampling Rate:&nbsp;</b>]]></string>
+    <string name="format"><![CDATA[<b>Format:&nbsp;]]></string>
+    <string name="write_setting_permission">Need Write Setting Permission in order to set Ringtone</string>
+    <string name="ringtone_permission_title">Permission Required</string>
+    <string name="ringtone_permission_content">We need Permission to change settings for setting your Ringtone. We will not do anything else!</string>
+    <string name="cancel">Cancel</string>
+    <string name="success">Success</string>
 </resources>

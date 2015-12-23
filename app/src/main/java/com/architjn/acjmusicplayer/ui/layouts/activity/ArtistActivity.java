@@ -39,7 +39,8 @@ public class ArtistActivity extends AppCompatActivity {
         rv = (RecyclerView) findViewById(R.id.songsListContainer);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(getIntent().getStringExtra("name"));
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle(getIntent().getStringExtra("name"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         addSongList();
     }
@@ -69,8 +70,7 @@ public class ArtistActivity extends AppCompatActivity {
 
     public int dpToPx(int dp) {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return px;
+        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
     @Override

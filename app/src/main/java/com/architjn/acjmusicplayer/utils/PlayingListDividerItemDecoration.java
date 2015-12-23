@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -12,10 +13,13 @@ import com.architjn.acjmusicplayer.R;
 public class PlayingListDividerItemDecoration extends RecyclerView.ItemDecoration {
     private Drawable mDivider;
     private int size;
+    private LinearLayoutManager manager;
 
-    public PlayingListDividerItemDecoration(Context context, int paddingLeft) {
+    public PlayingListDividerItemDecoration(Context context,
+                                            int paddingLeft, LinearLayoutManager manager) {
         this.size = paddingLeft;
-        mDivider = ContextCompat.getDrawable(context,R.drawable.line_divider);
+        this.manager = manager;
+        mDivider = ContextCompat.getDrawable(context, R.drawable.line_divider);
     }
 
     @Override
@@ -25,10 +29,10 @@ public class PlayingListDividerItemDecoration extends RecyclerView.ItemDecoratio
 
         int childCount = parent.getChildCount();
         for (int i = 0; i < childCount; i++) {
-            if (i == 1) {
+            if (i == 1 && isOnTop()) {
                 left = parent.getPaddingLeft();
                 draw(left, right, parent, c, i);
-            } else if (i != 2) {
+            } else if (i != 2 || !isOnTop()) {
                 left = parent.getPaddingLeft() + (size * 2);
                 draw(left, right, parent, c, i);
             }
@@ -45,5 +49,11 @@ public class PlayingListDividerItemDecoration extends RecyclerView.ItemDecoratio
 
         mDivider.setBounds(left, top, right, bottom);
         mDivider.draw(c);
+    }
+
+    private boolean isOnTop() {
+        if (manager.findFirstVisibleItemPosition() == 0) {
+            return true;
+        } else return false;
     }
 }

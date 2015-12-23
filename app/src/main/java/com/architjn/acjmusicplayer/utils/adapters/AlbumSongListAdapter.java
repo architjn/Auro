@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.service.PlayerService;
 import com.architjn.acjmusicplayer.ui.layouts.activity.AlbumActivity;
+import com.architjn.acjmusicplayer.utils.PermissionChecker;
 import com.architjn.acjmusicplayer.utils.Utils;
 import com.architjn.acjmusicplayer.utils.items.Song;
 
@@ -25,12 +26,15 @@ public class AlbumSongListAdapter extends RecyclerView.Adapter<AlbumSongListAdap
 
     private ArrayList<Song> items;
     private AlbumActivity albumActivity;
+    private PermissionChecker permissionChecker;
     private Context context;
 
-    public AlbumSongListAdapter(Context context, ArrayList<Song> items, AlbumActivity albumActivity) {
+    public AlbumSongListAdapter(Context context, ArrayList<Song> items,
+                                AlbumActivity albumActivity, PermissionChecker permissionChecker) {
         this.context = context;
         this.items = items;
         this.albumActivity = albumActivity;
+        this.permissionChecker = permissionChecker;
     }
 
     @Override
@@ -71,17 +75,9 @@ public class AlbumSongListAdapter extends RecyclerView.Adapter<AlbumSongListAdap
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         Intent intent = new Intent();
-                        switch (item.getItemId()) {
-                            case R.id.popup_song_play:
-                                intent.setAction(PlayerService.ACTION_PLAY_SINGLE);
-                                intent.putExtra("songId", items.get(position).getSongId());
-                                context.sendBroadcast(intent);
-                                break;
-                            case R.id.popup_song_addtoplaylist:
-                                new Utils(context).addToPlaylist(albumActivity,
-                                        items.get(position).getSongId());
-                                break;
-                        }
+                        new Utils(context).handleSongMenuClick(item, items,
+                                intent, position, albumActivity, permissionChecker);
+                        notifyDataSetChanged();
                         return false;
                     }
                 });

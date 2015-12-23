@@ -92,7 +92,7 @@ public class SongsListFragment extends Fragment {
                 }
             }
         });
-        adapter = new SongListAdapter(context, this, songList);
+        adapter = new SongListAdapter(context, this, songList, permissionChecker);
         rv.setAdapter(adapter);
         if (songList.size() < 1) {
             listIsEmpty();
@@ -120,4 +120,7 @@ public class SongsListFragment extends Fragment {
         adapter.onBackPressed();
     }
 
+    public void setPermissionChecker(PermissionChecker permissionChecker) {
+        this.permissionChecker = permissionChecker;
+    }
 }

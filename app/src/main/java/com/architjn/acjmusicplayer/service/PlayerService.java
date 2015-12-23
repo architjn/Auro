@@ -35,6 +35,7 @@ public class PlayerService extends Service {
     public static final String ACTION_NEXT_SONG = "ACTION_NEXT_SONG";
     public static final String ACTION_PREV_SONG = "ACTION_PREV_SONG";
     public static final String ACTION_PAUSE_SONG = "ACTION_PAUSE_SONG";
+    public static final String ACTION_ADD_QUEUE = "ACTION_ADD_QUEUE";
     private static final String TAG = "PlayerService-TAG";
     private PlayerHandler musicPlayerHandler;
     private Context context;
@@ -71,6 +72,7 @@ public class PlayerService extends Service {
         filter.addAction(ACTION_PLAY_ARTIST);
         filter.addAction(ACTION_NOTI_CLICK);
         filter.addAction(ACTION_NOTI_REMOVE);
+        filter.addAction(ACTION_ADD_QUEUE);
         registerReceiver(playerServiceBroadcastReceiver, filter);
         notificationHandler = new NotificationHandler(context, this);
         return START_NOT_STICKY;
@@ -84,19 +86,11 @@ public class PlayerService extends Service {
                 updatePlayer();
                 break;
             case ACTION_PLAY_ALL_SONGS:
-//                if (listType != null && listType == ListType.ALL)
-//                    musicPlayerHandler.playNextSong(intent.getIntExtra("pos", 0));
-//                else
                 musicPlayerHandler.playAllSongs(intent.getLongExtra("songId", 0));
                 listType = ListType.ALL;
                 updatePlayer();
                 break;
             case ACTION_PLAY_ALBUM:
-//                if (listType != null && listType == ListType.ALBUM
-//                        && intent.getLongExtra("albumId", 0) ==
-//                        musicPlayerHandler.getCurrentPlayingSong().getAlbumId()) {
-//                    musicPlayerHandler.playNextSong(intent.getIntExtra("songPos", 0));
-//                } else
                 musicPlayerHandler.playAlbumSongs(intent.getLongExtra("albumId", 0),
                         intent.getIntExtra("songPos", 0));
                 listType = ListType.ALBUM;
@@ -132,11 +126,6 @@ public class PlayerService extends Service {
                 updatePlayer();
                 break;
             case ACTION_PLAY_ARTIST:
-//                if (listType == ListType.ARTIST &&
-//                        musicPlayerHandler.getCurrentPlayingSong()
-//                                .getArtist().matches(intent.getStringExtra("name")))
-//                    musicPlayerHandler.playNextSong(intent.getIntExtra("pos", 0));
-//                else
                 musicPlayerHandler.playArtistSongs(intent.getStringExtra("name"),
                         intent.getIntExtra("pos", 0));
                 listType = ListType.ARTIST;
@@ -150,6 +139,9 @@ public class PlayerService extends Service {
             case ACTION_NOTI_REMOVE:
                 notificationHandler.setNotificationActive(false);
                 musicPlayerHandler.getMediaPlayer().stop();
+                break;
+            case ACTION_ADD_QUEUE:
+                musicPlayerHandler.addSongToQueue(intent.getLongExtra("songId", 0));
                 break;
         }
     }

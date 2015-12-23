@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +22,7 @@ import android.widget.LinearLayout;
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.task.ColorChangeAnimation;
 import com.architjn.acjmusicplayer.utils.ListSongs;
+import com.architjn.acjmusicplayer.utils.PermissionChecker;
 import com.architjn.acjmusicplayer.utils.adapters.AlbumSongListAdapter;
 import com.squareup.picasso.Picasso;
 
@@ -36,6 +38,7 @@ public class AlbumActivity extends AppCompatActivity {
     private RecyclerView rv;
     private String imagePath;
     private ImageView albumArt;
+    private PermissionChecker permissionChecker;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,6 +51,7 @@ public class AlbumActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        permissionChecker = new PermissionChecker(this, this, findViewById(R.id.base_view_album));
         rv = (RecyclerView) findViewById(R.id.rv_album_activity);
         albumArt = (ImageView) findViewById(R.id.activity_album_art);
         setAlbumArt();
@@ -57,14 +61,21 @@ public class AlbumActivity extends AppCompatActivity {
             collapsingToolbarLayout.setTitle(getIntent().getStringExtra("albumName"));
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_album);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         addSongList();
     }
 
     private void addSongList() {
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.setAdapter(new AlbumSongListAdapter(this, ListSongs.getAlbumSongList(this,
-                getIntent().getLongExtra("albumId", 0)), this));
+                getIntent().getLongExtra("albumId", 0)), this, permissionChecker));
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        permissionChecker.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     public void setAlbumArt() {
@@ -73,7 +84,7 @@ public class AlbumActivity extends AppCompatActivity {
                 MediaStore.Audio.Albums._ID + "=?",
                 new String[]{String.valueOf(getIntent().getLongExtra("albumId", 0))},
                 null);
-        if (cursor.moveToFirst()) {
+        if (cursor != null && cursor.moveToFirst()) {
             imagePath = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
             try {
                 Picasso.with(AlbumActivity.this)

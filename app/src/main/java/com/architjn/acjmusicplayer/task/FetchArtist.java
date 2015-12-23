@@ -135,22 +135,27 @@ public class FetchArtist {
         StringBuilder fileName = new StringBuilder();
         fileName.append("cache-img-");
         Calendar c = Calendar.getInstance();
-        fileName.append(c.get(Calendar.DATE) + "-");
-        fileName.append(c.get(Calendar.MONTH) + "-");
-        fileName.append(c.get(Calendar.YEAR) + "-");
-        fileName.append(c.get(Calendar.HOUR) + "-");
-        fileName.append(c.get(Calendar.MINUTE) + "-");
-        fileName.append(c.get(Calendar.SECOND) + "-");
-        fileName.append(random + "-");
+        fileName.append(c.get(Calendar.DATE)).append("-");
+        fileName.append(c.get(Calendar.MONTH)).append("-");
+        fileName.append(c.get(Calendar.YEAR)).append("-");
+        fileName.append(c.get(Calendar.HOUR)).append("-");
+        fileName.append(c.get(Calendar.MINUTE)).append("-");
+        fileName.append(c.get(Calendar.SECOND)).append("-");
+        fileName.append(random).append("-");
         fileName.append((random / 3) * 5);
         fileName.append(".png");
         File sdCardDirectory = Environment.getExternalStorageDirectory();
         String filePath = sdCardDirectory + "/" + context.getResources()
                 .getString(R.string.app_name) + "/artist/";
         (new File(filePath)).mkdirs();
+        File noMedia = new File(filePath, ".nomedia");
+        if (!noMedia.exists()) try {
+            noMedia.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         File image = new File(filePath, fileName.toString());
         if (image.exists()) image.delete();
-//                FileOutputStream outStream;
         try {
             FileOutputStream out = new FileOutputStream(image);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);

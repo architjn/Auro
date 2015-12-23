@@ -128,7 +128,8 @@ public class PlayerActivity extends AppCompatActivity {
 
     private void setRecyclerView() {
         rv = (RecyclerView) findViewById(R.id.rv_player);
-        rv.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager manager = new LinearLayoutManager(this);
+        rv.setLayoutManager(manager);
         final View header = setHeader();
         final PlayerDBHandler dbHandler = new PlayerDBHandler(this);
         final PointShiftingArrayList<Song> songPointShiftingArrayList = new PointShiftingArrayList<>();
@@ -137,7 +138,7 @@ public class PlayerActivity extends AppCompatActivity {
         songPointShiftingArrayList.setPointOnShifted(dbHandler.getFetchedPlayingPos());
         adapter = new PlayingListAdapter(PlayerActivity.this,
                 header, songPointShiftingArrayList, normalList);
-        rv.addItemDecoration(new PlayingListDividerItemDecoration(PlayerActivity.this, 75));
+        rv.addItemDecoration(new PlayingListDividerItemDecoration(PlayerActivity.this, 75,manager));
         rv.setAdapter(adapter);
     }
 

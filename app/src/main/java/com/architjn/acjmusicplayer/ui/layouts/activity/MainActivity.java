@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.AnimRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -38,6 +39,7 @@ import com.architjn.acjmusicplayer.ui.layouts.fragments.SearchViewFragment;
 import com.architjn.acjmusicplayer.ui.layouts.fragments.SongsListFragment;
 import com.architjn.acjmusicplayer.ui.widget.OnSwipeListener;
 import com.architjn.acjmusicplayer.ui.widget.SwipeInterface;
+import com.architjn.acjmusicplayer.utils.PermissionChecker;
 import com.architjn.acjmusicplayer.utils.PlayerDBHandler;
 
 /**
@@ -58,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private AlbumsListFragment albumFragment;
     private ArtistListFragment artistFragment;
     private PlaylistListFragment playlistFragment;
+    private PermissionChecker permissionChecker;
     private final BroadcastReceiver br = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -87,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
         initDrawer();
         setPlayer();
         songFragment = new SongsListFragment();
+        songFragment.setPermissionChecker(permissionChecker);
         fragmentSwitcher(songFragment, 0, FragmentName.Songs,
                 android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         sendBroadcast(new Intent(PlayerService.ACTION_GET_SONG));
@@ -96,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction(PlayerActivity.ACTION_RECIEVE_SONG);
         registerReceiver(br, filter);
+        permissionChecker = new PermissionChecker(this, this, findViewById(R.id.base_view_main));
     }
 
     private void setPlayer() {
@@ -106,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                 launchPlayer();
             }
         });
-        findViewById(R.id.small_panel).setOnTouchListener(
+        smallPlayer.setOnTouchListener(
                 new OnSwipeListener(
                         new SwipeInterface() {
                             @Override
@@ -247,6 +252,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        permissionChecker.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         // Retrieve the SearchView and plug it into SearchManager
@@ -331,4 +342,5 @@ public class MainActivity extends AppCompatActivity {
     public enum FragmentName {
         Albums, Songs, Artists, Playlists, Search
     }
+
 }

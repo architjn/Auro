@@ -3,10 +3,38 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/popup_song_play"
-        android:title="@string/play"
+        android:title="@string/play_only"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/popup_song_add_playing_queue"
+        android:title="@string/add_playing_queue"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/popup_song_addtoplaylist"
         android:title="@string/add_to_playlist"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/popup_song_open_album"
+        android:title="@string/open_album"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/popup_song_open_artist"
+        android:title="@string/open_artist"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/popup_song_share"
+        android:title="@string/share"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/popup_song_details"
+        android:title="@string/details"
+        app:showAsAction="ifRoom" />
+    <!--<item-->
+        <!--android:id="@+id/popup_song_set_as_ringtone"-->
+        <!--android:title="@string/set_as_ringtone"-->
+        <!--app:showAsAction="ifRoom" />-->
+    <item
+        android:id="@+id/popup_song_delete"
+        android:title="@string/delete_from_device"
         app:showAsAction="ifRoom" />
 </menu>

@@ -122,6 +122,20 @@ public class ListSongs {
         return albumList;
     }
 
+    public static long getArtistIdFromName(Context context, String name) {
+        System.gc();
+        String where = MediaStore.Audio.Artists.ARTIST + "='" + name + "'";
+        Cursor musicCursor = context.getContentResolver().
+                query(MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, null, where, null, null);
+
+        if (musicCursor != null && musicCursor.moveToFirst()) {
+            int idColumn = musicCursor.getColumnIndex
+                    (android.provider.MediaStore.Audio.Artists._ID);
+            return musicCursor.getLong(idColumn);
+        }
+        return 0;
+    }
+
 
     public static ArrayList<Song> getSongList(Context context) {
         ArrayList<Song> songList = new ArrayList<>();

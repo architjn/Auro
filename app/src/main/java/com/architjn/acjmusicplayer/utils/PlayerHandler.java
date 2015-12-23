@@ -253,4 +253,9 @@ public class PlayerHandler {
         mediaPlayer.seekTo(seek);
     }
 
+    public void addSongToQueue(long songId) {
+        Song song = getSongFromId(songId);
+        currentPlayingSongs.add(song);
+        dbHandler.addSong(song);
+    }
 }
