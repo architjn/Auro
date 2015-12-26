@@ -8,14 +8,15 @@
     <ImageView
         android:id="@+id/album_grid_header_img"
         android:layout_width="match_parent"
-        android:layout_height="180dp"
+        android:layout_height="@dimen/album_grid_height"
         android:layout_weight="1"
+        android:scaleType="centerCrop"
         android:src="#000" />
 
     <LinearLayout
         android:id="@+id/album_grid_header_bg"
         android:layout_width="match_parent"
-        android:layout_height="180dp"
+        android:layout_height="@dimen/album_grid_height"
         android:layout_weight="1"
         android:orientation="vertical"
         android:paddingTop="10dp">

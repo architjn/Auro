@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="album_grid_height">250dp</dimen>
+    <dimen name="album_grid_text_panel_height">100dp</dimen>
+    <dimen name="grid_item_title_size">20sp</dimen>
+    <dimen name="grid_item_desc_size">17sp</dimen>
+</resources>

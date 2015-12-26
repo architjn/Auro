@@ -8,6 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/now_playing_seekbar_size"
+        android:id="@+id/control_seek_bar_holder"
         android:layout_weight="0"
         android:background="@color/colorPrimaryDark"
         android:orientation="horizontal">
@@ -19,7 +20,6 @@
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="@dimen/margin_small"
             android:layout_marginStart="@dimen/margin_small"
-            android:text="0:00"
             android:textColor="@android:color/white" />
 
         <android.support.v7.widget.AppCompatSeekBar
@@ -27,7 +27,7 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/now_playing_seekbar_size"
             android:layout_gravity="center_vertical"
-            android:layout_weight="10"
+            android:layout_weight="1"
             android:progress="100"
             android:progressDrawable="@drawable/transparent"
             android:thumb="@drawable/slider_thumb" />
@@ -39,7 +39,6 @@
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="@dimen/margin_small"
             android:layout_marginStart="@dimen/margin_small"
-            android:text="9:99"
             android:textColor="@android:color/white" />
 
     </LinearLayout>
@@ -48,6 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:background="@color/colorPrimary"
+        android:id="@+id/controller_holder"
         android:elevation="4dp"
         android:gravity="center"
         android:orientation="horizontal"

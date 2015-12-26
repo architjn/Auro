@@ -7,14 +7,16 @@
 
     <ImageView
         android:id="@+id/album_list_img"
-        android:layout_width="180dp"
-        android:layout_height="180dp" />
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/album_grid_height"
+        android:scaleType="centerCrop" />
 
     <LinearLayout
         android:id="@+id/album_list_bottom"
-        android:layout_width="180dp"
-        android:layout_height="70dp"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/album_grid_text_panel_height"
         android:background="@color/white"
+        android:gravity="center_vertical"
         android:orientation="vertical"
         android:padding="13dp">
 
@@ -25,7 +27,7 @@
             android:layout_marginBottom="2dp"
             android:singleLine="true"
             android:textColor="@color/album_grid_name_default"
-            android:textSize="16sp" />
+            android:textSize="@dimen/grid_item_title_size" />
 
         <TextView
             android:id="@+id/album_list_artist"
@@ -33,6 +35,6 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:textColor="@color/album_grid_artist_default"
-            android:textSize="13sp" />
+            android:textSize="@dimen/grid_item_desc_size" />
     </LinearLayout>
 </LinearLayout>

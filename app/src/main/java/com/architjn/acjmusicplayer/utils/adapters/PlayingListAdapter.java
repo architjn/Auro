@@ -22,7 +22,6 @@ import com.architjn.acjmusicplayer.utils.items.Song;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
-import java.util.ArrayList;
 
 /**
  * Created by architjn on 28/11/15.
@@ -38,7 +37,7 @@ public class PlayingListAdapter extends RecyclerView.Adapter<PlayingListAdapter.
     private Context context;
     private View header;
 
-    public PlayingListAdapter(Context context, View header, PointShiftingArrayList<Song> items, ArrayList<Song> normalList) {
+    public PlayingListAdapter(Context context, View header, PointShiftingArrayList<Song> items) {
         this.context = context;
         this.header = header;
         this.items = items;
@@ -67,15 +66,12 @@ public class PlayingListAdapter extends RecyclerView.Adapter<PlayingListAdapter.
 
     public int dpToPx(int dp) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return px;
+        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
     @Override
     public void onBindViewHolder(final PlayingListAdapter.SimpleItemViewHolder holder, final int position) {
-        if (isHeader(position)) {
-            return;
-        } else if (isUpNextHeader(position))
+        if (isHeader(position) || isUpNextHeader(position))
             return;
         holder.name.setText(items.get(getPosition(position)).getName());
         holder.artistName.setText(items.get(getPosition(position)).getArtist());

@@ -9,6 +9,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSeekBar;
@@ -97,7 +98,8 @@ public class PlayerActivity extends AppCompatActivity {
 
     private void init() {
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar_player));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
         artHolder = (ImageView) findViewById(R.id.activity_player_art);
         askUpdate();
@@ -137,15 +139,18 @@ public class PlayerActivity extends AppCompatActivity {
         songPointShiftingArrayList.copy(normalList);
         songPointShiftingArrayList.setPointOnShifted(dbHandler.getFetchedPlayingPos());
         adapter = new PlayingListAdapter(PlayerActivity.this,
-                header, songPointShiftingArrayList, normalList);
-        rv.addItemDecoration(new PlayingListDividerItemDecoration(PlayerActivity.this, 75,manager));
+                header, songPointShiftingArrayList);
+        rv.addItemDecoration(new PlayingListDividerItemDecoration(PlayerActivity.this, 75, manager));
         rv.setAdapter(adapter);
     }
 
     private void updateView(Context context, Intent intent) {
         currentSong = new PlayerDBHandler(context)
                 .getSongFromId(intent.getLongExtra("songId", 0));
-        new PlayerLoader(context, artHolder, currentSong.getAlbumId()).execute();
+        new PlayerLoader(context, artHolder, currentSong.getAlbumId(),
+                findViewById(R.id.control_seek_bar_holder),
+                findViewById(R.id.controller_holder),
+                ((CollapsingToolbarLayout) findViewById(R.id.collapsingtoolbarlayout_player))).execute();
         totalSeekText.setText(currentSong.getDuration());
         seekBar.setMax((int) currentSong.getDurationLong());
         seekBar.setProgress(intent.getIntExtra("seek", 0));

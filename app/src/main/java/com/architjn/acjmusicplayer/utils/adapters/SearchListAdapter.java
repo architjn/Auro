@@ -134,32 +134,32 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Si
     public void onBindViewHolder(final SearchListAdapter.SimpleItemViewHolder holder, final int position) {
         if (whatView(position) == ITEM_VIEW_TYPE_HEADER_ARTISTS) {
             setHeaderBg(holder);
-            if (artists.size() == 0) {
-                holder.headerHolder.setVisibility(View.GONE);
-                return;
-            } else {
-                holder.headerHolder.setVisibility(View.VISIBLE);
-            }
+//            if (artists.size() == 0) {
+//                holder.headerHolder.setVisibility(View.GONE);
+//                return;
+//            } else {
+//                holder.headerHolder.setVisibility(View.VISIBLE);
+//            }
             holder.headerText.setText(R.string.artists);
             return;
         } else if (whatView(position) == ITEM_VIEW_TYPE_HEADER_ALBUMS) {
             setHeaderBg(holder);
-            if (albums.size() == 0) {
-                holder.headerHolder.setVisibility(View.GONE);
-                return;
-            } else {
-                holder.headerHolder.setVisibility(View.VISIBLE);
-            }
+//            if (albums.size() == 0) {
+//                holder.headerHolder.setVisibility(View.GONE);
+//                return;
+//            } else {
+//                holder.headerHolder.setVisibility(View.VISIBLE);
+//            }
             holder.headerText.setText(R.string.albums);
             return;
         } else if (whatView(position) == ITEM_VIEW_TYPE_HEADER_SONGS) {
             setHeaderBg(holder);
-            if (songs.size() == 0) {
-                holder.headerHolder.setVisibility(View.GONE);
-                return;
-            } else {
-                holder.headerHolder.setVisibility(View.VISIBLE);
-            }
+//            if (songs.size() == 0) {
+//                holder.headerHolder.setVisibility(View.GONE);
+//                return;
+//            } else {
+//                holder.headerHolder.setVisibility(View.VISIBLE);
+//            }
             holder.headerText.setText(R.string.songs);
             return;
         } else if (whatView(position) == ITEM_VIEW_TYPE_LIST_ARTIST) {
@@ -288,7 +288,7 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Si
             setAlbumArt(position, holder);
         } else {
             int colorPrimary = ContextCompat
-                    .getColor(context,R.color.colorPrimary);
+                    .getColor(context, R.color.colorPrimary);
             holder.albumArt.setImageDrawable(new ColorDrawable(colorPrimary));
             holder.bgView.setBackgroundColor(colorPrimary);
         }

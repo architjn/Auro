@@ -85,14 +85,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         init();
         initDrawer();
         setPlayer();
-        songFragment = new SongsListFragment();
-        songFragment.setPermissionChecker(permissionChecker);
-        fragmentSwitcher(songFragment, 0, FragmentName.Songs,
-                android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        albumFragment = new AlbumsListFragment();
+        fragmentSwitcher(albumFragment, 1, FragmentName.Albums,
+                android.R.anim.fade_in, android.R.anim.fade_out);
         sendBroadcast(new Intent(PlayerService.ACTION_GET_SONG));
     }
 

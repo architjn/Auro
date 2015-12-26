@@ -160,10 +160,12 @@ public class PlayerHandler {
 
     public void playPrevSong(final int prevSongPos) throws IOException {
         if ((mediaPlayer.getCurrentPosition() / 1000) <= 2) {
-            int position = prevSongPos;
+            int position;
             if (prevSongPos == -1 && preferenceHandler.isRepeatAllEnabled()) {
                 //If song pos is more than 0
                 position = getCurrentPlayingSongs().size() - 1;
+            } else if (prevSongPos == -1) {
+                position = 0;
             } else
                 position = prevSongPos;
             final int pos = position;
