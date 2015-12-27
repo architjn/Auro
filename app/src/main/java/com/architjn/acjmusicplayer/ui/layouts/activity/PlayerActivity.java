@@ -29,6 +29,7 @@ import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.service.PlayerService;
 import com.architjn.acjmusicplayer.task.PlayerLoader;
 import com.architjn.acjmusicplayer.ui.widget.PointShiftingArrayList;
+import com.architjn.acjmusicplayer.utils.ListSongs;
 import com.architjn.acjmusicplayer.utils.PlayerDBHandler;
 import com.architjn.acjmusicplayer.utils.PlayingListDividerItemDecoration;
 import com.architjn.acjmusicplayer.utils.UserPreferenceHandler;
@@ -147,7 +148,9 @@ public class PlayerActivity extends AppCompatActivity {
     private void updateView(Context context, Intent intent) {
         currentSong = new PlayerDBHandler(context)
                 .getSongFromId(intent.getLongExtra("songId", 0));
-        new PlayerLoader(context, artHolder, currentSong.getAlbumId(),
+        String path = ListSongs.getAlbumArt(context,
+                currentSong.getAlbumId());
+        new PlayerLoader(context, artHolder, path,
                 findViewById(R.id.control_seek_bar_holder),
                 findViewById(R.id.controller_holder),
                 ((CollapsingToolbarLayout) findViewById(R.id.collapsingtoolbarlayout_player))).execute();

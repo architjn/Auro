@@ -108,7 +108,7 @@ public class NotificationHandler {
                     .setImageViewResource(R.id.noti_play_button, playStateRes);
             notificationCompat.contentView
                     .setImageViewResource(R.id.noti_play_button, playStateRes);
-            if (path != null && !path.matches(""))
+            if (path != null && !path.matches("")) {
                 Picasso.with(context).load(new File(path)).into(new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -127,15 +127,24 @@ public class NotificationHandler {
 
                     @Override
                     public void onBitmapFailed(Drawable errorDrawable) {
-                        notificationManager.notify(NOTIFICATION_ID, notificationCompat);
+                        setDefaultImageView();
                     }
 
                     @Override
                     public void onPrepareLoad(Drawable placeHolderDrawable) {
-                        notificationManager.notify(NOTIFICATION_ID, notificationCompat);
                     }
                 });
+            }else {
+                setDefaultImageView();
+            }
         }
+    }
+
+    private void setDefaultImageView() {
+        notificationCompat.bigContentView.setImageViewResource(R.id.noti_album_art,
+                R.drawable.default_art);
+        notificationCompat.contentView.setImageViewResource(R.id.noti_album_art, R.drawable.default_art);
+        notificationManager.notify(NOTIFICATION_ID, notificationCompat);
     }
 
     public void updateNotificationView() {

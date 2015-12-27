@@ -79,7 +79,7 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.Simple
             Picasso.with(context).load(new File(path)).resize(dpToPx(50),
                     dpToPx(50)).centerCrop().into(holder.img);
         else
-            Picasso.with(context).load(R.drawable.default_art).into(holder.img);
+            holder.img.setImageResource(R.drawable.default_art);
     }
 
     private void setOnClicks(final SimpleItemViewHolder holder, final int position) {

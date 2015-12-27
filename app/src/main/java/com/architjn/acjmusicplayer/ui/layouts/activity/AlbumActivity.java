@@ -87,6 +87,10 @@ public class AlbumActivity extends AppCompatActivity {
         if (cursor != null && cursor.moveToFirst()) {
             imagePath = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
             try {
+                if (imagePath == null) {
+                    albumArt.setImageResource(R.drawable.default_art);
+                    return;
+                }
                 Picasso.with(AlbumActivity.this)
                         .load(new File(imagePath))
                         .into(albumArt);

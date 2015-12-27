@@ -134,39 +134,20 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Si
     public void onBindViewHolder(final SearchListAdapter.SimpleItemViewHolder holder, final int position) {
         if (whatView(position) == ITEM_VIEW_TYPE_HEADER_ARTISTS) {
             setHeaderBg(holder);
-//            if (artists.size() == 0) {
-//                holder.headerHolder.setVisibility(View.GONE);
-//                return;
-//            } else {
-//                holder.headerHolder.setVisibility(View.VISIBLE);
-//            }
             holder.headerText.setText(R.string.artists);
             return;
         } else if (whatView(position) == ITEM_VIEW_TYPE_HEADER_ALBUMS) {
             setHeaderBg(holder);
-//            if (albums.size() == 0) {
-//                holder.headerHolder.setVisibility(View.GONE);
-//                return;
-//            } else {
-//                holder.headerHolder.setVisibility(View.VISIBLE);
-//            }
             holder.headerText.setText(R.string.albums);
             return;
         } else if (whatView(position) == ITEM_VIEW_TYPE_HEADER_SONGS) {
             setHeaderBg(holder);
-//            if (songs.size() == 0) {
-//                holder.headerHolder.setVisibility(View.GONE);
-//                return;
-//            } else {
-//                holder.headerHolder.setVisibility(View.VISIBLE);
-//            }
             holder.headerText.setText(R.string.songs);
             return;
         } else if (whatView(position) == ITEM_VIEW_TYPE_LIST_ARTIST) {
             if (artists.size() == 0)
                 return;
-            holder.artistArt.setImageDrawable(ContextCompat
-                    .getDrawable(context, R.drawable.default_artist_art));
+            holder.artistArt.setImageResource(R.drawable.default_artist_art);
             getArtistImg(holder, getPosition(position));
             holder.expandView.setVisibility(View.GONE);
             holder.artistName.setText(artists.get(getPosition(position)).getArtistName());
@@ -186,7 +167,7 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Si
         } else if (whatView(position) == ITEM_VIEW_TYPE_LIST_ALBUM) {
             if (albums.size() == 0)
                 return;
-            holder.albumArt.setImageDrawable(new ColorDrawable(0xffffffff));
+            holder.albumArt.setImageResource(R.drawable.default_art);
             holder.albumName.setText(albums.get(getPosition(position)).getAlbumTitle());
             holder.albumArtist.setText(albums.get(getPosition(position)).getAlbumArtist());
             setArt(holder, getPosition(position));
@@ -287,11 +268,15 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Si
             new AlbumItemLoad(context, albums.get(position).getAlbumArtPath(), holder).execute();
             setAlbumArt(position, holder);
         } else {
-            int colorPrimary = ContextCompat
-                    .getColor(context, R.color.colorPrimary);
-            holder.albumArt.setImageDrawable(new ColorDrawable(colorPrimary));
-            holder.bgView.setBackgroundColor(colorPrimary);
+            setDefaultView(holder);
         }
+    }
+
+    private void setDefaultView(SimpleItemViewHolder holder) {
+        int colorPrimary = ContextCompat
+                .getColor(context, R.color.colorPrimary);
+        holder.albumArt.setImageResource(R.drawable.default_art);
+        holder.bgView.setBackgroundColor(colorPrimary);
     }
 
     private void setAlbumArt(int position, SimpleItemViewHolder holder) {
@@ -299,7 +284,7 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Si
         if (art != null)
             Picasso.with(context).load(new File(art)).resize(dpToPx(180),
                     dpToPx(180)).centerCrop().into(holder.albumArt);
-        else Picasso.with(context).load(R.drawable.default_art).into(holder.albumArt);
+        else setDefaultView(holder);
     }
 
     public int dpToPx(int dp) {

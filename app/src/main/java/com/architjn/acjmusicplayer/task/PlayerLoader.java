@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
@@ -25,7 +26,10 @@ import android.widget.ImageView;
 import com.afollestad.async.Action;
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.utils.ImageBlurAnimator;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
+import java.io.File;
 import java.io.FileDescriptor;
 
 /**
@@ -35,17 +39,17 @@ public class PlayerLoader extends Action {
 
     private Context context;
     private ImageView img;
-    private long albumId;
+    private String path;
     private Bitmap bmp;
     private View seekHolder;
     private View controlHolder;
     private CollapsingToolbarLayout toolbar;
 
-    public PlayerLoader(Context context, ImageView img, long albumId,
+    public PlayerLoader(Context context, ImageView img, String path,
                         View seekHolder, View controlHolder, CollapsingToolbarLayout toolbar) {
         this.context = context;
         this.img = img;
-        this.albumId = albumId;
+        this.path = path;
         this.seekHolder = seekHolder;
         this.controlHolder = controlHolder;
         this.toolbar = toolbar;
@@ -54,31 +58,50 @@ public class PlayerLoader extends Action {
     @NonNull
     @Override
     public String id() {
-        return String.valueOf(albumId);
+        return String.valueOf(path);
     }
 
     @Nullable
     @Override
     protected Object run() throws InterruptedException {
-        bmp = getAlbumart(albumId);
+//        bmp = getAlbumart(albumId);
         return null;
     }
 
     @Override
     protected void done(@Nullable Object result) {
-        if (img.getDrawable() == null) {
-            img.setImageBitmap(bmp);
-            return;
-        }
-        if (bmp != null) {
-            ImageBlurAnimator animator = new ImageBlurAnimator(context, img, 20, bmp);
-            animator.animate();
-            animateColorChange();
-        }
+//        if (img.getDrawable() ==
+//                ContextCompat.getDrawable(context,
+//                        R.drawable.default_art)) {
+//            img.setImageBitmap(bmp);
+//            return;
+//        }
+        if (path != null)
+            Picasso.with(context).load(new File(path)).into(new Target() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                    if (bitmap != null) {
+                        bmp = bitmap;
+                        ImageBlurAnimator animator = new ImageBlurAnimator(context, img, 20, bitmap);
+                        animator.animate();
+                        animateColorChange();
+                    }
+                }
+
+                @Override
+                public void onBitmapFailed(Drawable errorDrawable) {
+                    img.setImageResource(R.drawable.default_art);
+                }
+
+                @Override
+                public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                }
+            });
     }
 
     private void animateColorChange() {
-        Palette.generateAsync(bmp,
+        Palette.from(bmp).generate(
                 new Palette.PaletteAsyncListener() {
                     public ValueAnimator colorAnimation, colorAnimation1;
 
@@ -174,7 +197,7 @@ public class PlayerLoader extends Action {
                 FileDescriptor fd = pfd.getFileDescriptor();
                 bm = BitmapFactory.decodeFileDescriptor(fd, null, options);
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         return bm;
     }

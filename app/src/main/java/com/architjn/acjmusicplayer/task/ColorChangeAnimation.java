@@ -44,7 +44,7 @@ public abstract class ColorChangeAnimation extends Action {
     protected Object run() throws InterruptedException {
         try {
             Bitmap bmp = BitmapFactory.decodeFile(artPath);
-            Palette.generateAsync(bmp,
+            Palette.from(bmp).generate(
                     new Palette.PaletteAsyncListener() {
                         @Override
                         public void onGenerated(final Palette palette) {

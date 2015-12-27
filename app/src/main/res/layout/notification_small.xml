@@ -11,7 +11,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_weight="0"
-        android:src="#000" />
+        android:src="@drawable/default_art" />
 
     <LinearLayout
         android:layout_width="wrap_content"

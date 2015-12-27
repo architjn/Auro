@@ -17,7 +17,9 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -49,8 +51,7 @@ public class Utils {
 
     public int dpToPx(int dp) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return px;
+        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
     public void addToPlaylist(final Activity activity, final long songId) {
@@ -301,6 +302,14 @@ public class Utils {
                 Uri.parse("file:///" + items.get(position).getPath()));
         context.startActivity(Intent.createChooser(share,
                 context.getString(R.string.share_song_file)));
+    }
+
+    public int getWindowWidth() {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        DisplayMetrics metrics = new DisplayMetrics();
+        display.getMetrics(metrics);
+        return metrics.widthPixels;
     }
 
 }

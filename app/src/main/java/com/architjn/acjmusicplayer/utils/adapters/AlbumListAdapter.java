@@ -3,7 +3,6 @@ package com.architjn.acjmusicplayer.utils.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -80,11 +79,15 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Simp
             new AlbumItemLoad(context, items.get(position).getAlbumArtPath(), holder).execute();
             setAlbumArt(position, holder);
         } else {
-            int colorPrimary = ContextCompat
-                    .getColor(context, R.color.colorPrimary);
-            holder.img.setImageDrawable(new ColorDrawable(colorPrimary));
-            holder.bottomBg.setBackgroundColor(colorPrimary);
+            setDefaultSet(holder);
         }
+    }
+
+    private void setDefaultSet(SimpleItemViewHolder holder) {
+        int colorPrimary = ContextCompat
+                .getColor(context, R.color.colorPrimary);
+        holder.img.setImageResource(R.drawable.default_art);
+        holder.bottomBg.setBackgroundColor(colorPrimary);
     }
 
     private void setAlbumArt(int position, SimpleItemViewHolder holder) {
@@ -92,7 +95,7 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Simp
         if (art != null)
             Picasso.with(context).load(new File(art)).resize(dpToPx(180),
                     dpToPx(180)).centerCrop().into(holder.img);
-        else Picasso.with(context).load(R.drawable.default_art).into(holder.img);
+        else setDefaultSet(holder);
     }
 
     public int dpToPx(int dp) {
