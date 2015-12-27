@@ -20,4 +20,6 @@ public class AlbumListSpacesItemDecoration extends RecyclerView.ItemDecoration {
         }
         outRect.bottom = space;
     }
+
+
 }

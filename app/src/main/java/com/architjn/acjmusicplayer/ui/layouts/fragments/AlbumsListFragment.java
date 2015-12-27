@@ -3,7 +3,6 @@ package com.architjn.acjmusicplayer.ui.layouts.fragments;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -26,6 +25,7 @@ import com.architjn.acjmusicplayer.ui.layouts.activity.MainActivity;
 import com.architjn.acjmusicplayer.utils.AlbumListSpacesItemDecoration;
 import com.architjn.acjmusicplayer.utils.ListSongs;
 import com.architjn.acjmusicplayer.utils.PermissionChecker;
+import com.architjn.acjmusicplayer.utils.Utils;
 import com.architjn.acjmusicplayer.utils.adapters.AlbumListAdapter;
 import com.architjn.acjmusicplayer.utils.items.Album;
 import com.squareup.picasso.Picasso;
@@ -47,7 +47,8 @@ public class AlbumsListFragment extends Fragment {
     private View emptyView;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_albums,
                 container, false);
         mainView = view;
@@ -84,14 +85,16 @@ public class AlbumsListFragment extends Fragment {
         new Thread(new Runnable() {
             public void run() {
                 final ArrayList<Album> albumList = ListSongs.getAlbumList(context);
-                final GridLayoutManager gridLayoutManager = new GridLayoutManager(mainView.getContext(), 2);
+                final GridLayoutManager gridLayoutManager =
+                        new GridLayoutManager(mainView.getContext(), 2);
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         gridLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
                         gridLayoutManager.scrollToPosition(0);
                         gv.setLayoutManager(gridLayoutManager);
-                        gv.addItemDecoration(new AlbumListSpacesItemDecoration(2));
+                        gv.addItemDecoration(new AlbumListSpacesItemDecoration(new
+                                Utils(context).dpToPx(1)));
                         final View header = LayoutInflater.from(context).inflate(
                                 R.layout.album_list_header, gv, false);
                         Album lastAddedAlbum = ListSongs.getLastAddedAlbum(context);
@@ -153,7 +156,8 @@ public class AlbumsListFragment extends Fragment {
         } else {
             int colorPrimary = ContextCompat
                     .getColor(context, R.color.colorPrimary);
-            ((ImageView) header.findViewById(R.id.album_grid_header_img)).setImageDrawable(new ColorDrawable(colorPrimary));
+            ((ImageView) header.findViewById(R.id.album_grid_header_img))
+                    .setImageResource(R.drawable.default_art);
             header.findViewById(R.id.album_grid_header_bg).setBackgroundColor(colorPrimary);
         }
     }
@@ -162,9 +166,11 @@ public class AlbumsListFragment extends Fragment {
         String art = lastAddedAlbum.getAlbumArtPath();
         if (art != null)
             Picasso.with(context).load(new File(art)).resize(dpToPx(180),
-                    dpToPx(180)).centerCrop().into((ImageView) header.findViewById(R.id.album_grid_header_img));
+                    dpToPx(180)).centerCrop().into((ImageView)
+                    header.findViewById(R.id.album_grid_header_img));
         else
-            Picasso.with(context).load(R.drawable.default_art).into((ImageView) header.findViewById(R.id.album_grid_header_img));
+            Picasso.with(context).load(R.drawable.default_art).into((ImageView)
+                    header.findViewById(R.id.album_grid_header_img));
     }
 
     public int dpToPx(int dp) {

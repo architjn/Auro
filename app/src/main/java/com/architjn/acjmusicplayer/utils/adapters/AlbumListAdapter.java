@@ -10,11 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.task.AlbumItemLoad;
 import com.architjn.acjmusicplayer.ui.layouts.activity.AlbumActivity;
+import com.architjn.acjmusicplayer.utils.Utils;
 import com.architjn.acjmusicplayer.utils.items.Album;
 import com.squareup.picasso.Picasso;
 
@@ -59,6 +61,7 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Simp
         if (isHeader(position)) {
             return;
         }
+        setSize(holder);
         holder.bottomBg.setBackgroundColor(Color.parseColor("#ffffff"));
         setArt(holder, position - 1);
         holder.name.setText(items.get(position - 1).getAlbumTitle());
@@ -72,6 +75,14 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Simp
                 context.startActivity(i);
             }
         });
+    }
+
+    private void setSize(SimpleItemViewHolder holder) {
+        Utils utils = new Utils(context);
+        int size = (utils.getWindowWidth()
+                - utils.dpToPx(1)) / 2;
+        TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(size, size);
+        holder.img.setLayoutParams(layoutParams);
     }
 
     private void setArt(SimpleItemViewHolder holder, int position) {
