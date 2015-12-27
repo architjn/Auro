@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="130dp"
         android:scaleType="centerCrop"
-        android:src="#000" />
+        android:src="@drawable/default_art" />
 
     <LinearLayout
         android:id="@+id/artist_sub_name_holder"

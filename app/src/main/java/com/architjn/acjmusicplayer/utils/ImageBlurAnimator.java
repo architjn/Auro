@@ -4,16 +4,12 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 import android.widget.ImageView;
-
-import com.architjn.acjmusicplayer.R;
 
 /**
  * Created by architjn on 12/12/15.
@@ -37,8 +33,8 @@ public class ImageBlurAnimator {
         try {
             bmp = ((BitmapDrawable) imgView.getDrawable()).getBitmap();
         } catch (ClassCastException e) {
-            bmp = getBitmapOfVector(R.drawable.default_art);
-            e.printStackTrace();
+            imgView.setImageBitmap(newBitmap);
+            return;
         }
         Integer elevationFrom = 0;
         Integer elevationTo = animationScale;
@@ -82,21 +78,23 @@ public class ImageBlurAnimator {
                 });
         colorAnimation1.start();
     }
-
-    private Bitmap getBitmapOfVector(int id) {
-        Utils utils = new Utils(context);
-        Drawable vectorDrawable = context.getDrawable(id);
-        int h = utils.dpToPx((int) context.getResources()
-                .getDimension(R.dimen.parallax_img_height_player));
-        int w = utils.getWindowWidth();
-        if (vectorDrawable != null)
-            vectorDrawable.setBounds(0, 0, w, h);
-        Bitmap bm = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bm);
-        if (vectorDrawable != null)
-            vectorDrawable.draw(canvas);
-        return bm;
-    }
+/*
+ Code below can be used for converting VectorDrawable to Bitmap
+ */
+//    private Bitmap getBitmapOfVector(int id) {
+//        Utils utils = new Utils(context);
+//        Drawable vectorDrawable = context.getDrawable(id);
+//        int h = utils.dpToPx((int) context.getResources()
+//                .getDimension(R.dimen.parallax_img_height_player));
+//        int w = utils.getWindowWidth();
+//        if (vectorDrawable != null)
+//            vectorDrawable.setBounds(0, 0, w, h);
+//        Bitmap bm = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+//        Canvas canvas = new Canvas(bm);
+//        if (vectorDrawable != null)
+//            vectorDrawable.draw(canvas);
+//        return bm;
+//    }
 
     private Bitmap createBitmap_ScriptIntrinsicBlur(Bitmap src, float r) {
         //Radius range (0 < r <= 25)

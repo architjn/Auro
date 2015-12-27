@@ -153,7 +153,7 @@ public class PlayerActivity extends AppCompatActivity {
         new PlayerLoader(context, artHolder, path,
                 findViewById(R.id.control_seek_bar_holder),
                 findViewById(R.id.controller_holder),
-                ((CollapsingToolbarLayout) findViewById(R.id.collapsingtoolbarlayout_player))).execute();
+                ((CollapsingToolbarLayout) findViewById(R.id.collapsingtoolbarlayout_player)));
         totalSeekText.setText(currentSong.getDuration());
         seekBar.setMax((int) currentSong.getDurationLong());
         seekBar.setProgress(intent.getIntExtra("seek", 0));

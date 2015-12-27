@@ -71,7 +71,7 @@ public class AlbumItemLoad extends Action {
     @Override
     protected Object run() throws InterruptedException {
         bmp = BitmapFactory.decodeFile(artPath);
-        Palette.generateAsync(bmp,
+        Palette.from(bmp).generate(
                 new Palette.PaletteAsyncListener() {
                     @Override
                     public void onGenerated(final Palette palette) {

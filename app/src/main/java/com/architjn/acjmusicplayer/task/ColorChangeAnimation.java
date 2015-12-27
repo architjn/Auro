@@ -23,6 +23,7 @@ public abstract class ColorChangeAnimation extends Action {
     private Context context;
     private LinearLayout detailHolder;
     private String artPath;
+    private boolean noBitmap;
     private Integer colorFrom;
     private ValueAnimator colorAnimation;
 
@@ -31,6 +32,7 @@ public abstract class ColorChangeAnimation extends Action {
         this.detailHolder = detailHolder;
         this.artPath = artPath;
         colorFrom = ((ColorDrawable) detailHolder.getBackground()).getColor();
+        noBitmap = false;
     }
 
     @NonNull
@@ -69,8 +71,29 @@ public abstract class ColorChangeAnimation extends Action {
             );
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
+            noBitmap = true;
         }
         return null;
+    }
+
+    @Override
+    protected void done(@Nullable Object result) {
+        if (noBitmap) {
+            //Animate to default color
+            colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom,
+                    ContextCompat.getColor(context, R.color.color400));
+            colorAnimation.setDuration(2000);
+
+            colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+                @Override
+                public void onAnimationUpdate(ValueAnimator animator) {
+                    detailHolder.setBackgroundColor((Integer) animator.getAnimatedValue());
+                }
+
+            });
+            colorAnimation.start();
+        }
     }
 
     public abstract void onColorFetched(Integer colorPrimary);

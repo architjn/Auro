@@ -5,37 +5,30 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.content.ContentUris;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Build;
-import android.os.ParcelFileDescriptor;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.afollestad.async.Action;
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.utils.ImageBlurAnimator;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.io.File;
-import java.io.FileDescriptor;
 
 /**
  * Created by architjn on 29/11/15.
  */
-public class PlayerLoader extends Action {
+public class PlayerLoader {
 
     private Context context;
     private ImageView img;
@@ -53,29 +46,11 @@ public class PlayerLoader extends Action {
         this.seekHolder = seekHolder;
         this.controlHolder = controlHolder;
         this.toolbar = toolbar;
+        load();
     }
 
-    @NonNull
-    @Override
-    public String id() {
-        return String.valueOf(path);
-    }
+    private void load() {
 
-    @Nullable
-    @Override
-    protected Object run() throws InterruptedException {
-//        bmp = getAlbumart(albumId);
-        return null;
-    }
-
-    @Override
-    protected void done(@Nullable Object result) {
-//        if (img.getDrawable() ==
-//                ContextCompat.getDrawable(context,
-//                        R.drawable.default_art)) {
-//            img.setImageBitmap(bmp);
-//            return;
-//        }
         if (path != null)
             Picasso.with(context).load(new File(path)).into(new Target() {
                 @Override
@@ -178,28 +153,6 @@ public class PlayerLoader extends Action {
         Color.colorToHSV(baseColor, hsv);
         hsv[2] *= 0.7f;
         return Color.HSVToColor(hsv);
-    }
-
-    public Bitmap getAlbumart(Long album_id) {
-        Bitmap bm = null;
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = Math.max(options.outWidth / img.getWidth(), options.outHeight / img.getHeight());
-        try {
-            final Uri sArtworkUri = Uri
-                    .parse("content://media/external/audio/albumart");
-
-            Uri uri = ContentUris.withAppendedId(sArtworkUri, album_id);
-
-            ParcelFileDescriptor pfd = context.getContentResolver()
-                    .openFileDescriptor(uri, "r");
-
-            if (pfd != null) {
-                FileDescriptor fd = pfd.getFileDescriptor();
-                bm = BitmapFactory.decodeFileDescriptor(fd, null, options);
-            }
-        } catch (Exception ignored) {
-        }
-        return bm;
     }
 
     public int getAnyColor(Palette palette) {
