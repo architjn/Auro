@@ -28,8 +28,9 @@ import java.io.File;
 /**
  * Created by architjn on 29/11/15.
  */
-public class PlayerLoader {
+public abstract class PlayerLoader {
 
+    private static final String TAG = "PlayerLoader-TAG";
     private Context context;
     private ImageView img;
     private String path;
@@ -37,17 +38,24 @@ public class PlayerLoader {
     private View seekHolder;
     private View controlHolder;
     private CollapsingToolbarLayout toolbar;
+    private final int lightColor;
+    private final int darkColor;
 
     public PlayerLoader(Context context, ImageView img, String path,
-                        View seekHolder, View controlHolder, CollapsingToolbarLayout toolbar) {
+                        View seekHolder, View controlHolder, CollapsingToolbarLayout toolbar,
+                        int lightColor, int darkColor) {
         this.context = context;
         this.img = img;
         this.path = path;
         this.seekHolder = seekHolder;
         this.controlHolder = controlHolder;
         this.toolbar = toolbar;
+        this.lightColor = lightColor;
+        this.darkColor = darkColor;
         load();
     }
+
+    public abstract void onColorFetched(int lightColor, int darkColor);
 
     private void load() {
 
@@ -83,14 +91,26 @@ public class PlayerLoader {
                     @Override
                     public void onGenerated(final Palette palette) {
                         final int toolbarColor = getAnyColor(palette);
-                        colorAnimation = setBasicAnimator(getBackgroundColor(controlHolder),
+                        int fromColor = getBackgroundColor(controlHolder);
+                        int fromColor1 = getBackgroundColor(seekHolder);
+                        if (fromColor == 0) {
+                            if (lightColor == 0) {
+                                fromColor = ContextCompat.getColor(context, R.color.colorPrimary);
+                                fromColor1 = ContextCompat.getColor(context, R.color.colorPrimaryDark);
+                            } else {
+                                fromColor = lightColor;
+                                fromColor1 = darkColor;
+                            }
+                        }
+                        colorAnimation = setBasicAnimator(fromColor,
                                 toolbarColor, 2000);
                         colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 
                             @Override
                             public void onAnimationUpdate(ValueAnimator animator) {
                                 int temp = (Integer) animator.getAnimatedValue();
-                                controlHolder.setBackgroundColor(temp);
+                                if (controlHolder != null)
+                                    controlHolder.setBackgroundColor(temp);
                                 toolbar.setContentScrimColor(temp);
                             }
 
@@ -123,14 +143,17 @@ public class PlayerLoader {
                             }
                         });
                         colorAnimation.start();
-                        colorAnimation1 = setBasicAnimator(getBackgroundColor(seekHolder),
-                                getDarkColor(getAnyColor(palette)), 2000);
+                        int statusBarColor = getDarkColor(toolbarColor);
+                        onColorFetched(toolbarColor, statusBarColor);
+                        colorAnimation1 = setBasicAnimator(fromColor1,
+                                statusBarColor, 2000);
                         colorAnimation1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 
                             @Override
                             public void onAnimationUpdate(ValueAnimator animator) {
                                 int temp = (Integer) animator.getAnimatedValue();
-                                seekHolder.setBackgroundColor(temp);
+                                if (seekHolder != null)
+                                    seekHolder.setBackgroundColor(temp);
                                 toolbar.setStatusBarScrimColor(temp);
                             }
 

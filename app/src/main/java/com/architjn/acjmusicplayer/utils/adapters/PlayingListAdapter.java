@@ -1,5 +1,6 @@
 package com.architjn.acjmusicplayer.utils.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.PopupMenu;
@@ -35,6 +36,8 @@ public class PlayingListAdapter extends RecyclerView.Adapter<PlayingListAdapter.
     private PointShiftingArrayList<Song> items;
     private Context context;
     private View header;
+    private int lightColor;
+    private int darkColor;
 
     public PlayingListAdapter(Context context, View header, PointShiftingArrayList<Song> items) {
         this.context = context;
@@ -68,10 +71,20 @@ public class PlayingListAdapter extends RecyclerView.Adapter<PlayingListAdapter.
         return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
+    public void setCurrentColor(int lightColor, int darkColor){
+        this.lightColor = lightColor;
+        this.darkColor = darkColor;
+    }
+
     @Override
     public void onBindViewHolder(final PlayingListAdapter.SimpleItemViewHolder holder, final int position) {
-        if (isHeader(position) || isUpNextHeader(position))
+        if (isHeader(position)) {
+            holder.seekHolder.setBackgroundColor(darkColor);
+            holder.controlHolder.setBackgroundColor(lightColor);
             return;
+        } else if (isUpNextHeader(position)) {
+            return;
+        }
         holder.name.setText(items.get(getPosition(position)).getName());
         holder.artistName.setText(items.get(getPosition(position)).getArtist());
         holder.img.setPadding(0, 0, 0, 0);
@@ -179,6 +192,8 @@ public class PlayingListAdapter extends RecyclerView.Adapter<PlayingListAdapter.
         public View mainView, menu;
         public ImageView img;
 
+        public View seekHolder, controlHolder;
+
         public SimpleItemViewHolder(View itemView) {
             super(itemView);
             mainView = itemView;
@@ -186,6 +201,9 @@ public class PlayingListAdapter extends RecyclerView.Adapter<PlayingListAdapter.
             name = (TextView) itemView.findViewById(R.id.song_item_name);
             menu = itemView.findViewById(R.id.song_item_menu);
             artistName = (TextView) itemView.findViewById(R.id.song_item_artist);
+
+            seekHolder = itemView.findViewById(R.id.control_seek_bar_holder);
+            controlHolder = itemView.findViewById(R.id.controller_holder);
         }
     }
 }

@@ -56,6 +56,8 @@ public class PlayerActivity extends AppCompatActivity {
     private TextView currentSeekText;
     private TextView totalSeekText;
     private Timer timer;
+    private int lightColor;
+    private int darkColor;
     private UserPreferenceHandler preferenceHandler;
     private ImageView pause, repeat, shuffle;
     private final BroadcastReceiver br = new BroadcastReceiver() {
@@ -74,6 +76,9 @@ public class PlayerActivity extends AppCompatActivity {
             }
         }
     };
+    private View seekHolder;
+    private View controlHolder;
+    private CollapsingToolbarLayout collapsingToolbar;
 
     private static Drawable convertDrawableToGrayScale(Drawable drawable) {
         if (drawable == null)
@@ -102,7 +107,8 @@ public class PlayerActivity extends AppCompatActivity {
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
-        artHolder = (ImageView) findViewById(R.id.activity_player_art);
+        collapsingToolbar = (CollapsingToolbarLayout)
+                findViewById(R.id.collapsingtoolbarlayout_player);
         askUpdate();
         IntentFilter filter = new IntentFilter();
         filter.addAction(ACTION_RECIEVE_SONG);
@@ -150,10 +156,20 @@ public class PlayerActivity extends AppCompatActivity {
                 .getSongFromId(intent.getLongExtra("songId", 0));
         String path = ListSongs.getAlbumArt(context,
                 currentSong.getAlbumId());
+        controlHolder = findViewById(R.id.controller_holder);
+        seekHolder = findViewById(R.id.control_seek_bar_holder);
+        artHolder = (ImageView) findViewById(R.id.activity_player_art);
         new PlayerLoader(context, artHolder, path,
-                findViewById(R.id.control_seek_bar_holder),
-                findViewById(R.id.controller_holder),
-                ((CollapsingToolbarLayout) findViewById(R.id.collapsingtoolbarlayout_player)));
+                seekHolder, controlHolder, collapsingToolbar,
+                lightColor,darkColor) {
+
+            @Override
+            public void onColorFetched(int lightColor, int darkColor) {
+                PlayerActivity.this.lightColor = lightColor;
+                PlayerActivity.this.darkColor = darkColor;
+                adapter.setCurrentColor(lightColor, darkColor);
+            }
+        };
         totalSeekText.setText(currentSong.getDuration());
         seekBar.setMax((int) currentSong.getDurationLong());
         seekBar.setProgress(intent.getIntExtra("seek", 0));

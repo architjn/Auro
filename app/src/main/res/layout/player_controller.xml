@@ -6,9 +6,9 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/control_seek_bar_holder"
         android:layout_width="match_parent"
         android:layout_height="@dimen/now_playing_seekbar_size"
-        android:id="@+id/control_seek_bar_holder"
         android:layout_weight="0"
         android:background="@color/colorPrimaryDark"
         android:orientation="horizontal">
@@ -44,10 +44,10 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/controller_holder"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:background="@color/colorPrimary"
-        android:id="@+id/controller_holder"
         android:elevation="4dp"
         android:gravity="center"
         android:orientation="horizontal"
