@@ -1,5 +1,5 @@
 # Auro
-1st Most Fastest, Latest Designed and open source Music player
+The world's first fastest, open source Music player for Android with latest design...
 
 #Features
 - Fastest Music Player
