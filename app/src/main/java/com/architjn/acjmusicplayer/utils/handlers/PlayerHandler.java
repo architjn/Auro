@@ -1,4 +1,4 @@
-package com.architjn.acjmusicplayer.utils;
+package com.architjn.acjmusicplayer.utils.handlers;
 
 import android.content.Context;
 import android.media.MediaPlayer;
@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.service.PlayerService;
+import com.architjn.acjmusicplayer.utils.ListSongs;
 import com.architjn.acjmusicplayer.utils.items.Song;
 
 import java.io.IOException;

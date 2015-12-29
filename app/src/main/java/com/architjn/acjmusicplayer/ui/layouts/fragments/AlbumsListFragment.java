@@ -22,7 +22,7 @@ import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.task.AlbumItemLoad;
 import com.architjn.acjmusicplayer.ui.layouts.activity.AlbumActivity;
 import com.architjn.acjmusicplayer.ui.layouts.activity.MainActivity;
-import com.architjn.acjmusicplayer.utils.AlbumListSpacesItemDecoration;
+import com.architjn.acjmusicplayer.utils.decorations.AlbumListSpacesItemDecoration;
 import com.architjn.acjmusicplayer.utils.ListSongs;
 import com.architjn.acjmusicplayer.utils.PermissionChecker;
 import com.architjn.acjmusicplayer.utils.Utils;
@@ -150,33 +150,35 @@ public class AlbumsListFragment extends Fragment {
     }
 
     private void setArt(View header, final Album lastAddedAlbum) {
+        Utils utils = new Utils(context);
+        int size = (utils.getWindowWidth()
+                - utils.dpToPx(1)) / 2;
         if (lastAddedAlbum.getAlbumArtPath() != null) {
             new AlbumItemLoad(context, lastAddedAlbum.getAlbumArtPath(), header).execute();
-            setAlbumArt(lastAddedAlbum, header);
+            setAlbumArt(lastAddedAlbum, header, size, utils);
         } else {
             int colorPrimary = ContextCompat
                     .getColor(context, R.color.colorPrimary);
-            ((ImageView) header.findViewById(R.id.album_grid_header_img))
-                    .setImageResource(R.drawable.default_art);
+            ((ImageView) header.findViewById(R.id.album_grid_header_img)).setImageBitmap(utils
+                    .getBitmapOfVector(R.drawable.default_art, size, size));
             header.findViewById(R.id.album_grid_header_bg).setBackgroundColor(colorPrimary);
         }
     }
 
-    private void setAlbumArt(Album lastAddedAlbum, View header) {
+    private void setAlbumArt(Album lastAddedAlbum, View header, int size, Utils utils) {
         String art = lastAddedAlbum.getAlbumArtPath();
         if (art != null)
-            Picasso.with(context).load(new File(art)).resize(dpToPx(180),
-                    dpToPx(180)).centerCrop().into((ImageView)
+            Picasso.with(context).load(new File(art)).resize(size, size)
+                    .centerCrop().into((ImageView)
                     header.findViewById(R.id.album_grid_header_img));
         else
-            Picasso.with(context).load(R.drawable.default_art).into((ImageView)
-                    header.findViewById(R.id.album_grid_header_img));
+            ((ImageView) header.findViewById(R.id.album_grid_header_img)).setImageBitmap(utils
+                    .getBitmapOfVector(R.drawable.default_art, size, size));
     }
 
     public int dpToPx(int dp) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return px;
+        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
     @Override

@@ -32,7 +32,7 @@ public class ImageBlurAnimator {
         Bitmap bmp;
         try {
             bmp = ((BitmapDrawable) imgView.getDrawable()).getBitmap();
-        } catch (ClassCastException e) {
+        } catch (ClassCastException | NullPointerException e) {
             imgView.setImageBitmap(newBitmap);
             return;
         }

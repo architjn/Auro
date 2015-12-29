@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.utils.ListSongs;
-import com.architjn.acjmusicplayer.utils.SearchListSpacesItemDecoration;
+import com.architjn.acjmusicplayer.utils.decorations.SearchListSpacesItemDecoration;
 import com.architjn.acjmusicplayer.utils.adapters.SearchListAdapter;
 import com.architjn.acjmusicplayer.utils.items.Album;
 import com.architjn.acjmusicplayer.utils.items.Artist;

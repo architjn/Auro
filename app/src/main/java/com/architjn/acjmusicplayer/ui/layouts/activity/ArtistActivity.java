@@ -13,8 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.architjn.acjmusicplayer.R;
-import com.architjn.acjmusicplayer.utils.ArtistAlbumListSpacesItemDecoration;
-import com.architjn.acjmusicplayer.utils.ArtistDividerItemDecoration;
+import com.architjn.acjmusicplayer.utils.decorations.ArtistAlbumListSpacesItemDecoration;
+import com.architjn.acjmusicplayer.utils.decorations.ArtistDividerItemDecoration;
 import com.architjn.acjmusicplayer.utils.ListSongs;
 import com.architjn.acjmusicplayer.utils.adapters.ArtistSongListAdapter;
 import com.architjn.acjmusicplayer.utils.adapters.ArtistSubListAdapter;

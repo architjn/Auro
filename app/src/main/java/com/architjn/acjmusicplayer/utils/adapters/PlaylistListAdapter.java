@@ -23,7 +23,7 @@ import com.architjn.acjmusicplayer.service.PlayerService;
 import com.architjn.acjmusicplayer.ui.layouts.activity.MainActivity;
 import com.architjn.acjmusicplayer.ui.layouts.activity.PlaylistActivity;
 import com.architjn.acjmusicplayer.ui.layouts.fragments.PlaylistListFragment;
-import com.architjn.acjmusicplayer.utils.PlaylistDBHelper;
+import com.architjn.acjmusicplayer.utils.handlers.PlaylistDBHelper;
 import com.architjn.acjmusicplayer.utils.items.Playlist;
 
 import java.util.ArrayList;

@@ -1,11 +1,9 @@
 package com.architjn.acjmusicplayer.utils.adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +16,7 @@ import com.architjn.acjmusicplayer.service.PlayerService;
 import com.architjn.acjmusicplayer.ui.layouts.activity.PlayerActivity;
 import com.architjn.acjmusicplayer.ui.widget.PointShiftingArrayList;
 import com.architjn.acjmusicplayer.utils.ListSongs;
+import com.architjn.acjmusicplayer.utils.Utils;
 import com.architjn.acjmusicplayer.utils.items.Song;
 import com.squareup.picasso.Picasso;
 
@@ -66,12 +65,7 @@ public class PlayingListAdapter extends RecyclerView.Adapter<PlayingListAdapter.
         return new SimpleItemViewHolder(itemView);
     }
 
-    public int dpToPx(int dp) {
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-    }
-
-    public void setCurrentColor(int lightColor, int darkColor){
+    public void setCurrentColor(int lightColor, int darkColor) {
         this.lightColor = lightColor;
         this.darkColor = darkColor;
     }
@@ -89,18 +83,22 @@ public class PlayingListAdapter extends RecyclerView.Adapter<PlayingListAdapter.
         holder.artistName.setText(items.get(getPosition(position)).getArtist());
         holder.img.setPadding(0, 0, 0, 0);
         //Load Image in Background
+        Utils utils = new Utils(context);
         if (getPosition(position) == 0) {
-            int padding = 10;
-            holder.img.setPadding(dpToPx(padding), dpToPx(padding), dpToPx(padding), dpToPx(padding));
+            int padding = utils.dpToPx(10);
+            holder.img.setPadding(padding, padding, padding, padding);
             Picasso.with(context).load(R.drawable.ic_speaker_48dp).into(holder.img);
         } else {
             String path = ListSongs.getAlbumArt(context,
                     items.get(getPosition(position)).getAlbumId());
+            int size = utils.dpToPx(50);
             if (path != null)
-                Picasso.with(context).load(new File(path)).resize(dpToPx(50),
-                        dpToPx(50)).centerCrop().into(holder.img);
-            else
-                holder.img.setImageResource(R.drawable.default_art);
+                Picasso.with(context).load(new File(path)).resize(size,
+                        size).centerCrop().into(holder.img);
+            else {
+                holder.img.setImageBitmap(utils.getBitmapOfVector(R.drawable.default_art,
+                        size, size));
+            }
         }
         setOnClick(holder, getPosition(position));
     }

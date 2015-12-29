@@ -1,4 +1,4 @@
-package com.architjn.acjmusicplayer.utils;
+package com.architjn.acjmusicplayer.utils.handlers;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -13,6 +13,8 @@ import android.widget.RemoteViews;
 
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.service.PlayerService;
+import com.architjn.acjmusicplayer.utils.ListSongs;
+import com.architjn.acjmusicplayer.utils.Utils;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -134,16 +136,20 @@ public class NotificationHandler {
                     public void onPrepareLoad(Drawable placeHolderDrawable) {
                     }
                 });
-            }else {
+            } else {
                 setDefaultImageView();
             }
         }
     }
 
     private void setDefaultImageView() {
-        notificationCompat.bigContentView.setImageViewResource(R.id.noti_album_art,
-                R.drawable.default_art);
-        notificationCompat.contentView.setImageViewResource(R.id.noti_album_art, R.drawable.default_art);
+        Utils utils = new Utils(context);
+        notificationCompat.bigContentView.setImageViewBitmap(R.id.noti_album_art,
+                utils.getBitmapOfVector(R.drawable.default_art,
+                        utils.dpToPx(100), utils.dpToPx(100)));
+        notificationCompat.contentView.setImageViewBitmap(R.id.noti_album_art,
+                utils.getBitmapOfVector(R.drawable.default_art,
+                        utils.dpToPx(50), utils.dpToPx(50)));
         notificationManager.notify(NOTIFICATION_ID, notificationCompat);
     }
 

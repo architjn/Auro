@@ -20,8 +20,8 @@ import android.widget.ImageView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.utils.PermissionChecker;
-import com.architjn.acjmusicplayer.utils.PlaylistDBHelper;
-import com.architjn.acjmusicplayer.utils.SimpleDividerItemDecoration;
+import com.architjn.acjmusicplayer.utils.handlers.PlaylistDBHelper;
+import com.architjn.acjmusicplayer.utils.decorations.SimpleDividerItemDecoration;
 import com.architjn.acjmusicplayer.utils.adapters.PlaylistListAdapter;
 import com.architjn.acjmusicplayer.utils.items.Playlist;
 

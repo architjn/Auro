@@ -10,8 +10,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.architjn.acjmusicplayer.R;
-import com.architjn.acjmusicplayer.utils.PlaylistDBHelper;
-import com.architjn.acjmusicplayer.utils.SimpleDividerItemDecoration;
+import com.architjn.acjmusicplayer.utils.handlers.PlaylistDBHelper;
+import com.architjn.acjmusicplayer.utils.decorations.SimpleDividerItemDecoration;
 import com.architjn.acjmusicplayer.utils.adapters.PlaylistSongListAdapter;
 
 /**

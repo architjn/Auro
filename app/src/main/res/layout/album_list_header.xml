@@ -10,8 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/album_grid_height"
         android:layout_weight="1"
-        android:scaleType="centerCrop"
-        android:src="#000" />
+        android:scaleType="centerCrop" />
 
     <LinearLayout
         android:id="@+id/album_grid_header_bg"

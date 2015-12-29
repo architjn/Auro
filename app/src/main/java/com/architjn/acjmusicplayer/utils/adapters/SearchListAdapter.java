@@ -20,9 +20,10 @@ import com.architjn.acjmusicplayer.service.PlayerService;
 import com.architjn.acjmusicplayer.task.AlbumItemLoad;
 import com.architjn.acjmusicplayer.ui.layouts.activity.AlbumActivity;
 import com.architjn.acjmusicplayer.ui.layouts.activity.ArtistActivity;
-import com.architjn.acjmusicplayer.utils.ArtistImgHandler;
+import com.architjn.acjmusicplayer.utils.handlers.ArtistImgHandler;
 import com.architjn.acjmusicplayer.utils.ImageConverter;
 import com.architjn.acjmusicplayer.utils.ListSongs;
+import com.architjn.acjmusicplayer.utils.Utils;
 import com.architjn.acjmusicplayer.utils.items.Album;
 import com.architjn.acjmusicplayer.utils.items.Artist;
 import com.architjn.acjmusicplayer.utils.items.Search;
@@ -147,7 +148,9 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Si
         } else if (whatView(position) == ITEM_VIEW_TYPE_LIST_ARTIST) {
             if (artists.size() == 0)
                 return;
-            holder.artistArt.setImageResource(R.drawable.default_artist_art);
+            Utils utils = new Utils(context);
+            holder.artistArt.setImageBitmap(utils.getBitmapOfVector(R.drawable.default_artist_art,
+                    utils.dpToPx(50), utils.dpToPx(50)));
             getArtistImg(holder, getPosition(position));
             holder.expandView.setVisibility(View.GONE);
             holder.artistName.setText(artists.get(getPosition(position)).getArtistName());
@@ -167,7 +170,7 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Si
         } else if (whatView(position) == ITEM_VIEW_TYPE_LIST_ALBUM) {
             if (albums.size() == 0)
                 return;
-            holder.albumArt.setImageResource(R.drawable.default_art);
+            setDefaultView(holder);
             holder.albumName.setText(albums.get(getPosition(position)).getAlbumTitle());
             holder.albumArtist.setText(albums.get(getPosition(position)).getAlbumArtist());
             setArt(holder, getPosition(position));
@@ -210,11 +213,16 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Si
     private void setSongArt(int position, SimpleItemViewHolder holder) {
         String path = ListSongs.getAlbumArt(context,
                 songs.get(position).getAlbumId());
+        Utils utils = new Utils(context);
+        int size = utils.dpToPx(50);
         if (path != null)
-            Picasso.with(context).load(new File(path)).resize(dpToPx(50),
-                    dpToPx(50)).centerCrop().into(holder.songArt);
-        else
-            Picasso.with(context).load(R.drawable.default_art).into(holder.songArt);
+            Picasso.with(context).load(new File(path)).resize(size,
+                    size).centerCrop().into(holder.songArt);
+        else {
+            holder.songArt.setImageBitmap(utils.getBitmapOfVector(R.drawable.default_art,
+                    size, size));
+        }
+
     }
 
 
@@ -275,7 +283,10 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Si
     private void setDefaultView(SimpleItemViewHolder holder) {
         int colorPrimary = ContextCompat
                 .getColor(context, R.color.colorPrimary);
-        holder.albumArt.setImageResource(R.drawable.default_art);
+        Utils utils = new Utils(context);
+        int size = (utils.getWindowWidth() - dpToPx(1)) / 2;
+        holder.albumArt.setImageBitmap(utils.getBitmapOfVector(R.drawable.default_art,
+                size, size));
         holder.bgView.setBackgroundColor(colorPrimary);
     }
 

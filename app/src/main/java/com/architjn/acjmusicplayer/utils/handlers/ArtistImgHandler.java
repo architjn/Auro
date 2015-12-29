@@ -1,4 +1,4 @@
-package com.architjn.acjmusicplayer.utils;
+package com.architjn.acjmusicplayer.utils.handlers;
 
 import android.content.ContentValues;
 import android.content.Context;

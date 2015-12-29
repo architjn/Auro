@@ -61,9 +61,9 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Simp
         if (isHeader(position)) {
             return;
         }
-        setSize(holder);
         holder.bottomBg.setBackgroundColor(Color.parseColor("#ffffff"));
-        setArt(holder, position - 1);
+        setArt(holder, position - 1,
+                setSize(holder));
         holder.name.setText(items.get(position - 1).getAlbumTitle());
         holder.artist.setText(items.get(position - 1).getAlbumArtist());
         holder.mainView.setOnClickListener(new View.OnClickListener() {
@@ -77,36 +77,38 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Simp
         });
     }
 
-    private void setSize(SimpleItemViewHolder holder) {
+    private int setSize(SimpleItemViewHolder holder) {
         Utils utils = new Utils(context);
         int size = (utils.getWindowWidth()
                 - utils.dpToPx(1)) / 2;
         TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(size, size);
         holder.img.setLayoutParams(layoutParams);
+        return size;
     }
 
-    private void setArt(SimpleItemViewHolder holder, int position) {
+    private void setArt(SimpleItemViewHolder holder, int position, int size) {
         if (items.get(position).getAlbumArtPath() != null) {
             new AlbumItemLoad(context, items.get(position).getAlbumArtPath(), holder).execute();
-            setAlbumArt(position, holder);
+            setAlbumArt(position, holder, size);
         } else {
-            setDefaultSet(holder);
+            setDefaultSet(holder, size);
         }
     }
 
-    private void setDefaultSet(SimpleItemViewHolder holder) {
+    private void setDefaultSet(SimpleItemViewHolder holder, int size) {
         int colorPrimary = ContextCompat
                 .getColor(context, R.color.colorPrimary);
-        holder.img.setImageResource(R.drawable.default_art);
+        holder.img.setImageBitmap(new Utils(context)
+                .getBitmapOfVector(R.drawable.default_art, size, size));
         holder.bottomBg.setBackgroundColor(colorPrimary);
     }
 
-    private void setAlbumArt(int position, SimpleItemViewHolder holder) {
+    private void setAlbumArt(int position, SimpleItemViewHolder holder, int size) {
         String art = items.get(position).getAlbumArtPath();
         if (art != null)
-            Picasso.with(context).load(new File(art)).resize(dpToPx(180),
-                    dpToPx(180)).centerCrop().into(holder.img);
-        else setDefaultSet(holder);
+            Picasso.with(context).load(new File(art)).resize(size,
+                    size).centerCrop().into(holder.img);
+        else setDefaultSet(holder, size);
     }
 
     public int dpToPx(int dp) {

@@ -5,11 +5,15 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,6 +33,8 @@ import com.architjn.acjmusicplayer.service.PlayerService;
 import com.architjn.acjmusicplayer.ui.layouts.activity.AlbumActivity;
 import com.architjn.acjmusicplayer.ui.layouts.activity.ArtistActivity;
 import com.architjn.acjmusicplayer.utils.adapters.AddToPlaylistDialogListAdapter;
+import com.architjn.acjmusicplayer.utils.decorations.SimpleDividerItemDecoration;
+import com.architjn.acjmusicplayer.utils.handlers.PlaylistDBHelper;
 import com.architjn.acjmusicplayer.utils.items.Song;
 import com.cocosw.bottomsheet.BottomSheet;
 
@@ -310,6 +316,17 @@ public class Utils {
         DisplayMetrics metrics = new DisplayMetrics();
         display.getMetrics(metrics);
         return metrics.widthPixels;
+    }
+
+    public Bitmap getBitmapOfVector(@DrawableRes int id, int height, int width) {
+        Drawable vectorDrawable = context.getDrawable(id);
+        if (vectorDrawable != null)
+            vectorDrawable.setBounds(0, 0, width, height);
+        Bitmap bm = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bm);
+        if (vectorDrawable != null)
+            vectorDrawable.draw(canvas);
+        return bm;
     }
 
 }

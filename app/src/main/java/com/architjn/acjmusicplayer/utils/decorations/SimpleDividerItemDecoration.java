@@ -1,4 +1,4 @@
-package com.architjn.acjmusicplayer.utils;
+package com.architjn.acjmusicplayer.utils.decorations;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -9,11 +9,11 @@ import android.view.View;
 
 import com.architjn.acjmusicplayer.R;
 
-public class ArtistDividerItemDecoration extends RecyclerView.ItemDecoration {
+public class SimpleDividerItemDecoration extends RecyclerView.ItemDecoration {
     private Drawable mDivider;
     private int size;
 
-    public ArtistDividerItemDecoration(Context context, int paddingLeft) {
+    public SimpleDividerItemDecoration(Context context, int paddingLeft) {
         this.size = paddingLeft;
         mDivider = ContextCompat.getDrawable(context, R.drawable.line_divider);
     }
@@ -33,8 +33,7 @@ public class ArtistDividerItemDecoration extends RecyclerView.ItemDecoration {
             int bottom = top + mDivider.getIntrinsicHeight();
 
             mDivider.setBounds(left, top, right, bottom);
-            if (i != 0)
-                mDivider.draw(c);
+            mDivider.draw(c);
         }
     }
 }

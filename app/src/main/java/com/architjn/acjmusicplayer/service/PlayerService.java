@@ -12,8 +12,8 @@ import android.widget.Toast;
 
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.ui.layouts.activity.PlayerActivity;
-import com.architjn.acjmusicplayer.utils.NotificationHandler;
-import com.architjn.acjmusicplayer.utils.PlayerHandler;
+import com.architjn.acjmusicplayer.utils.handlers.NotificationHandler;
+import com.architjn.acjmusicplayer.utils.handlers.PlayerHandler;
 
 import java.io.IOException;
 

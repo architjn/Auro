@@ -40,7 +40,7 @@ import com.architjn.acjmusicplayer.ui.layouts.fragments.SongsListFragment;
 import com.architjn.acjmusicplayer.ui.widget.OnSwipeListener;
 import com.architjn.acjmusicplayer.ui.widget.SwipeInterface;
 import com.architjn.acjmusicplayer.utils.PermissionChecker;
-import com.architjn.acjmusicplayer.utils.PlayerDBHandler;
+import com.architjn.acjmusicplayer.utils.handlers.PlayerDBHandler;
 
 /**
  * Created by architjn on 27/11/15.

@@ -10,7 +10,7 @@ import android.util.Log;
 
 import com.afollestad.async.Action;
 import com.architjn.acjmusicplayer.R;
-import com.architjn.acjmusicplayer.utils.ArtistImgHandler;
+import com.architjn.acjmusicplayer.utils.handlers.ArtistImgHandler;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;

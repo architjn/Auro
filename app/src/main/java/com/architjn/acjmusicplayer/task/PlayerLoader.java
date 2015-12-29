@@ -20,6 +20,7 @@ import android.widget.ImageView;
 
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.utils.ImageBlurAnimator;
+import com.architjn.acjmusicplayer.utils.Utils;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -59,7 +60,7 @@ public abstract class PlayerLoader {
 
     private void load() {
 
-        if (path != null)
+        if (path != null) {
             Picasso.with(context).load(new File(path)).into(new Target() {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -73,7 +74,7 @@ public abstract class PlayerLoader {
 
                 @Override
                 public void onBitmapFailed(Drawable errorDrawable) {
-                    img.setImageResource(R.drawable.default_art);
+                    setDeaultView();
                 }
 
                 @Override
@@ -81,6 +82,15 @@ public abstract class PlayerLoader {
 
                 }
             });
+        } else
+            setDeaultView();
+    }
+
+    private void setDeaultView() {
+        Utils utils = new Utils(context);
+        img.setImageBitmap(utils.getBitmapOfVector(R.drawable.default_art,
+                utils.getWindowWidth(),
+                utils.getWindowWidth()));
     }
 
     private void animateColorChange() {

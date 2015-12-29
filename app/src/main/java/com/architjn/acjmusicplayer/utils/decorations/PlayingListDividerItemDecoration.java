@@ -1,4 +1,4 @@
-package com.architjn.acjmusicplayer.utils;
+package com.architjn.acjmusicplayer.utils.decorations;
 
 import android.content.Context;
 import android.graphics.Canvas;

@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.ui.layouts.activity.AlbumActivity;
 import com.architjn.acjmusicplayer.utils.ListSongs;
+import com.architjn.acjmusicplayer.utils.Utils;
 import com.architjn.acjmusicplayer.utils.items.Album;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -60,9 +61,11 @@ public class ArtistSubListAdapter extends RecyclerView.Adapter<ArtistSubListAdap
     private void setAlbumArt(final int position, final SimpleItemViewHolder holder) {
         String path = ListSongs.getAlbumArt(context,
                 items.get(position).getAlbumId());
+        Utils utils = new Utils(context);
+        int size = (utils.getWindowWidth() - (2 * utils.dpToPx(1))) / 2;
         if (path != null)
-            Picasso.with(context).load(new File(path)).resize(dpToPx(50),
-                    dpToPx(50)).centerCrop().into(new Target() {
+            Picasso.with(context).load(new File(path)).resize(size,
+                    size).centerCrop().into(new Target() {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                     holder.img.setImageBitmap(bitmap);
@@ -90,8 +93,10 @@ public class ArtistSubListAdapter extends RecyclerView.Adapter<ArtistSubListAdap
 
                 }
             });
-        else
+        else {
+            holder.img.setImageBitmap(utils.getBitmapOfVector(R.drawable.default_art, size, size));
             holder.nameHolder.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
+        }
     }
 
     private void setOnClickListeners(SimpleItemViewHolder holder, final int position) {

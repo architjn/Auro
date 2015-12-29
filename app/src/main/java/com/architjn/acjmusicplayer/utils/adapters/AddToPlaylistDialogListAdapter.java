@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.service.PlayerService;
-import com.architjn.acjmusicplayer.utils.PlaylistDBHelper;
+import com.architjn.acjmusicplayer.utils.handlers.PlaylistDBHelper;
 import com.architjn.acjmusicplayer.utils.items.Playlist;
 
 import java.util.ArrayList;

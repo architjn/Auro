@@ -16,7 +16,7 @@ import com.afollestad.async.Async;
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.utils.ListSongs;
 import com.architjn.acjmusicplayer.utils.PermissionChecker;
-import com.architjn.acjmusicplayer.utils.SimpleDividerItemDecoration;
+import com.architjn.acjmusicplayer.utils.decorations.SimpleDividerItemDecoration;
 import com.architjn.acjmusicplayer.utils.adapters.ArtistsListAdapter;
 import com.architjn.acjmusicplayer.utils.items.Artist;
 

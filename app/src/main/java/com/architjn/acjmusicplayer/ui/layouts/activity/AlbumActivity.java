@@ -23,6 +23,7 @@ import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.task.ColorChangeAnimation;
 import com.architjn.acjmusicplayer.utils.ListSongs;
 import com.architjn.acjmusicplayer.utils.PermissionChecker;
+import com.architjn.acjmusicplayer.utils.Utils;
 import com.architjn.acjmusicplayer.utils.adapters.AlbumSongListAdapter;
 import com.squareup.picasso.Picasso;
 
@@ -88,7 +89,10 @@ public class AlbumActivity extends AppCompatActivity {
             imagePath = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
             try {
                 if (imagePath == null) {
-                    albumArt.setImageResource(R.drawable.default_art);
+                    Utils utils = new Utils(this);
+                    int size = utils.getWindowWidth();
+                    albumArt.setImageBitmap(utils.getBitmapOfVector(R.drawable.default_art,
+                            size, size));
                     return;
                 }
                 Picasso.with(AlbumActivity.this)

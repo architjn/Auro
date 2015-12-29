@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -67,11 +66,14 @@ public class ArtistSongListAdapter extends RecyclerView.Adapter<ArtistSongListAd
     private void setAlbumArt(int position, SimpleItemViewHolder holder) {
         String path = ListSongs.getAlbumArt(context,
                 items.get(position).getAlbumId());
+        Utils utils = new Utils(context);
+        int size = utils.dpToPx(50);
         if (path != null)
-            Picasso.with(context).load(new File(path)).resize(dpToPx(50),
-                    dpToPx(50)).centerCrop().into(holder.img);
-        else
-            Picasso.with(context).load(R.drawable.default_art).into(holder.img);
+            Picasso.with(context).load(new File(path)).resize(size,
+                    size).centerCrop().into(holder.img);
+        else {
+            holder.img.setImageBitmap(utils.getBitmapOfVector(R.drawable.default_art, size, size));
+        }
     }
 
     private void setOnClicks(final SimpleItemViewHolder holder, final int position) {
@@ -115,12 +117,6 @@ public class ArtistSongListAdapter extends RecyclerView.Adapter<ArtistSongListAd
                 pm.show();
             }
         });
-    }
-
-    public int dpToPx(int dp) {
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return px;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.architjn.acjmusicplayer.utils;
+package com.architjn.acjmusicplayer.utils.decorations;
 
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;

@@ -30,9 +30,9 @@ import com.architjn.acjmusicplayer.service.PlayerService;
 import com.architjn.acjmusicplayer.task.PlayerLoader;
 import com.architjn.acjmusicplayer.ui.widget.PointShiftingArrayList;
 import com.architjn.acjmusicplayer.utils.ListSongs;
-import com.architjn.acjmusicplayer.utils.PlayerDBHandler;
-import com.architjn.acjmusicplayer.utils.PlayingListDividerItemDecoration;
-import com.architjn.acjmusicplayer.utils.UserPreferenceHandler;
+import com.architjn.acjmusicplayer.utils.handlers.PlayerDBHandler;
+import com.architjn.acjmusicplayer.utils.decorations.PlayingListDividerItemDecoration;
+import com.architjn.acjmusicplayer.utils.handlers.UserPreferenceHandler;
 import com.architjn.acjmusicplayer.utils.adapters.PlayingListAdapter;
 import com.architjn.acjmusicplayer.utils.items.Song;
 
