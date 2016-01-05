@@ -4,4 +4,5 @@
     <color name="album_grid_name_default">#ffffff</color>
     <color name="album_grid_artist_default">#e5e5e5</color>
     <color name="white">#ffffff</color>
+    <color name="seekbar_translusent">#38000000</color>
 </resources>

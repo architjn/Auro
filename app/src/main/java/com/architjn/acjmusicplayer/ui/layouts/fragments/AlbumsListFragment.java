@@ -18,15 +18,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.afollestad.async.Async;
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.task.AlbumItemLoad;
 import com.architjn.acjmusicplayer.ui.layouts.activity.AlbumActivity;
 import com.architjn.acjmusicplayer.ui.layouts.activity.MainActivity;
-import com.architjn.acjmusicplayer.utils.decorations.AlbumListSpacesItemDecoration;
 import com.architjn.acjmusicplayer.utils.ListSongs;
 import com.architjn.acjmusicplayer.utils.PermissionChecker;
 import com.architjn.acjmusicplayer.utils.Utils;
 import com.architjn.acjmusicplayer.utils.adapters.AlbumListAdapter;
+import com.architjn.acjmusicplayer.utils.decorations.AlbumListSpacesItemDecoration;
 import com.architjn.acjmusicplayer.utils.items.Album;
 import com.squareup.picasso.Picasso;
 
@@ -61,10 +63,10 @@ public class AlbumsListFragment extends Fragment {
     private void initViews() {
         gv = (RecyclerView) mainView.findViewById(R.id.albumsListContainer);
         emptyView = mainView.findViewById(R.id.album_empty_view);
-        checkPermissions();
+        checkForPermissionsNeeded(false);
     }
 
-    private void checkPermissions() {
+    private void checkForPermissionsNeeded(boolean askDirectly) {
         permissionChecker = new PermissionChecker(context, getActivity(), mainView);
         permissionChecker.check(Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 getResources().getString(R.string.storage_permission),
@@ -76,9 +78,30 @@ public class AlbumsListFragment extends Fragment {
 
                     @Override
                     public void onDecline() {
+                        cantProceedDialog();
+                    }
+                }, askDirectly);
+    }
+
+    private void cantProceedDialog() {
+        new MaterialDialog.Builder(context)
+                .title(R.string.cant_proceed)
+                .content(R.string.cant_proceed_msg)
+                .positiveText(R.string.ok)
+                .negativeText(R.string.close)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
+                        checkForPermissionsNeeded(true);
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
                         getActivity().finish();
                     }
-                });
+                })
+                .show();
     }
 
     private void setList() {
@@ -187,7 +210,6 @@ public class AlbumsListFragment extends Fragment {
         Async.cancelAll();
     }
 
-    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         permissionChecker.onRequestPermissionsResult(requestCode, permissions, grantResults);

@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.service.PlayerService;
-import com.architjn.acjmusicplayer.ui.layouts.activity.PlayerActivity;
 import com.architjn.acjmusicplayer.ui.widget.PointShiftingArrayList;
 import com.architjn.acjmusicplayer.utils.ListSongs;
 import com.architjn.acjmusicplayer.utils.Utils;
@@ -113,7 +112,7 @@ public class PlayingListAdapter extends RecyclerView.Adapter<PlayingListAdapter.
                             Intent i = new Intent(PlayerService.ACTION_SEEK_SONG);
                             i.putExtra("seek", 0);
                             context.sendBroadcast(i);
-                            ((PlayerActivity) context).seekBar.setProgress(0);
+//                            ((PlayerActivity) context).seekBar.setProgress(0);
                         }
                     }).start();
                     return;
@@ -142,7 +141,6 @@ public class PlayingListAdapter extends RecyclerView.Adapter<PlayingListAdapter.
                                         Intent i = new Intent(PlayerService.ACTION_PLAY_SINGLE);
                                         i.putExtra("songId", items.get(position).getSongId());
                                         context.sendBroadcast(i);
-                                        ((PlayerActivity) context).seekBar.setProgress(0);
                                     }
                                 }).start();
                                 break;

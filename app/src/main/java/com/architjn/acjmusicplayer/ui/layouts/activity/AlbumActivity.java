@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -65,6 +66,11 @@ public class AlbumActivity extends AppCompatActivity {
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         addSongList();
+        setForAnimation();
+    }
+
+    private void setForAnimation() {
+        rv.scrollTo(0, 100);
     }
 
     private void addSongList() {
@@ -104,7 +110,7 @@ public class AlbumActivity extends AppCompatActivity {
         }
         new ColorChangeAnimation(this, (LinearLayout) findViewById(R.id.album_song_name_holder), imagePath) {
             @Override
-            public void onColorFetched(Integer colorPrimary) {
+            public void onColorFetched(Palette palette, Integer colorPrimary) {
                 ((CollapsingToolbarLayout) findViewById(R.id.collapsingtoolbarlayout_album))
                         .setContentScrimColor(colorPrimary);
                 ((CollapsingToolbarLayout) findViewById(R.id.collapsingtoolbarlayout_album))

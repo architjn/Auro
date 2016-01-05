@@ -4,19 +4,21 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.afollestad.async.Action;
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.service.PlayerService;
 import com.architjn.acjmusicplayer.ui.layouts.activity.MainActivity;
@@ -91,34 +93,14 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.Simple
         holder.mainView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (selectedSongId != position) {
-                    //other than focused is clicked
-                    if (selectedSongId == -1) {
-                        //nothing was focused
-                        holder.mainView.setBackgroundColor(Color.parseColor("#ffffff"));
-                        animateElevation(0, 12, holder);
-                        selectedHolder = holder;
-                        selectedSongId = position;
-                    } else {
-                        //something was focused
-                        holder.mainView.setBackgroundColor(Color.parseColor("#ffffff"));
-                        animateElevation(0, 12, holder);
-                        selectedHolder.mainView.setBackgroundColor(ContextCompat
-                                .getColor(context, R.color.appBackground));
-                        animateElevation(12, 0, selectedHolder);
-                        selectedSongId = position;
-                        selectedHolder = holder;
-                    }
-                } else {
-                    //focus is clicked again
-                    //Play all the songs starting from this
-                    Intent i = new Intent();
-                    i.setAction(PlayerService.ACTION_PLAY_ALL_SONGS);
-                    i.putExtra("songId", items.get(position).getSongId());
-                    i.putExtra("pos", position);
-                    context.sendBroadcast(i);
-                    Log.v(TAG, items.get(position).getName());
-                }
+                //Play all the songs starting from this
+                animate(holder);
+                Intent i = new Intent();
+                i.setAction(PlayerService.ACTION_PLAY_ALL_SONGS);
+                i.putExtra("songId", items.get(position).getSongId());
+                i.putExtra("pos", position);
+                context.sendBroadcast(i);
+//                }
             }
         });
         holder.menu.setOnClickListener(new View.OnClickListener() {
@@ -142,6 +124,30 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.Simple
         });
     }
 
+    public void animate(final SimpleItemViewHolder holder) {
+        //using action for smooth animation
+        new Action() {
+
+            @NonNull
+            @Override
+            public String id() {
+                return TAG;
+            }
+
+            @Nullable
+            @Override
+            protected Object run() throws InterruptedException {
+                return null;
+            }
+
+            @Override
+            protected void done(@Nullable Object result) {
+                animateElevation(0, dpToPx(4), holder);
+                animateElevation(dpToPx(4), 0, holder);
+            }
+        }.execute();
+    }
+
     public int dpToPx(int dp) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
@@ -158,12 +164,13 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.Simple
         return items.size();
     }
 
-    private void animateElevation(int from, int to, final SimpleItemViewHolder holder) {
+    private ValueAnimator animateElevation(int from, int to, final SimpleItemViewHolder holder) {
         Integer elevationFrom = from;
         Integer elevationTo = to;
         ValueAnimator colorAnimation =
                 ValueAnimator.ofObject(
                         new ArgbEvaluator(), elevationFrom, elevationTo);
+        colorAnimation.setInterpolator(new DecelerateInterpolator());
         colorAnimation.addUpdateListener(
                 new ValueAnimator.AnimatorUpdateListener() {
                     @Override
@@ -173,7 +180,11 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.Simple
                     }
 
                 });
+        colorAnimation.setDuration(500);
+        if (from != 0)
+            colorAnimation.setStartDelay(colorAnimation.getDuration() + 300);
         colorAnimation.start();
+        return colorAnimation;
     }
 
     public void recyclerScrolled() {

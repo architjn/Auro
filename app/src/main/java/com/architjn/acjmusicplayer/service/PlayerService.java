@@ -11,7 +11,8 @@ import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import com.architjn.acjmusicplayer.R;
-import com.architjn.acjmusicplayer.ui.layouts.activity.PlayerActivity;
+import com.architjn.acjmusicplayer.ui.layouts.activity.MainActivity;
+import com.architjn.acjmusicplayer.ui.layouts.fragments.PlayerFragment;
 import com.architjn.acjmusicplayer.utils.handlers.NotificationHandler;
 import com.architjn.acjmusicplayer.utils.handlers.PlayerHandler;
 
@@ -86,15 +87,10 @@ public class PlayerService extends Service {
                 updatePlayer();
                 break;
             case ACTION_PLAY_ALL_SONGS:
-                musicPlayerHandler.playAllSongs(intent.getLongExtra("songId", 0));
-                listType = ListType.ALL;
-                updatePlayer();
+                playAllSongs(intent);
                 break;
             case ACTION_PLAY_ALBUM:
-                musicPlayerHandler.playAlbumSongs(intent.getLongExtra("albumId", 0),
-                        intent.getIntExtra("songPos", 0));
-                listType = ListType.ALBUM;
-                updatePlayer();
+                playAlbumSongs(intent);
                 break;
             case ACTION_GET_SONG:
                 try {
@@ -112,6 +108,7 @@ public class PlayerService extends Service {
                 break;
             case ACTION_PAUSE_SONG:
                 musicPlayerHandler.playOrStop(notificationHandler);
+                updatePlayer();
                 break;
             case ACTION_SEEK_SONG:
                 musicPlayerHandler.seek(intent.getIntExtra("seek", 0));
@@ -132,9 +129,16 @@ public class PlayerService extends Service {
                 updatePlayer();
                 break;
             case ACTION_NOTI_CLICK:
-                Intent i = new Intent(context, PlayerActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(i);
+                final Intent i = new Intent();
+                if (MainActivity.activityRuning) {
+                    i.setAction(PlayerFragment.ACTION_OPEN_PANEL);
+                    sendBroadcast(i);
+                } else {
+                    i.setClass(context, MainActivity.class);
+                    i.putExtra("openPanel", true);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(i);
+                }
                 break;
             case ACTION_NOTI_REMOVE:
                 notificationHandler.setNotificationActive(false);
@@ -146,9 +150,25 @@ public class PlayerService extends Service {
         }
     }
 
+    private void playAlbumSongs(final Intent intent) throws IOException {
+        //For better performance
+        musicPlayerHandler.playAlbumSongs(intent.getLongExtra("albumId", 0),
+                intent.getIntExtra("songPos", 0));
+        listType = ListType.ALBUM;
+        updatePlayer();
+    }
+
+    private void playAllSongs(final Intent intent) throws IOException {
+        //For better performance
+        musicPlayerHandler.playAllSongs(intent.getLongExtra("songId", 0));
+        listType = ListType.ALL;
+        updatePlayer();
+    }
+
     public void updatePlayer() {
         Intent i = new Intent();
-        i.setAction(PlayerActivity.ACTION_RECIEVE_SONG);
+        i.setAction(PlayerFragment.ACTION_RECIEVE_SONG);
+        i.putExtra("running", musicPlayerHandler.getMediaPlayer().isPlaying());
         i.putExtra("songId", musicPlayerHandler.getCurrentPlayingSongId());
         i.putExtra("songName", musicPlayerHandler.getCurrentPlayingSong().getName());
         i.putExtra("albumId", musicPlayerHandler.getCurrentPlayingSong().getAlbumId());

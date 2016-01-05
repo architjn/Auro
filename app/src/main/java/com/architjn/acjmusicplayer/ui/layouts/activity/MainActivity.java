@@ -1,10 +1,7 @@
 package com.architjn.acjmusicplayer.ui.layouts.activity;
 
 import android.app.SearchManager;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,6 +9,7 @@ import android.support.annotation.AnimRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -19,38 +17,33 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.service.PlayerService;
-import com.architjn.acjmusicplayer.task.ColorChangeAnimation;
 import com.architjn.acjmusicplayer.ui.layouts.fragments.AlbumsListFragment;
 import com.architjn.acjmusicplayer.ui.layouts.fragments.ArtistListFragment;
+import com.architjn.acjmusicplayer.ui.layouts.fragments.PlayerFragment;
 import com.architjn.acjmusicplayer.ui.layouts.fragments.PlaylistListFragment;
 import com.architjn.acjmusicplayer.ui.layouts.fragments.SearchViewFragment;
 import com.architjn.acjmusicplayer.ui.layouts.fragments.SongsListFragment;
-import com.architjn.acjmusicplayer.ui.widget.OnSwipeListener;
-import com.architjn.acjmusicplayer.ui.widget.SwipeInterface;
-import com.architjn.acjmusicplayer.utils.PermissionChecker;
-import com.architjn.acjmusicplayer.utils.handlers.PlayerDBHandler;
+import com.architjn.acjmusicplayer.ui.widget.slidinguppanel.SlidingUpPanelLayout;
 
 /**
  * Created by architjn on 27/11/15.
  */
 public class MainActivity extends AppCompatActivity {
 
-
     private static final String TAG = "MainActivity-TAG";
     private FragmentName currentFragment;
-    private LinearLayout smallPlayer;
     private FragmentName lastExpanded;
     private int lastItem;
     private DrawerLayout drawerLayout;
@@ -60,28 +53,33 @@ public class MainActivity extends AppCompatActivity {
     private AlbumsListFragment albumFragment;
     private ArtistListFragment artistFragment;
     private PlaylistListFragment playlistFragment;
-    private PermissionChecker permissionChecker;
-    private final BroadcastReceiver br = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            switch (intent.getAction()) {
-                case PlayerActivity.ACTION_RECIEVE_SONG:
-                    if (intent.getLongExtra("songId", 0) != -1) {
-                        updatePlayer(intent.getStringExtra("songName"), intent.getLongExtra("albumId", 0));
-                        if (smallPlayer.getVisibility() != View.VISIBLE)
-                            smallPlayer.setVisibility(View.VISIBLE);
-                    } else {
-                        if (smallPlayer.getVisibility() != View.GONE)
-                            smallPlayer.setVisibility(View.GONE);
-                    }
-                    break;
-            }
-        }
-    };
+    private SlidingUpPanelLayout slidingUpPanelLayout;
+    private PlayerFragment playerFragment;
+
+    public static boolean activityRuning = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme_Main);
         super.onCreate(savedInstanceState);
+
+        //Start music player service
+        startService(new Intent(this, PlayerService.class));
+
+        setTheView();
+
+        setAlbumFragment();
+        activityRuning = true;
+    }
+
+    private void setAlbumFragment() {
+        albumFragment = new AlbumsListFragment();
+        fragmentSwitcher(albumFragment, 1, FragmentName.Albums,
+                android.R.anim.fade_in, android.R.anim.fade_out);
+    }
+
+    private void setTheView() {
+        //set Content view
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -89,65 +87,20 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         init();
         initDrawer();
-        setPlayer();
-        albumFragment = new AlbumsListFragment();
-        fragmentSwitcher(albumFragment, 1, FragmentName.Albums,
-                android.R.anim.fade_in, android.R.anim.fade_out);
         sendBroadcast(new Intent(PlayerService.ACTION_GET_SONG));
     }
 
     private void init() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(PlayerActivity.ACTION_RECIEVE_SONG);
-        registerReceiver(br, filter);
-        permissionChecker = new PermissionChecker(this, this, findViewById(R.id.base_view_main));
-    }
-
-    private void setPlayer() {
-        smallPlayer = (LinearLayout) findViewById(R.id.small_panel);
-        smallPlayer.setOnClickListener(new View.OnClickListener() {
+        slidingUpPanelLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+        initSmallPlayer();
+        new Handler().postDelayed(new Runnable() {
             @Override
-            public void onClick(View view) {
-                launchPlayer();
+            public void run() {
+                if (getIntent().getBooleanExtra("openPanel", false)) {
+                    slidingUpPanelLayout.expandPanel();
+                }
             }
-        });
-        smallPlayer.setOnTouchListener(
-                new OnSwipeListener(
-                        new SwipeInterface() {
-                            @Override
-                            public void bottom2top(View v) {
-                                launchPlayer();
-                            }
-
-                            @Override
-                            public void left2right(View v) {
-                                sendBroadcast(new Intent(PlayerService.ACTION_PREV_SONG));
-                            }
-
-                            @Override
-                            public void right2left(View v) {
-
-                                sendBroadcast(new Intent(PlayerService.ACTION_NEXT_SONG));
-                            }
-
-                            @Override
-                            public void top2bottom(View v) {
-                                launchPlayer();
-                            }
-                        }));
-    }
-
-    private void updatePlayer(String name, long albumId) {
-        ((TextView) findViewById(R.id.mini_player_song_name)).setText(name);
-        new ColorChangeAnimation(this, smallPlayer, new PlayerDBHandler(this).setAlbumArt(albumId)) {
-            @Override
-            public void onColorFetched(Integer colorPrimary) {
-            }
-        }.execute();
-    }
-
-    private void launchPlayer() {
-        startActivity(new Intent(MainActivity.this, PlayerActivity.class));
+        }, 2000);
     }
 
     private void initDrawer() {
@@ -217,6 +170,31 @@ public class MainActivity extends AppCompatActivity {
         drawerToggle.syncState();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        try {
+            albumFragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (albumFragment != null) {
+            playerFragment.onResume();
+        }
+        activityRuning = true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        activityRuning = false;
+    }
+
     private void fragmentSwitcher(Fragment fragment, int itemId,
                                   FragmentName fname, @AnimRes int animationEnter,
                                   @AnimRes int animationExit) {
@@ -232,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(animationEnter, animationExit)
                 .replace(R.id.main_fragment_holder, fragment)
-                .commit();
+                .commitAllowingStateLoss();
 
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             final Handler handler = new Handler();
@@ -248,13 +226,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(br);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        permissionChecker.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        activityRuning = false;
     }
 
     @Override
@@ -266,26 +238,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setSearchView(Menu menu) {
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+        final SearchView searchView = (SearchView) MenuItemCompat
+                .getActionView(menu.findItem(R.id.action_search));
         final SearchViewFragment searchViewFragment = new SearchViewFragment();
         searchViewFragment.setSearchView(searchView);
-        MenuItemCompat.setOnActionExpandListener(menu.findItem(R.id.action_search), new MenuItemCompat.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-                lastExpanded = currentFragment;
-                lastItem = currentItem;
-                fragmentSwitcher(searchViewFragment, -1, FragmentName.Search,
-                        android.R.anim.fade_in, android.R.anim.fade_out);
-                return true;
-            }
+        MenuItemCompat.setOnActionExpandListener(menu.findItem(R.id.action_search),
+                new MenuItemCompat.OnActionExpandListener() {
+                    @Override
+                    public boolean onMenuItemActionExpand(MenuItem item) {
+                        lastExpanded = currentFragment;
+                        lastItem = currentItem;
+                        fragmentSwitcher(searchViewFragment, -1, FragmentName.Search,
+                                android.R.anim.fade_in, android.R.anim.fade_out);
+                        return true;
+                    }
 
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                fragmentSwitcher(getFragmentFromName(lastExpanded), lastItem,
-                        lastExpanded, android.R.anim.fade_in, android.R.anim.fade_out);
-                return true;
-            }
-        });
+                    @Override
+                    public boolean onMenuItemActionCollapse(MenuItem item) {
+                        fragmentSwitcher(getFragmentFromName(lastExpanded), lastItem,
+                                lastExpanded, android.R.anim.fade_in, android.R.anim.fade_out);
+                        return true;
+                    }
+                });
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
     }
@@ -301,6 +275,14 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    private void initSmallPlayer() {
+        playerFragment = new PlayerFragment();
+        playerFragment.setSlidingUpPanelLayout(slidingUpPanelLayout);
+        FragmentManager fragmentManager1 = getSupportFragmentManager();
+        fragmentManager1.beginTransaction()
+                .replace(R.id.panel_holder, playerFragment).commitAllowingStateLoss();
     }
 
     public void killActivity() {
@@ -323,6 +305,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        if (slidingUpPanelLayout.isPanelExpanded()) {
+            slidingUpPanelLayout.collapsePanel();
+            return;
+        }
         switch (currentFragment) {
             case Songs:
                 songFragment.onBackPress();
@@ -337,6 +323,16 @@ public class MainActivity extends AppCompatActivity {
                 playlistFragment.onBackPress();
                 break;
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+            onBackPressed();
+        }
+        if (playerFragment != null)
+            return playerFragment.onKeyEvent(event);
+        return super.onKeyDown(keyCode, event);
     }
 
     public enum FragmentName {

@@ -79,7 +79,7 @@ public class AlbumItemLoad extends Action {
                             colorAnimation = setAnimator(ContextCompat.getColor(context, android.R.color.white),
                                     palette.getVibrantColor(palette.getDarkVibrantColor(
                                             palette.getDarkMutedColor(palette.getMutedColor(
-                                                    ContextCompat.getColor(context, R.color.colorPrimary))))));
+                                                    ContextCompat.getColor(context, android.R.color.black))))));
                             colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 
                                 @Override

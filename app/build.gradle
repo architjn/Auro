@@ -8,8 +8,8 @@ android {
         applicationId "com.architjn.acjmusicplayer"
         minSdkVersion 21
         targetSdkVersion 23
-        versionCode 9
-        versionName "0.6.6beta"
+        versionCode 10
+        versionName "0.6.8beta"
     }
     buildTypes {
         release {
@@ -31,12 +31,10 @@ dependencies {
     compile 'com.android.support:design:23.1.1'
     compile 'com.android.support:palette-v7:23.1.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.sothree.slidinguppanel:library:3.2.0'
     compile 'org.jbundle.util.osgi.wrapped:org.jbundle.util.osgi.wrapped.org.apache.http.client:4.1.2'
     compile('com.github.afollestad.material-dialogs:core:0.8.5.2@aar') {
         transitive = true
     }
     compile 'com.github.afollestad:async:0.2.1'
     compile 'com.cocosw:bottomsheet:1.+@aar'
-    compile 'com.sothree.slidinguppanel:library:3.2.1'
 }

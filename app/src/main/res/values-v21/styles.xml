@@ -28,6 +28,9 @@
     <style name="AppTheme.Splash" parent="AppTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@drawable/splash_bg</item>
+        <item name="android:navigationBarColor">@android:color/white</item>
+        <item name="android:statusBarColor">@android:color/white</item>
     </style>
 
     <style name="AppTheme.Main" parent="AppTheme">
@@ -35,6 +38,9 @@
         <item name="windowNoTitle">true</item>
         <item name="android:actionBarWidgetTheme">@style/WidgetTheme</item>
         <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:navigationBarColor">@android:color/black</item>
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">

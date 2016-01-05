@@ -79,4 +79,7 @@
     <string name="ringtone_permission_content">We need Permission to change settings for setting your Ringtone. We will not do anything else!</string>
     <string name="cancel">Cancel</string>
     <string name="success">Success</string>
+    <string name="search">Search</string>
+    <string name="cant_proceed">Can\'t Proceed</string>
+    <string name="cant_proceed_msg">Can\'t proceed further to open music player \n As we have not granted all permission required to start player. Would you like to accept those permissions again?</string>
 </resources>

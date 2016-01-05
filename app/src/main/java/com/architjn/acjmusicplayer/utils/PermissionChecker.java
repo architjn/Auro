@@ -23,13 +23,20 @@ public class PermissionChecker {
     private Context context;
     private Activity activity;
     private View baseView;
+
     public PermissionChecker(Context context, Activity activity, View baseView) {
         this.context = context;
         this.activity = activity;
         this.baseView = baseView;
     }
 
-    public void check(final String permission, final String customMsg, final OnPermissionResponse response) {
+    public void check(final String permission, final String customMsg,
+                      final OnPermissionResponse response) {
+        check(permission, customMsg, response, false);
+    }
+
+    public void check(final String permission, final String customMsg,
+                      final OnPermissionResponse response, final boolean checkDirectly) {
         this.response = response;
         new Thread(new Runnable() {
             @Override
@@ -45,7 +52,7 @@ public class PermissionChecker {
                 } else {
                     Log.v(TAG, "Waiting");
                     if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) context,
-                            permission)) {
+                            permission) && !checkDirectly) {
                         Snackbar.make(baseView, customMsg,
                                 Snackbar.LENGTH_INDEFINITE)
                                 .setAction(R.string.ok, new View.OnClickListener() {
@@ -70,14 +77,12 @@ public class PermissionChecker {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, final
     @NonNull int[] grantResults) {
         if (requestCode == PermissionChecker.REQUEST_CODE) {
-
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                         // Storage permission has been granted
                         response.onAccepted();
-                        Log.v(TAG, "After Waiting Accepted");
                     } else {
                         //Storage permission has been denied
                         response.onDecline();

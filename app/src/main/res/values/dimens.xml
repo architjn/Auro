@@ -8,7 +8,7 @@
     <dimen name="now_playing_seekbar_size">24dp</dimen>
     <dimen name="now_playing_seekbar_thub_size">2dp</dimen>
     <dimen name="parallax_img_height">400dp</dimen>
-    <dimen name="parallax_img_height_player">400dp</dimen>
+    <dimen name="parallax_img_height_player">300dp</dimen>
     <dimen name="parallax_label_bg_height">100dp</dimen>
     <dimen name="cardview_compat_inset_shadow">1dp</dimen>
     <dimen name="controller_button_size">28dp</dimen>
@@ -19,4 +19,6 @@
     <dimen name="album_grid_text_panel_height">70dp</dimen>
     <dimen name="grid_item_title_size">16sp</dimen>
     <dimen name="grid_item_desc_size">13sp</dimen>
+    <dimen name="volume_icon_size">45dp</dimen>
+    <dimen name="player_song_item_height">75dp</dimen>
 </resources>

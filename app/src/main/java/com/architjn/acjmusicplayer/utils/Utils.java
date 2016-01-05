@@ -318,6 +318,14 @@ public class Utils {
         return metrics.widthPixels;
     }
 
+    public int getWindowHeight() {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        DisplayMetrics metrics = new DisplayMetrics();
+        display.getMetrics(metrics);
+        return metrics.heightPixels;
+    }
+
     public Bitmap getBitmapOfVector(@DrawableRes int id, int height, int width) {
         Drawable vectorDrawable = context.getDrawable(id);
         if (vectorDrawable != null)

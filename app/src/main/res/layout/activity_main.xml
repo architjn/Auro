@@ -11,50 +11,41 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="false">
 
-        <!-- activity view -->
-        <LinearLayout
+        <com.architjn.acjmusicplayer.ui.widget.slidinguppanel.SlidingUpPanelLayout xmlns:sothree="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/sliding_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#fff"
-            android:fitsSystemWindows="true"
-            android:orientation="vertical">
+            android:gravity="bottom"
+            sothree:fadeColor="@android:color/transparent"
+            sothree:initialState="hidden"
+            sothree:panelHeight="@dimen/small_sliding_player_height"
+            sothree:shadowHeight="5dp">
 
-            <include layout="@layout/toolbar" />
-
-            <FrameLayout
-                android:id="@+id/main_fragment_holder"
+            <!-- activity view -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1" />
+                android:background="#fff"
+                android:fitsSystemWindows="true"
+                android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/small_panel"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/small_sliding_player_height"
-                android:layout_weight="0"
-                android:background="@color/color400"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingLeft="20dp"
-                android:visibility="gone">
+                <include layout="@layout/toolbar" />
 
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_marginRight="10dp"
-                    android:src="@drawable/ic_audio_wave_48dp" />
-
-                <TextView
-                    android:id="@+id/mini_player_song_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:singleLine="true"
-                    android:textColor="@android:color/white"
-                    android:textSize="18sp" />
+                <FrameLayout
+                    android:id="@+id/main_fragment_holder"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
 
             </LinearLayout>
-        </LinearLayout>
+
+            <!--slidingUpPanel view-->
+            <FrameLayout
+                android:id="@+id/panel_holder"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true" />
+        </com.architjn.acjmusicplayer.ui.widget.slidinguppanel.SlidingUpPanelLayout>
 
         <!-- navigation drawer -->
         <LinearLayout
