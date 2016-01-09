@@ -20,10 +20,10 @@ import com.architjn.acjmusicplayer.service.PlayerService;
 import com.architjn.acjmusicplayer.task.AlbumItemLoad;
 import com.architjn.acjmusicplayer.ui.layouts.activity.AlbumActivity;
 import com.architjn.acjmusicplayer.ui.layouts.activity.ArtistActivity;
-import com.architjn.acjmusicplayer.utils.handlers.ArtistImgHandler;
 import com.architjn.acjmusicplayer.utils.ImageConverter;
 import com.architjn.acjmusicplayer.utils.ListSongs;
 import com.architjn.acjmusicplayer.utils.Utils;
+import com.architjn.acjmusicplayer.utils.handlers.ArtistImgHandler;
 import com.architjn.acjmusicplayer.utils.items.Album;
 import com.architjn.acjmusicplayer.utils.items.Artist;
 import com.architjn.acjmusicplayer.utils.items.Search;
@@ -273,11 +273,18 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Si
     private void setArt(SimpleItemViewHolder holder, int position) {
         //For album art
         if (albums.get(position).getAlbumArtPath() != null) {
-            new AlbumItemLoad(context, albums.get(position).getAlbumArtPath(), holder).execute();
-            setAlbumArt(position, holder);
+            if (isFilePathExist(albums.get(position).getAlbumArtPath())) {
+                new AlbumItemLoad(context, albums.get(position).getAlbumArtPath(), holder).execute();
+                setAlbumArt(position, holder);
+            } else setDefaultView(holder);
         } else {
             setDefaultView(holder);
         }
+    }
+
+    private boolean isFilePathExist(String albumArtPath) {
+        File imgFile = new File(albumArtPath);
+        return imgFile.exists();
     }
 
     private void setDefaultView(SimpleItemViewHolder holder) {
@@ -300,8 +307,7 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Si
 
     public int dpToPx(int dp) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return px;
+        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
     @Override

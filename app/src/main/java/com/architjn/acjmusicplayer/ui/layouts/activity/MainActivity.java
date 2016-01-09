@@ -1,22 +1,21 @@
 package com.architjn.acjmusicplayer.ui.layouts.activity;
 
-import android.app.SearchManager;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.speech.RecognizerIntent;
 import android.support.annotation.AnimRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,7 +34,15 @@ import com.architjn.acjmusicplayer.ui.layouts.fragments.PlayerFragment;
 import com.architjn.acjmusicplayer.ui.layouts.fragments.PlaylistListFragment;
 import com.architjn.acjmusicplayer.ui.layouts.fragments.SearchViewFragment;
 import com.architjn.acjmusicplayer.ui.layouts.fragments.SongsListFragment;
+import com.architjn.acjmusicplayer.ui.layouts.fragments.UpNextFragment;
 import com.architjn.acjmusicplayer.ui.widget.slidinguppanel.SlidingUpPanelLayout;
+import com.architjn.acjmusicplayer.utils.adapters.AlbumListAdapter;
+import com.crashlytics.android.Crashlytics;
+import com.lapism.searchview.SearchView;
+
+import java.util.List;
+
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by architjn on 27/11/15.
@@ -44,8 +51,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity-TAG";
     private FragmentName currentFragment;
-    private FragmentName lastExpanded;
-    private int lastItem;
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
     private int currentItem = -1;
@@ -53,10 +58,16 @@ public class MainActivity extends AppCompatActivity {
     private AlbumsListFragment albumFragment;
     private ArtistListFragment artistFragment;
     private PlaylistListFragment playlistFragment;
+    private SearchViewFragment searchViewFragment;
     private SlidingUpPanelLayout slidingUpPanelLayout;
     private PlayerFragment playerFragment;
+    private UpNextFragment upNextFragment;
+    private SearchView searchView;
 
     public static boolean activityRuning = false;
+
+    public FragmentName lastExpanded;
+    public int lastItem;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         //Start music player service
         startService(new Intent(this, PlayerService.class));
 
+        Fabric.with(this, new Crashlytics());
         setTheView();
 
         setAlbumFragment();
@@ -101,6 +113,32 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }, 2000);
+        initSearch();
+    }
+
+    private void initSearch() {
+        searchView = (SearchView) findViewById(R.id.search_view);
+        searchView.setVoiceSearch(true);
+        searchViewFragment = new SearchViewFragment();
+        searchViewFragment.setSearchView(searchView);
+        searchView.setOnSearchViewListener(new SearchView.SearchViewListener() {
+
+            @Override
+            public void onSearchViewShown() {
+                if (currentFragment != FragmentName.Search) {
+                    lastExpanded = currentFragment;
+                    lastItem = currentItem;
+                    currentFragment = FragmentName.Search;
+                }
+                fragmentSwitcher(searchViewFragment, -1, FragmentName.Search,
+                        android.R.anim.fade_in, android.R.anim.fade_out);
+            }
+
+            @Override
+            public void onSearchViewClosed() {
+            }
+        });
+
     }
 
     private void initDrawer() {
@@ -187,6 +225,7 @@ public class MainActivity extends AppCompatActivity {
             playerFragment.onResume();
         }
         activityRuning = true;
+        AlbumListAdapter.onceAnimated = false;
     }
 
     @Override
@@ -195,9 +234,9 @@ public class MainActivity extends AppCompatActivity {
         activityRuning = false;
     }
 
-    private void fragmentSwitcher(Fragment fragment, int itemId,
-                                  FragmentName fname, @AnimRes int animationEnter,
-                                  @AnimRes int animationExit) {
+    public void fragmentSwitcher(Fragment fragment, int itemId,
+                                 FragmentName fname, @AnimRes int animationEnter,
+                                 @AnimRes int animationExit) {
         currentFragment = fname;
         if (currentItem == itemId) {
             // Don't allow re-selection of the currently active item
@@ -233,36 +272,37 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         // Retrieve the SearchView and plug it into SearchManager
-        setSearchView(menu);
+//        setSearchView(menu);
         return true;
     }
 
-    private void setSearchView(Menu menu) {
-        final SearchView searchView = (SearchView) MenuItemCompat
-                .getActionView(menu.findItem(R.id.action_search));
-        final SearchViewFragment searchViewFragment = new SearchViewFragment();
-        searchViewFragment.setSearchView(searchView);
-        MenuItemCompat.setOnActionExpandListener(menu.findItem(R.id.action_search),
-                new MenuItemCompat.OnActionExpandListener() {
-                    @Override
-                    public boolean onMenuItemActionExpand(MenuItem item) {
-                        lastExpanded = currentFragment;
-                        lastItem = currentItem;
-                        fragmentSwitcher(searchViewFragment, -1, FragmentName.Search,
-                                android.R.anim.fade_in, android.R.anim.fade_out);
-                        return true;
-                    }
+//    private void setSearchView(Menu menu) {
+//        final SearchView searchView = (SearchView) MenuItemCompat
+//                .getActionView(menu.findItem(R.id.action_search));
+//        final SearchViewFragment searchViewFragment = new SearchViewFragment();
+//        searchViewFragment.setSearchView(searchView);
+//        MenuItemCompat.setOnActionExpandListener(menu.findItem(R.id.action_search),
+//                new MenuItemCompat.OnActionExpandListener() {
+//                    @Override
+//                    public boolean onMenuItemActionExpand(MenuItem item) {
+//                        lastExpanded = currentFragment;
+//                        lastItem = currentItem;
+//                        fragmentSwitcher(searchViewFragment, -1, FragmentName.Search,
+//                                android.R.anim.fade_in, android.R.anim.fade_out);
+//                        return true;
+//                    }
+//
+//                    @Override
+//                    public boolean onMenuItemActionCollapse(MenuItem item) {
+//                        fragmentSwitcher(getFragmentFromName(lastExpanded), lastItem,
+//                                lastExpanded, android.R.anim.fade_in, android.R.anim.fade_out);
+//                        return true;
+//                    }
+//                });
+//        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+//        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+//    }
 
-                    @Override
-                    public boolean onMenuItemActionCollapse(MenuItem item) {
-                        fragmentSwitcher(getFragmentFromName(lastExpanded), lastItem,
-                                lastExpanded, android.R.anim.fade_in, android.R.anim.fade_out);
-                        return true;
-                    }
-                });
-        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-    }
 
     private void changeToolbarColorLight(View view) {
         if (view != null) {
@@ -277,8 +317,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_search: {
+                searchView.showSearch(findViewById(R.id.action_search), true);
+                return true;
+            }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     private void initSmallPlayer() {
         playerFragment = new PlayerFragment();
+        upNextFragment = new UpNextFragment();
+        playerFragment.setUpNextFragment(upNextFragment);
         playerFragment.setSlidingUpPanelLayout(slidingUpPanelLayout);
         FragmentManager fragmentManager1 = getSupportFragmentManager();
         fragmentManager1.beginTransaction()
@@ -289,7 +343,7 @@ public class MainActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    private Fragment getFragmentFromName(FragmentName name) {
+    public Fragment getFragmentFromName(FragmentName name) {
         switch (name) {
             case Songs:
                 return songFragment;
@@ -305,8 +359,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        if (searchView.isSearchOpen()) {
+            searchView.closeSearch(true);
+            return;
+        }
         if (slidingUpPanelLayout.isPanelExpanded()) {
-            slidingUpPanelLayout.collapsePanel();
+            playerFragment.onBackPressed();
+            upNextFragment.onBackPressed();
             return;
         }
         switch (currentFragment) {
@@ -322,8 +381,27 @@ public class MainActivity extends AppCompatActivity {
             case Playlists:
                 playlistFragment.onBackPress();
                 break;
+            case Search:
+                searchViewFragment.onBackPressed();
+                break;
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == SearchView.SPEECH_REQUEST_CODE && resultCode == RESULT_OK) {
+            List<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            if (matches != null && matches.size() > 0) {
+                String searchWrd = matches.get(0);
+                if (!TextUtils.isEmpty(searchWrd)) {
+                    searchView.setQuery(searchWrd, false);
+                }
+            }
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

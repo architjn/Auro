@@ -21,4 +21,5 @@
     <dimen name="grid_item_desc_size">13sp</dimen>
     <dimen name="volume_icon_size">45dp</dimen>
     <dimen name="player_song_item_height">75dp</dimen>
+    <dimen name="album_title_height">100dp</dimen>
 </resources>

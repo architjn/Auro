@@ -34,14 +34,6 @@ public abstract class ColorChangeAnimation extends Action {
     private ValueAnimator colorAnimation1;
     private ValueAnimator colorAnimation2;
 
-    public ColorChangeAnimation(Context context, LinearLayout detailHolder, String artPath) {
-        this.context = context;
-        this.detailHolder = detailHolder;
-        this.artPath = artPath;
-        colorFrom = ((ColorDrawable) detailHolder.getBackground()).getColor();
-        noBitmap = false;
-    }
-
     public ColorChangeAnimation(Context context, LinearLayout detailHolder,
                                 TextView textView, ImageView img, String artPath) {
         this.context = context;
@@ -63,6 +55,10 @@ public abstract class ColorChangeAnimation extends Action {
     @Override
     protected Object run() throws InterruptedException {
         try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = false;
+            options.inPreferredConfig = Bitmap.Config.RGB_565;
+            options.inDither = true;
             Bitmap bmp = BitmapFactory.decodeFile(artPath);
             Palette.from(bmp).generate(
                     new Palette.PaletteAsyncListener() {
@@ -116,7 +112,7 @@ public abstract class ColorChangeAnimation extends Action {
                         }
                     }
             );
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | NullPointerException e) {
             e.printStackTrace();
             noBitmap = true;
         }

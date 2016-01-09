@@ -9,16 +9,19 @@
         android:id="@+id/album_list_img"
         android:layout_width="match_parent"
         android:layout_height="@dimen/album_grid_height"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        android:src="#e5e5e5"
+        android:transitionName="transition:imgholder" />
 
     <LinearLayout
         android:id="@+id/album_list_bottom"
         android:layout_width="match_parent"
         android:layout_height="@dimen/album_grid_text_panel_height"
-        android:background="@android:color/black"
+        android:background="#e5e5e5"
         android:gravity="center_vertical"
         android:orientation="vertical"
-        android:padding="13dp">
+        android:padding="13dp"
+        android:transitionName="transition:nameholder">
 
         <TextView
             android:id="@+id/album_list_name"

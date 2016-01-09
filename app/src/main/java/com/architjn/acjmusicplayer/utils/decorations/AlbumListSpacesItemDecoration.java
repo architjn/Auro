@@ -15,7 +15,7 @@ public class AlbumListSpacesItemDecoration extends RecyclerView.ItemDecoration {
     public void getItemOffsets(Rect outRect, View view,
                                RecyclerView parent, RecyclerView.State state) {
         int pos = parent.getChildLayoutPosition(view);
-        if (pos % 2 == 0 && pos != 0) {
+        if (pos % 2 != 0) {
             outRect.left = space;
         }
         outRect.bottom = space;

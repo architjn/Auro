@@ -26,7 +26,7 @@
 
         <activity
             android:name=".ui.layouts.activity.AlbumActivity"
-            android:theme="@style/AppTheme.Main" />
+            android:theme="@style/AppTheme.Album" />
         <activity
             android:name=".ui.layouts.activity.PlaylistActivity"
             android:theme="@style/AppTheme.Main" />
@@ -34,6 +34,9 @@
             android:name=".ui.layouts.activity.ArtistActivity"
             android:theme="@style/AppTheme.Main" />
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="fad1c3f49b5e63cd70ef5235fbc80d9b694ebf43" />
         <service
             android:name=".service.PlayerService"
             android:enabled="true" />

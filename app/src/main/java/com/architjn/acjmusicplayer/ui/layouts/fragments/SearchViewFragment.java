@@ -5,12 +5,12 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.architjn.acjmusicplayer.R;
+import com.architjn.acjmusicplayer.ui.layouts.activity.MainActivity;
 import com.architjn.acjmusicplayer.utils.ListSongs;
 import com.architjn.acjmusicplayer.utils.adapters.SearchListAdapter;
 import com.architjn.acjmusicplayer.utils.decorations.SearchListSpacesItemDecoration;
@@ -18,6 +18,7 @@ import com.architjn.acjmusicplayer.utils.items.Album;
 import com.architjn.acjmusicplayer.utils.items.Artist;
 import com.architjn.acjmusicplayer.utils.items.Search;
 import com.architjn.acjmusicplayer.utils.items.Song;
+import com.lapism.searchview.SearchView;
 
 import java.util.ArrayList;
 
@@ -30,6 +31,7 @@ public class SearchViewFragment extends Fragment {
     private SearchView searchView;
     private RecyclerView rv;
     private Context context;
+    private MainActivity activity;
     private View mainView, emptyView;
     private SearchListAdapter adapter;
 
@@ -39,6 +41,7 @@ public class SearchViewFragment extends Fragment {
                 container, false);
         mainView = view;
         context = view.getContext();
+        activity = (MainActivity) getActivity();
         setRecyclerView();
         return view;
     }
@@ -77,6 +80,7 @@ public class SearchViewFragment extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                searchView.closeSearch(false);
                 return true;
             }
 
@@ -96,6 +100,13 @@ public class SearchViewFragment extends Fragment {
                 return true;
             }
         });
+    }
+
+    public void onBackPressed() {
+        if (!searchView.isSearchOpen())
+            activity.fragmentSwitcher(activity.getFragmentFromName(activity.lastExpanded),
+                    activity.lastItem, activity.lastExpanded, android.R.anim.fade_in,
+                    android.R.anim.fade_out);
     }
 
 }

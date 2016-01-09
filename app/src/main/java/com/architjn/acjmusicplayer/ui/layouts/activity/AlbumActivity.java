@@ -6,12 +6,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -21,7 +22,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.architjn.acjmusicplayer.R;
-import com.architjn.acjmusicplayer.task.ColorChangeAnimation;
 import com.architjn.acjmusicplayer.utils.ListSongs;
 import com.architjn.acjmusicplayer.utils.PermissionChecker;
 import com.architjn.acjmusicplayer.utils.Utils;
@@ -47,6 +47,7 @@ public class AlbumActivity extends AppCompatActivity {
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
                 WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        overridePendingTransition(0, 0);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_album);
         initView();
@@ -56,7 +57,11 @@ public class AlbumActivity extends AppCompatActivity {
         permissionChecker = new PermissionChecker(this, this, findViewById(R.id.base_view_album));
         rv = (RecyclerView) findViewById(R.id.rv_album_activity);
         albumArt = (ImageView) findViewById(R.id.activity_album_art);
-        setAlbumArt();
+        int size = new Utils(this).getWindowWidth();
+        int panelSize = (int) getResources().getDimension(R.dimen.album_title_height);
+        int height = new Utils(this).getWindowHeight() - panelSize * 2;
+        setAlbumArtSize(size, height);
+        setAlbumArt(size, new Utils(this).getWindowHeight());
         collapsingToolbarLayout = (CollapsingToolbarLayout)
                 findViewById(R.id.collapsingtoolbarlayout_album);
         if (collapsingToolbarLayout != null)
@@ -67,6 +72,12 @@ public class AlbumActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         addSongList();
         setForAnimation();
+    }
+
+    private void setAlbumArtSize(int width, int height) {
+        LinearLayout.LayoutParams lp = new LinearLayout
+                .LayoutParams(width, height);
+        albumArt.setLayoutParams(lp);
     }
 
     private void setForAnimation() {
@@ -85,7 +96,7 @@ public class AlbumActivity extends AppCompatActivity {
         permissionChecker.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    public void setAlbumArt() {
+    public void setAlbumArt(int width, int height) {
         Cursor cursor = getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
                 new String[]{MediaStore.Audio.Albums._ID, MediaStore.Audio.Albums.ALBUM_ART},
                 MediaStore.Audio.Albums._ID + "=?",
@@ -96,9 +107,8 @@ public class AlbumActivity extends AppCompatActivity {
             try {
                 if (imagePath == null) {
                     Utils utils = new Utils(this);
-                    int size = utils.getWindowWidth();
                     albumArt.setImageBitmap(utils.getBitmapOfVector(R.drawable.default_art,
-                            size, size));
+                            width, width));
                     return;
                 }
                 Picasso.with(AlbumActivity.this)
@@ -108,21 +118,19 @@ public class AlbumActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-        new ColorChangeAnimation(this, (LinearLayout) findViewById(R.id.album_song_name_holder), imagePath) {
-            @Override
-            public void onColorFetched(Palette palette, Integer colorPrimary) {
-                ((CollapsingToolbarLayout) findViewById(R.id.collapsingtoolbarlayout_album))
-                        .setContentScrimColor(colorPrimary);
-                ((CollapsingToolbarLayout) findViewById(R.id.collapsingtoolbarlayout_album))
-                        .setStatusBarScrimColor(getAutoStatColor(colorPrimary));
-                if (Build.VERSION.SDK_INT >= 21) {
-                    ActivityManager.TaskDescription taskDescription = new
-                            ActivityManager.TaskDescription(getIntent().getStringExtra("albumName"),
-                            BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher), colorPrimary);
-                    setTaskDescription(taskDescription);
-                }
-            }
-        }.execute();
+
+        int colorPrimary = getIntent().getIntExtra("albumColor", ContextCompat.getColor(this, R.color.colorPrimary));
+        findViewById(R.id.album_song_name_holder).setBackgroundColor(colorPrimary);
+        ((CollapsingToolbarLayout) findViewById(R.id.collapsingtoolbarlayout_album))
+                .setContentScrimColor(colorPrimary);
+        ((CollapsingToolbarLayout) findViewById(R.id.collapsingtoolbarlayout_album))
+                .setStatusBarScrimColor(getAutoStatColor(colorPrimary));
+        if (Build.VERSION.SDK_INT >= 21) {
+            ActivityManager.TaskDescription taskDescription = new
+                    ActivityManager.TaskDescription(getIntent().getStringExtra("albumName"),
+                    BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher), colorPrimary);
+            setTaskDescription(taskDescription);
+        }
     }
 
     @Override
@@ -133,6 +141,11 @@ public class AlbumActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
     public int getAutoStatColor(int baseColor) {

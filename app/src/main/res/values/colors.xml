@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="drawable_grey_tint">#434343</color>
-    <color name="album_grid_name_default">#ffffff</color>
-    <color name="album_grid_artist_default">#e5e5e5</color>
+    <color name="album_grid_name_default">#000000</color>
+    <color name="album_grid_artist_default">#9a9a9a</color>
     <color name="white">#ffffff</color>
     <color name="seekbar_translusent">#38000000</color>
 </resources>

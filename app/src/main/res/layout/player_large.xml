@@ -61,6 +61,14 @@
         </LinearLayout>
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/player_reveal_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/appBackground"
+        android:orientation="vertical"
+        android:visibility="invisible" />
+
     <!--actionbar-->
     <LinearLayout
         android:layout_width="match_parent"

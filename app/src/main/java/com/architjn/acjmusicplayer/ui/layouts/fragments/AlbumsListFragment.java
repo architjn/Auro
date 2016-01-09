@@ -63,6 +63,7 @@ public class AlbumsListFragment extends Fragment {
     private void initViews() {
         gv = (RecyclerView) mainView.findViewById(R.id.albumsListContainer);
         emptyView = mainView.findViewById(R.id.album_empty_view);
+        AlbumListAdapter.onceAnimated = false;
         checkForPermissionsNeeded(false);
     }
 
@@ -118,21 +119,17 @@ public class AlbumsListFragment extends Fragment {
                         gv.setLayoutManager(gridLayoutManager);
                         gv.addItemDecoration(new AlbumListSpacesItemDecoration(new
                                 Utils(context).dpToPx(1)));
-                        final View header = LayoutInflater.from(context).inflate(
-                                R.layout.album_list_header, gv, false);
-                        Album lastAddedAlbum = ListSongs.getLastAddedAlbum(context);
-                        if (lastAddedAlbum != null)
-                            setHeaderView(lastAddedAlbum, header);
-                        adapter = new AlbumListAdapter(mainView.getContext(), albumList, header);
+//                        Album lastAddedAlbum = ListSongs.getLastAddedAlbum(context);
+                        adapter = new AlbumListAdapter(mainView.getContext(), albumList, gv);
                         gv.setAdapter(adapter);
                     }
                 });
-                gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-                    @Override
-                    public int getSpanSize(int position) {
-                        return adapter.isHeader(position) ? gridLayoutManager.getSpanCount() : 1;
-                    }
-                });
+//                gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+//                    @Override
+//                    public int getSpanSize(int position) {
+//                        return adapter.isHeader(position) ? gridLayoutManager.getSpanCount() : 1;
+//                    }
+//                });
                 if (albumList.size() < 1) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
@@ -177,15 +174,26 @@ public class AlbumsListFragment extends Fragment {
         int size = (utils.getWindowWidth()
                 - utils.dpToPx(1)) / 2;
         if (lastAddedAlbum.getAlbumArtPath() != null) {
-            new AlbumItemLoad(context, lastAddedAlbum.getAlbumArtPath(), header).execute();
-            setAlbumArt(lastAddedAlbum, header, size, utils);
+            if (isFilePathExist(lastAddedAlbum.getAlbumArtPath())) {
+                new AlbumItemLoad(context, lastAddedAlbum.getAlbumArtPath(), header).execute();
+                setAlbumArt(lastAddedAlbum, header, size, utils);
+            } else setDefault(header, size, utils);
         } else {
-            int colorPrimary = ContextCompat
-                    .getColor(context, R.color.colorPrimary);
-            ((ImageView) header.findViewById(R.id.album_grid_header_img)).setImageBitmap(utils
-                    .getBitmapOfVector(R.drawable.default_art, size, size));
-            header.findViewById(R.id.album_grid_header_bg).setBackgroundColor(colorPrimary);
+            setDefault(header, size, utils);
         }
+    }
+
+    private void setDefault(View header, int size, Utils utils) {
+        int colorPrimary = ContextCompat
+                .getColor(context, R.color.colorPrimary);
+        ((ImageView) header.findViewById(R.id.album_grid_header_img)).setImageBitmap(utils
+                .getBitmapOfVector(R.drawable.default_art, size, size));
+        header.findViewById(R.id.album_grid_header_bg).setBackgroundColor(colorPrimary);
+    }
+
+    private boolean isFilePathExist(String albumArtPath) {
+        File imgFile = new File(albumArtPath);
+        return imgFile.exists();
     }
 
     private void setAlbumArt(Album lastAddedAlbum, View header, int size, Utils utils) {

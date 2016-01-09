@@ -1,5 +1,6 @@
 package com.architjn.acjmusicplayer.ui.layouts.fragments;
 
+import android.animation.Animator;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
@@ -17,12 +18,15 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.AppCompatSeekBar;
-import android.util.Log;
+import android.support.v7.widget.PopupMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -33,6 +37,8 @@ import com.afollestad.async.Action;
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.service.PlayerService;
 import com.architjn.acjmusicplayer.task.ColorChangeAnimation;
+import com.architjn.acjmusicplayer.ui.layouts.activity.AlbumActivity;
+import com.architjn.acjmusicplayer.ui.layouts.activity.ArtistActivity;
 import com.architjn.acjmusicplayer.ui.widget.slidinguppanel.SlidingUpPanelLayout;
 import com.architjn.acjmusicplayer.utils.ListSongs;
 import com.architjn.acjmusicplayer.utils.Utils;
@@ -52,17 +58,20 @@ public class PlayerFragment extends Fragment {
 
     private static final String TAG = "PlayerFragment-TAG";
     private static final int MAX_ALPHA = 255, TRANS_ALPHA = 140;
+    private static int MAX_VOL;
+
     public static final String ACTION_OPEN_PANEL = "ACTION_OPEN_PANEL";
     public static final String ACTION_RECIEVE_SONG = "ACTION_RECIEVE_SONG";
     public static View miniController;
+
     private TextView miniSongTitle, largeSongTitle;
     private Context context;
-    private View mainView;
+    private View mainView, revealView;
     private ImageView artHolder;
     private SlidingUpPanelLayout slidingUpPanelLayout;
     private Utils utils;
     private PlayerState playerState;
-    private int size, colorLight, colorTo, colorDark;
+    private int size, colorLight, colorTo = 0xffffffff, colorDark;
     private Timer timer;
     private AppCompatSeekBar volumeSeekBar, seekBar;
     private ImageView next, pause, prev, shuffle, repeat, noVolume,
@@ -72,6 +81,7 @@ public class PlayerFragment extends Fragment {
     private TextView totalSeekText, currentSeekText;
     private UserPreferenceHandler preferenceHandler;
     private AudioManager audioManager;
+    private UpNextFragment upNextFragment;
 
     private final BroadcastReceiver br = new BroadcastReceiver() {
         @Override
@@ -144,27 +154,120 @@ public class PlayerFragment extends Fragment {
         seekBar = (AppCompatSeekBar) mainView.findViewById(R.id.control_seek_bar);
         currentSeekText = (TextView) mainView.findViewById(R.id.controls_current_pos);
         totalSeekText = (TextView) mainView.findViewById(R.id.controls_total_pos);
+        revealView = mainView.findViewById(R.id.player_reveal_view);
         updateRepeat();
         updateShuffle();
         setVolumeControls();
         setListeners();
         askUpdate();
         setControllerSize();
-        changeButtonColor(backButton, overflowMenu);
+        changeButtonColor();
         setActionButtonClicks(backButton, overflowMenu);
         handleStatusBarColor();
     }
 
     private void setVolumeControls() {
         audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        MAX_VOL = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         int curVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-        Log.v(TAG, maxVolume + " " + curVolume);
-        volumeSeekBar.setMax(maxVolume);
+        volumeSeekBar.setMax(MAX_VOL);
         volumeSeekBar.setProgress(curVolume);
     }
 
     private void setListeners() {
+        overflowMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupMenu menu = new PopupMenu(context, view);
+                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.overflow_player_open_album:
+                                Intent i = new Intent(context, AlbumActivity.class);
+                                i.putExtra("albumName", currentSong.getAlbumName());
+                                i.putExtra("albumId", currentSong.getAlbumId());
+                                i.putExtra("albumColor", colorLight);
+                                startActivity(i);
+                                return true;
+                            case R.id.overflow_player_open_artist:
+                                Intent a = new Intent(context, ArtistActivity.class);
+                                a.putExtra("name", currentSong.getArtist());
+                                a.putExtra("id", ListSongs.getArtistIdFromName(context,
+                                        currentSong.getArtist()));
+                                context.startActivity(a);
+                                return true;
+                        }
+                        return false;
+                    }
+                });
+                menu.inflate(R.menu.overflow_player);
+                menu.show();
+            }
+        });
+        artHolder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!slidingUpPanelLayout.isPanelExpanded())
+                    slidingUpPanelLayout.expandPanel();
+            }
+        });
+        noVolume.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
+                volumeSeekBar.setProgress(0);
+            }
+        });
+        fullVolume.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, MAX_VOL, 0);
+                volumeSeekBar.setProgress(MAX_VOL);
+            }
+        });
+        playlist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int[] loc = new int[2];
+                revealView.setBackgroundColor(colorLight);
+                playlist.getLocationOnScreen(loc);
+                DrawableCompat.setTint(backButton.getDrawable(), 0xff444d5d);
+                DrawableCompat.setTint(overflowMenu.getDrawable(), 0xff444d5d);
+                Animator anim = ViewAnimationUtils
+                        .createCircularReveal(revealView, loc[0], loc[1], 0,
+                                (new Utils(context).getWindowWidth()) * 2);
+                anim.setDuration(800);
+                anim.setInterpolator(new FastOutSlowInInterpolator());
+                revealView.setVisibility(View.VISIBLE);
+                anim.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animator) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animator) {
+                        upNextFragment.setColorLight(colorLight);
+                        upNextFragment.setSlidingUpPanelLayout(slidingUpPanelLayout);
+                        getActivity().getSupportFragmentManager()
+                                .beginTransaction().replace(R.id.panel_holder, upNextFragment)
+                                .commit();
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animator) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animator) {
+
+                    }
+                });
+                anim.start();
+            }
+        });
         volumeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onStopTrackingTouch(SeekBar arg0) {
@@ -265,6 +368,11 @@ public class PlayerFragment extends Fragment {
                 updateShuffle();
             }
         });
+
+    }
+
+    public void setMiniPlayerAlpha(int alpha) {
+        miniController.setAlpha(alpha);
     }
 
     private void updateRepeat() {
@@ -327,9 +435,9 @@ public class PlayerFragment extends Fragment {
                 new SlidingUpPanelLayout.PanelSlideListener() {
                     @Override
                     public void onPanelSlide(View panel, float slideOffset) {
-                        if (slideOffset == 1 && colorLight != 0)
+                        if (slideOffset == 1 && colorLight != 0 && isVisible())
                             getActivity().getWindow().setStatusBarColor(colorDark);
-                        else
+                        else if (isVisible())
                             getActivity().getWindow().setStatusBarColor(ContextCompat
                                     .getColor(context, R.color.colorPrimaryDark));
                         View nowPlayingCard = PlayerFragment.miniController;
@@ -340,6 +448,11 @@ public class PlayerFragment extends Fragment {
                     public void onPanelCollapsed(View panel) {
                         View nowPlayingCard = PlayerFragment.miniController;
                         nowPlayingCard.setAlpha(1);
+                        if (revealView.getVisibility() == View.VISIBLE) {
+                            revealView.setVisibility(View.INVISIBLE);
+                            DrawableCompat.setTint(backButton.getDrawable(), colorTo);
+                            DrawableCompat.setTint(overflowMenu.getDrawable(), colorTo);
+                        }
                     }
 
                     @Override
@@ -361,6 +474,7 @@ public class PlayerFragment extends Fragment {
                     }
                 });
     }
+
 
     private void setControllerSize() {
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(size, size);
@@ -386,11 +500,21 @@ public class PlayerFragment extends Fragment {
         this.slidingUpPanelLayout = slidingUpPanelLayout;
     }
 
-    private void changeButtonColor(ImageView backButton, ImageView overflowMenu) {
-        DrawableCompat.setTint(backButton.getDrawable(), 0xff444d5d);
-        DrawableCompat.setTint(overflowMenu.getDrawable(), 0xff444d5d);
-        DrawableCompat.setTint(volumeSeekBar.getThumb(), 0xffffffff);
-        DrawableCompat.setTint(volumeSeekBar.getProgressDrawable(), 0xffffffff);
+    private void changeButtonColor() {
+        DrawableCompat.setTint(backButton.getDrawable(), colorTo);
+        DrawableCompat.setTint(overflowMenu.getDrawable(), colorTo);
+        DrawableCompat.setTint(volumeSeekBar.getThumb(), colorTo);
+        DrawableCompat.setTint(volumeSeekBar.getProgressDrawable(), colorTo);
+        DrawableCompat.setTint(pause.getDrawable(), colorTo);
+        DrawableCompat.setTint(prev.getDrawable(), colorTo);
+        DrawableCompat.setTint(next.getDrawable(), colorTo);
+        DrawableCompat.setTint(shuffle.getDrawable(), colorTo);
+        DrawableCompat.setTint(repeat.getDrawable(), colorTo);
+        DrawableCompat.setTint(noVolume.getDrawable(), colorTo);
+        DrawableCompat.setTint(fullVolume.getDrawable(), colorTo);
+        DrawableCompat.setTint(playlist.getDrawable(), colorTo);
+        DrawableCompat.setTint(waveIcon.getDrawable(), colorTo);
+        DrawableCompat.setTint(volumeSeekBar.getProgressDrawable(), colorTo);
     }
 
     private void updatePlayer(Intent intent) {
@@ -485,18 +609,7 @@ public class PlayerFragment extends Fragment {
                 }
                 animateColorChangeView(controllHolder, colorLight);
                 animateColorChangeView(currentSongHolder, colorDark);
-                DrawableCompat.setTint(pause.getDrawable(), colorTo);
-                DrawableCompat.setTint(prev.getDrawable(), colorTo);
-                DrawableCompat.setTint(next.getDrawable(), colorTo);
-                DrawableCompat.setTint(shuffle.getDrawable(), colorTo);
-                DrawableCompat.setTint(repeat.getDrawable(), colorTo);
-                DrawableCompat.setTint(noVolume.getDrawable(), colorTo);
-                DrawableCompat.setTint(fullVolume.getDrawable(), colorTo);
-                DrawableCompat.setTint(playlist.getDrawable(), colorTo);
-                DrawableCompat.setTint(waveIcon.getDrawable(), colorTo);
-                DrawableCompat.setTint(backButton.getDrawable(), colorTo);
-                DrawableCompat.setTint(overflowMenu.getDrawable(), colorTo);
-                DrawableCompat.setTint(volumeSeekBar.getProgressDrawable(), colorTo);
+                changeButtonColor();
                 largeSongTitle.setTextColor(colorTo);
                 currentSeekText.setTextColor(colorTo);
                 totalSeekText.setTextColor(colorTo);
@@ -551,6 +664,11 @@ public class PlayerFragment extends Fragment {
         return handled;
     }
 
+    public void onBackPressed() {
+        if (isVisible())
+            slidingUpPanelLayout.collapsePanel();
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -559,6 +677,10 @@ public class PlayerFragment extends Fragment {
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setUpNextFragment(UpNextFragment upNextFragment) {
+        this.upNextFragment = upNextFragment;
     }
 
     private enum PlayerState {
