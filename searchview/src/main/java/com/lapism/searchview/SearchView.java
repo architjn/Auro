@@ -411,7 +411,7 @@ public class SearchView extends FrameLayout implements Filter.FilterListener {
         if (animate) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 final int endCy = mSearchEditText.getHeight() / 2;
-                SearchAnimator.revealOutAnimation(mContext, mCardView, endCy, SearchAnimator.ANIMATION_DURATION);
+                SearchAnimator.revealOutAnimation(mContext, menuItem, mCardView, endCy, SearchAnimator.ANIMATION_DURATION);
             } else {
                 SearchAnimator.fadeOutAnimation(mCardView, SearchAnimator.ANIMATION_DURATION);
             }

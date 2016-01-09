@@ -37,10 +37,12 @@ public class SearchAnimator {
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public static void revealOutAnimation(final Context mContext, final View animatedView, final int endCy, final int duration) {
+    public static void revealOutAnimation(final Context mContext, View menuItem, final View animatedView, final int endCy, final int duration) {
 
-        int cx = animatedView.getWidth() - mContext.getResources().getDimensionPixelSize(R.dimen.reveal);
-        int cy = -1 == endCy ? animatedView.getHeight() / 2 : endCy;
+        int[] location = new int[2];
+        menuItem.getLocationOnScreen(location);
+        int cx = location[0];
+        int cy = location[1];
 
         if (cx != 0 && cy != 0) {
             float initialRadius = animatedView.getWidth();
