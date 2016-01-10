@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/grp1"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/navigation_songs"
             android:checked="true"
@@ -8,23 +10,27 @@
             android:title="@string/songs" />
         <item
             android:id="@+id/navigation_albums"
-            android:icon="@mipmap/ic_launcher"
+            android:icon="@drawable/ic_album_white_24dp"
             android:title="@string/albums" />
         <item
             android:id="@+id/navigation_artist"
-            android:icon="@mipmap/ic_launcher"
+            android:icon="@drawable/ic_person_white_24dp"
             android:title="@string/artists" />
         <item
             android:id="@+id/navigation_playlist"
-            android:icon="@mipmap/ic_launcher"
+            android:icon="@drawable/ic_playlist_play_white_24dp"
             android:title="@string/playlist" />
     </group>
-    <group android:checkableBehavior="none">
+    <group
+        android:id="@+id/grp2"
+        android:checkableBehavior="none">
         <item
             android:id="@+id/navigation_about"
+            android:icon="@drawable/ic_info_white_24dp"
             android:title="@string/about" />
         <item
             android:id="@+id/navigation_settings"
+            android:icon="@drawable/ic_settings_white_24dp"
             android:title="@string/settings" />
     </group>
 </menu>

@@ -18,6 +18,7 @@ import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +43,7 @@ import java.util.ArrayList;
 public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.SimpleItemViewHolder> {
     private static final String TAG = "AlbumListAdapter-TAG";
     private static final long ANIM_DUR = 500;
-    private static final int ANIM_TILL = 6;
+    private static int ANIM_TILL = 0;
     public static boolean onceAnimated;
     private final Context context;
     private final ArrayList<Album> items;
@@ -67,6 +68,8 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Simp
         holder.name.setText(items.get(position).getAlbumTitle());
         holder.artist.setText(items.get(position).getAlbumArtist());
         int size = setSize(holder);
+        if (position == 0 && ANIM_TILL == 0)
+            setAnimTill(size);
         setArtistImg(holder, position, size);
         holder.mainView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,6 +175,16 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Simp
     @Override
     public int getItemCount() {
         return items.size();
+    }
+
+    public void setAnimTill(int size) {
+        Log.v(TAG, String.valueOf(gv.getHeight()));
+        Log.v(TAG, String.valueOf(new Utils(context).getWindowHeight()));
+        int count = (int) ((gv.getHeight() / (size +
+                context.getResources().getDimension(R.dimen.album_grid_text_panel_height)
+                + dpToPx(1))) * 2);
+        ANIM_TILL = count;
+        Log.v(TAG, String.valueOf(count));
     }
 
     public class SimpleItemViewHolder extends RecyclerView.ViewHolder {

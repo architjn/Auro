@@ -1,6 +1,8 @@
 package com.architjn.acjmusicplayer.ui.layouts.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.RecognizerIntent;
@@ -20,7 +22,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.service.PlayerService;
@@ -141,7 +142,6 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         NavigationView navigationView = (NavigationView) findViewById(R.id.main_navigationview);
         navigationHeader = navigationView.getHeaderView(0);
-        ImageView navHeaderImg = (ImageView) navigationHeader.findViewById(R.id.nav_header_img);
         navigationHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
