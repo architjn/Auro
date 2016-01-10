@@ -82,4 +82,6 @@
     <string name="search">Search</string>
     <string name="cant_proceed">Can\'t Proceed</string>
     <string name="cant_proceed_msg">Can\'t proceed further to open music player \n As we have not granted all permission required to start player. Would you like to accept those permissions again?</string>
+    <string name="about">About</string>
+    <string name="settings">Settings</string>
 </resources>

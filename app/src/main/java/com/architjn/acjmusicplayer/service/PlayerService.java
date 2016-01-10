@@ -172,6 +172,7 @@ public class PlayerService extends Service {
         i.putExtra("songId", musicPlayerHandler.getCurrentPlayingSongId());
         i.putExtra("songName", musicPlayerHandler.getCurrentPlayingSong().getName());
         i.putExtra("albumId", musicPlayerHandler.getCurrentPlayingSong().getAlbumId());
+        i.putExtra("albumName", musicPlayerHandler.getCurrentPlayingSong().getAlbumName());
         i.putExtra("seek", musicPlayerHandler.getMediaPlayer().getCurrentPosition());
         i.putExtra("pos", musicPlayerHandler.getCurrentPlayingPos());
         sendBroadcast(i);

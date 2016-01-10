@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -39,6 +40,7 @@ import com.architjn.acjmusicplayer.service.PlayerService;
 import com.architjn.acjmusicplayer.task.ColorChangeAnimation;
 import com.architjn.acjmusicplayer.ui.layouts.activity.AlbumActivity;
 import com.architjn.acjmusicplayer.ui.layouts.activity.ArtistActivity;
+import com.architjn.acjmusicplayer.ui.layouts.activity.MainActivity;
 import com.architjn.acjmusicplayer.ui.widget.slidinguppanel.SlidingUpPanelLayout;
 import com.architjn.acjmusicplayer.utils.ListSongs;
 import com.architjn.acjmusicplayer.utils.Utils;
@@ -46,6 +48,7 @@ import com.architjn.acjmusicplayer.utils.handlers.PlayerDBHandler;
 import com.architjn.acjmusicplayer.utils.handlers.UserPreferenceHandler;
 import com.architjn.acjmusicplayer.utils.items.Song;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.io.File;
 import java.util.Timer;
@@ -64,10 +67,10 @@ public class PlayerFragment extends Fragment {
     public static final String ACTION_RECIEVE_SONG = "ACTION_RECIEVE_SONG";
     public static View miniController;
 
-    private TextView miniSongTitle, largeSongTitle;
+    private TextView miniSongTitle, largeSongTitle, navTitle, navSubTitle;
     private Context context;
     private View mainView, revealView;
-    private ImageView artHolder;
+    private ImageView artHolder, navArt;
     private SlidingUpPanelLayout slidingUpPanelLayout;
     private Utils utils;
     private PlayerState playerState;
@@ -132,6 +135,19 @@ public class PlayerFragment extends Fragment {
         filter.addAction(ACTION_OPEN_PANEL);
         getActivity().registerReceiver(br, filter);
         setLargePlayer();
+        updateNavigationHeader(null);
+    }
+
+    private void updateNavigationHeader(Intent intent) {
+        if (navArt.getDrawable() == null || intent == null) {
+            navArt.setImageBitmap(utils.getBitmapOfVector(R.drawable.default_art,
+                    size, size));
+            navTitle.setText(null);
+            navSubTitle.setText(null);
+        } else {
+            navTitle.setText(intent.getStringExtra("songName"));
+            navSubTitle.setText(intent.getStringExtra("albumName"));
+        }
     }
 
     private void setLargePlayer() {
@@ -430,16 +446,19 @@ public class PlayerFragment extends Fragment {
         context.unregisterReceiver(br);
     }
 
+    private void setStatusBarColor(int color) {
+        ((MainActivity) getActivity()).setStatusBarColor(color);
+    }
+
     private void handleStatusBarColor() {
         slidingUpPanelLayout.setPanelSlideListener(
                 new SlidingUpPanelLayout.PanelSlideListener() {
                     @Override
                     public void onPanelSlide(View panel, float slideOffset) {
                         if (slideOffset == 1 && colorLight != 0 && isVisible())
-                            getActivity().getWindow().setStatusBarColor(colorDark);
+                            setStatusBarColor(colorDark);
                         else if (isVisible())
-                            getActivity().getWindow().setStatusBarColor(ContextCompat
-                                    .getColor(context, R.color.colorPrimaryDark));
+                            setStatusBarColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
                         View nowPlayingCard = PlayerFragment.miniController;
                         nowPlayingCard.setAlpha(1 - slideOffset);
                     }
@@ -525,6 +544,7 @@ public class PlayerFragment extends Fragment {
                 currentSong.getAlbumId());
         updateMiniPlayer(name, path);
         updateMainPlayer(intent, path);
+        updateNavigationHeader(intent);
     }
 
     private void updateMainPlayer(Intent intent, final String path) {
@@ -542,10 +562,27 @@ public class PlayerFragment extends Fragment {
             protected void done(@Nullable Object result) {
                 if (path != null) {
                     Picasso.with(context).load(new File(path)).resize(size, size)
-                            .centerCrop().into(artHolder);
+                            .centerCrop().into(new Target() {
+                        @Override
+                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                            artHolder.setImageBitmap(bitmap);
+                            navArt.setImageBitmap(bitmap);
+                        }
+
+                        @Override
+                        public void onBitmapFailed(Drawable errorDrawable) {
+
+                        }
+
+                        @Override
+                        public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                        }
+                    });
                     return;
                 }
                 artHolder.setImageBitmap(img);
+                navArt.setImageBitmap(img);
             }
 
             @Nullable
@@ -599,13 +636,13 @@ public class PlayerFragment extends Fragment {
             @Override
             public void onColorFetched(Palette palette, Integer colorPrimary) {
                 colorLight = palette.getVibrantColor(ContextCompat
-                        .getColor(context, R.color.colorPrimaryDark));
+                        .getColor(context, R.color.colorPrimary));
                 colorDark = getDarkColor(colorLight);
                 colorTo = 0xffffffff;
                 if (palette.getVibrantSwatch() != null)
                     colorTo = palette.getVibrantSwatch().getBodyTextColor();
                 if (slidingUpPanelLayout.isPanelExpanded()) {
-                    getActivity().getWindow().setStatusBarColor(colorDark);
+                    setStatusBarColor(colorDark);
                 }
                 animateColorChangeView(controllHolder, colorLight);
                 animateColorChangeView(currentSongHolder, colorDark);
@@ -613,8 +650,6 @@ public class PlayerFragment extends Fragment {
                 largeSongTitle.setTextColor(colorTo);
                 currentSeekText.setTextColor(colorTo);
                 totalSeekText.setTextColor(colorTo);
-//                controllHolder.setSystemUiVisibility(controllHolder.getSystemUiVisibility()
-//                        | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             }
         }.execute();
     }
@@ -681,6 +716,12 @@ public class PlayerFragment extends Fragment {
 
     public void setUpNextFragment(UpNextFragment upNextFragment) {
         this.upNextFragment = upNextFragment;
+    }
+
+    public void setNavigationHeader(View navigationHeader) {
+        navArt = (ImageView) navigationHeader.findViewById(R.id.nav_header_img);
+        navTitle = (TextView) navigationHeader.findViewById(R.id.nav_header_title);
+        navSubTitle = (TextView) navigationHeader.findViewById(R.id.nav_header_album);
     }
 
     private enum PlayerState {

@@ -1,13 +1,13 @@
 package com.architjn.acjmusicplayer.ui.layouts.activity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.support.annotation.AnimRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
@@ -20,11 +20,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.service.PlayerService;
@@ -63,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private PlayerFragment playerFragment;
     private UpNextFragment upNextFragment;
     private SearchView searchView;
+    private View navigationHeader;
 
     public static boolean activityRuning = false;
 
@@ -79,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
 
         Fabric.with(this, new Crashlytics());
         setTheView();
-
         setAlbumFragment();
         activityRuning = true;
     }
@@ -97,8 +93,8 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        init();
         initDrawer();
+        init();
         sendBroadcast(new Intent(PlayerService.ACTION_GET_SONG));
     }
 
@@ -142,49 +138,58 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initDrawer() {
-        ListView drawerList = (ListView) findViewById(R.id.left_drawer);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-        String[] leftSliderData = {getResources().getString(R.string.songs),
-                getResources().getString(R.string.albums),
-                getResources().getString(R.string.artists),
-                getResources().getString(R.string.playlist)};
-        ArrayAdapter<String> navigationDrawerAdapter = new ArrayAdapter<>(
-                MainActivity.this, R.layout.drawer_list_item, leftSliderData);
-        drawerList.setAdapter(navigationDrawerAdapter);
-        drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        NavigationView navigationView = (NavigationView) findViewById(R.id.main_navigationview);
+        navigationHeader = navigationView.getHeaderView(0);
+        ImageView navHeaderImg = (ImageView) navigationHeader.findViewById(R.id.nav_header_img);
+        navigationHeader.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(
-                    AdapterView<?> adapterView, View view, int i, long l) {
-                switch (i) {
-                    case 0:
+            public void onClick(View view) {
+                if (slidingUpPanelLayout.isPanelHidden())
+                    return;
+                slidingUpPanelLayout.expandPanel();
+                drawerLayout.closeDrawer(GravityCompat.START);
+            }
+        });
+        navigationView.setCheckedItem(R.id.navigation_albums);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.navigation_songs:
                         if (songFragment == null)
                             songFragment = new SongsListFragment();
-                        fragmentSwitcher(songFragment, i,
+                        fragmentSwitcher(songFragment, item.getItemId(),
                                 FragmentName.Songs,
                                 android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                        closeDrawer();
                         break;
-                    case 1:
+                    case R.id.navigation_albums:
                         if (albumFragment == null)
                             albumFragment = new AlbumsListFragment();
-                        fragmentSwitcher(albumFragment, i,
+                        fragmentSwitcher(albumFragment, item.getItemId(),
                                 FragmentName.Albums,
                                 android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                        closeDrawer();
                         break;
-                    case 2:
+                    case R.id.navigation_artist:
                         if (artistFragment == null)
                             artistFragment = new ArtistListFragment();
-                        fragmentSwitcher(artistFragment, i,
+                        fragmentSwitcher(artistFragment, item.getItemId(),
                                 FragmentName.Artists,
                                 android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                        closeDrawer();
                         break;
-                    case 3:
+                    case R.id.navigation_playlist:
                         if (playlistFragment == null)
                             playlistFragment = new PlaylistListFragment();
-                        fragmentSwitcher(playlistFragment, i,
+                        fragmentSwitcher(playlistFragment, item.getItemId(),
                                 FragmentName.Playlists,
                                 android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                        closeDrawer();
                         break;
                 }
+                return true;
             }
         });
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
@@ -206,6 +211,11 @@ public class MainActivity extends AppCompatActivity {
         };
         drawerLayout.setDrawerListener(drawerToggle);
         drawerToggle.syncState();
+    }
+
+    private void closeDrawer() {
+        if (slidingUpPanelLayout.isPanelExpanded())
+            slidingUpPanelLayout.collapsePanel();
     }
 
     @Override
@@ -271,50 +281,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
-        // Retrieve the SearchView and plug it into SearchManager
-//        setSearchView(menu);
         return true;
-    }
-
-//    private void setSearchView(Menu menu) {
-//        final SearchView searchView = (SearchView) MenuItemCompat
-//                .getActionView(menu.findItem(R.id.action_search));
-//        final SearchViewFragment searchViewFragment = new SearchViewFragment();
-//        searchViewFragment.setSearchView(searchView);
-//        MenuItemCompat.setOnActionExpandListener(menu.findItem(R.id.action_search),
-//                new MenuItemCompat.OnActionExpandListener() {
-//                    @Override
-//                    public boolean onMenuItemActionExpand(MenuItem item) {
-//                        lastExpanded = currentFragment;
-//                        lastItem = currentItem;
-//                        fragmentSwitcher(searchViewFragment, -1, FragmentName.Search,
-//                                android.R.anim.fade_in, android.R.anim.fade_out);
-//                        return true;
-//                    }
-//
-//                    @Override
-//                    public boolean onMenuItemActionCollapse(MenuItem item) {
-//                        fragmentSwitcher(getFragmentFromName(lastExpanded), lastItem,
-//                                lastExpanded, android.R.anim.fade_in, android.R.anim.fade_out);
-//                        return true;
-//                    }
-//                });
-//        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
-//        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-//    }
-
-
-    private void changeToolbarColorLight(View view) {
-        if (view != null) {
-            if (view instanceof TextView) {
-                ((TextView) view).setTextColor(Color.BLACK);
-            } else if (view instanceof ViewGroup) {
-                ViewGroup viewGroup = (ViewGroup) view;
-                for (int i = 0; i < viewGroup.getChildCount(); i++) {
-                    changeToolbarColorLight(viewGroup.getChildAt(i));
-                }
-            }
-        }
     }
 
     @Override
@@ -333,6 +300,7 @@ public class MainActivity extends AppCompatActivity {
         playerFragment = new PlayerFragment();
         upNextFragment = new UpNextFragment();
         playerFragment.setUpNextFragment(upNextFragment);
+        playerFragment.setNavigationHeader(navigationHeader);
         playerFragment.setSlidingUpPanelLayout(slidingUpPanelLayout);
         FragmentManager fragmentManager1 = getSupportFragmentManager();
         fragmentManager1.beginTransaction()
@@ -355,6 +323,10 @@ public class MainActivity extends AppCompatActivity {
                 return playlistFragment;
         }
         return null;
+    }
+
+    public void setStatusBarColor(int color) {
+        getWindow().setStatusBarColor(color);
     }
 
     @Override

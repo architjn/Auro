@@ -13,8 +13,7 @@
         <android.support.v4.widget.DrawerLayout
             android:id="@+id/drawerLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="false">
+            android:layout_height="match_parent">
 
             <com.architjn.acjmusicplayer.ui.widget.slidinguppanel.SlidingUpPanelLayout xmlns:sothree="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/sliding_layout"
@@ -31,7 +30,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="#fff"
-                    android:fitsSystemWindows="true"
                     android:orientation="vertical">
 
                     <include layout="@layout/toolbar" />
@@ -39,7 +37,7 @@
                     <FrameLayout
                         android:id="@+id/main_fragment_holder"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="0dp"
                         android:layout_weight="1" />
 
                 </LinearLayout>
@@ -48,39 +46,26 @@
                 <FrameLayout
                     android:id="@+id/panel_holder"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:fitsSystemWindows="true" />
+                    android:layout_height="match_parent" />
             </com.architjn.acjmusicplayer.ui.widget.slidinguppanel.SlidingUpPanelLayout>
 
             <!-- navigation drawer -->
-            <LinearLayout
-                android:layout_width="match_parent"
+            <android.support.design.widget.NavigationView
+                android:id="@+id/main_navigationview"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_gravity="start|left"
-                android:background="#fff"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:src="#999" />
-
-                <ListView
-                    android:id="@+id/left_drawer"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="#fff"
-                    android:theme="@style/Theme.AppCompat.Light" />
-            </LinearLayout>
+                android:layout_gravity="start"
+                app:headerLayout="@layout/navigation_header"
+                app:menu="@menu/drawer" />
 
         </android.support.v4.widget.DrawerLayout>
     </LinearLayout>
 
     <com.lapism.searchview.SearchView
         android:id="@+id/search_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:search_divider="false"
         app:search_style="classic"
-        app:search_theme="light"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        app:search_theme="light" />
 </FrameLayout>
