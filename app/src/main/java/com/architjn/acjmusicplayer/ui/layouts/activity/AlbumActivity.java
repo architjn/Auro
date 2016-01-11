@@ -35,9 +35,7 @@ import java.io.File;
 public class AlbumActivity extends AppCompatActivity {
 
     private static final String TAG = "AlbumActivity-TAG";
-    private CollapsingToolbarLayout collapsingToolbarLayout;
     private RecyclerView rv;
-    private String imagePath;
     private ImageView albumArt;
     private PermissionChecker permissionChecker;
 
@@ -62,7 +60,7 @@ public class AlbumActivity extends AppCompatActivity {
         int height = new Utils(this).getWindowHeight() - panelSize * 2;
         setAlbumArtSize(size, height);
         setAlbumArt(size, new Utils(this).getWindowHeight());
-        collapsingToolbarLayout = (CollapsingToolbarLayout)
+        CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout)
                 findViewById(R.id.collapsingtoolbarlayout_album);
         if (collapsingToolbarLayout != null)
             collapsingToolbarLayout.setTitle(getIntent().getStringExtra("albumName"));
@@ -103,7 +101,7 @@ public class AlbumActivity extends AppCompatActivity {
                 new String[]{String.valueOf(getIntent().getLongExtra("albumId", 0))},
                 null);
         if (cursor != null && cursor.moveToFirst()) {
-            imagePath = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
+            String imagePath = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
             try {
                 if (imagePath == null) {
                     Utils utils = new Utils(this);
@@ -131,6 +129,7 @@ public class AlbumActivity extends AppCompatActivity {
                     BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher), colorPrimary);
             setTaskDescription(taskDescription);
         }
+        cursor.close();
     }
 
     @Override

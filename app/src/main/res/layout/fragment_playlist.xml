@@ -17,15 +17,6 @@
         android:background="@color/color400"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="gone">
-
-        <ImageView
-            android:id="@+id/animation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/dots_anim"
-            android:visibility="gone" />
-
-    </LinearLayout>
+        android:visibility="gone" />
 
 </LinearLayout>

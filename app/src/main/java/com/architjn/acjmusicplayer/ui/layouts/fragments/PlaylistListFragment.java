@@ -2,8 +2,6 @@ package com.architjn.acjmusicplayer.ui.layouts.fragments;
 
 import android.Manifest;
 import android.content.Context;
-import android.graphics.drawable.Animatable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -15,14 +13,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.architjn.acjmusicplayer.R;
 import com.architjn.acjmusicplayer.utils.PermissionChecker;
-import com.architjn.acjmusicplayer.utils.handlers.PlaylistDBHelper;
-import com.architjn.acjmusicplayer.utils.decorations.SimpleDividerItemDecoration;
 import com.architjn.acjmusicplayer.utils.adapters.PlaylistListAdapter;
+import com.architjn.acjmusicplayer.utils.decorations.SimpleDividerItemDecoration;
+import com.architjn.acjmusicplayer.utils.handlers.PlaylistDBHelper;
 import com.architjn.acjmusicplayer.utils.items.Playlist;
 
 import java.util.ArrayList;
@@ -88,14 +85,6 @@ public class PlaylistListFragment extends Fragment {
     public void listIsEmpty() {
         emptyView.setVisibility(View.VISIBLE);
         rv.setVisibility(View.GONE);
-        ImageView img = ((ImageView) mainView.findViewById(R.id.animation));
-        final Drawable drawable = img.getDrawable();
-        img.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((Animatable) drawable).start();
-            }
-        });
     }
 
     public void listNoMoreEmpty() {

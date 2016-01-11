@@ -90,6 +90,7 @@ public abstract class ArtistImgHandler extends SQLiteOpenHelper {
             return cursor.getString(2);
         }
         db.close();
+        cursor.close();
         return null;
     }
 

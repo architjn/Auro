@@ -26,7 +26,6 @@ public class ArtistActivity extends AppCompatActivity {
 
     private static final String TAG = "ArtistActivity-TAG";
     private RecyclerView rv;
-    private View header;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,7 +47,7 @@ public class ArtistActivity extends AppCompatActivity {
     private void addSongList() {
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.addItemDecoration(new ArtistDividerItemDecoration(this, 75));
-        header = LayoutInflater.from(this).
+        View header = LayoutInflater.from(this).
                 inflate(R.layout.artist_activity_header, rv, false);
         rv.setAdapter(new ArtistSongListAdapter(this, header,
                 ListSongs.getSongsListOfArtist(this, getIntent().getStringExtra("name"))));

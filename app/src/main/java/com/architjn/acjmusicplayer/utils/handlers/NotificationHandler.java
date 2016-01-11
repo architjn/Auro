@@ -116,6 +116,7 @@ public class NotificationHandler {
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                         notificationCompat.bigContentView.setImageViewBitmap(R.id.noti_album_art, bitmap);
                         notificationCompat.contentView.setImageViewBitmap(R.id.noti_album_art, bitmap);
+                        notificationManager.notify(NOTIFICATION_ID, notificationCompat);
                         Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
                             @Override
                             public void onGenerated(Palette palette) {

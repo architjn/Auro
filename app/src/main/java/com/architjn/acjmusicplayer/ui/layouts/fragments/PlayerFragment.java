@@ -560,7 +560,7 @@ public class PlayerFragment extends Fragment {
 
             @Override
             protected void done(@Nullable Object result) {
-                if (path != null) {
+                if (path != null && (new File(path)).exists()) {
                     Picasso.with(context).load(new File(path)).resize(size, size)
                             .centerCrop().into(new Target() {
                         @Override
@@ -588,7 +588,7 @@ public class PlayerFragment extends Fragment {
             @Nullable
             @Override
             protected Object run() throws InterruptedException {
-                if (path != null) {
+                if (path != null && (new File(path)).exists()) {
                     return null;
                 } else {
                     img = utils.getBitmapOfVector(R.drawable.default_art,
@@ -601,8 +601,6 @@ public class PlayerFragment extends Fragment {
         totalSeekText.setText(currentSong.getDuration());
         seekBar.setMax((int) currentSong.getDurationLong());
         seekBar.setProgress(intent.getIntExtra("seek", 0));
-//            if (adapter != null)
-//                adapter.setPointOnShifted(intent.getIntExtra("pos", 0));
         currentSeekText.setText(currentSong.getFormatedTime(
                 intent.getIntExtra("seek", 0)));
         updateSeekBar();
