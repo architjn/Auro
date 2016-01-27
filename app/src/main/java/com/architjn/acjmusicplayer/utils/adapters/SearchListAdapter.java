@@ -44,7 +44,6 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Si
     public static final int ITEM_VIEW_TYPE_LIST_ARTIST = 3;
     public static final int ITEM_VIEW_TYPE_LIST_ALBUM = 4;
     public static final int ITEM_VIEW_TYPE_LIST_SONG = 5;
-    private static final String TAG = "SearchListAdapter-TAG";
     private ArrayList<Song> songs;
     private ArrayList<Album> albums;
     private ArrayList<Artist> artists;

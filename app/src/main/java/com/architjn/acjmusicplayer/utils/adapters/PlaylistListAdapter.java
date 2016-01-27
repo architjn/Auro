@@ -33,7 +33,6 @@ import java.util.ArrayList;
  */
 public class PlaylistListAdapter extends RecyclerView.Adapter<PlaylistListAdapter.SimpleItemViewHolder> {
 
-    private static final String TAG = "PlaylistListAdapter-TAG";
     private ArrayList<Playlist> items;
     private PlaylistListFragment fragment;
     private Context context;

@@ -31,7 +31,6 @@ import java.io.File;
  */
 public abstract class PlayerLoader {
 
-    private static final String TAG = "PlayerLoader-TAG";
     private Context context;
     private ImageView img;
     private String path;

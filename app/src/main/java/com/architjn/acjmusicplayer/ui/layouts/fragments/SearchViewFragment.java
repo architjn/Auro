@@ -27,7 +27,6 @@ import java.util.ArrayList;
  */
 public class SearchViewFragment extends Fragment {
 
-    private static final String TAG = "SearchViewFragment-TAG";
     private SearchView searchView;
     private RecyclerView rv;
     private Context context;

@@ -27,7 +27,6 @@ public class PlayerDBHandler extends SQLiteOpenHelper {
     public static final String SONG_KEY_ID = "song_id";
     public static final String SONG_KEY_REAL_ID = "song_real_id";
     public static final String SONG_KEY_LAST_PLAYED = "song_last_played";
-    private static final String TAG = "PlayerDBHandler-TAG";
     private Context context;
     private int fetchedPlayingPos = -1;
 

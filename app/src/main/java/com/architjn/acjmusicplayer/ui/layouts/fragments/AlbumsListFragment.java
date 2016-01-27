@@ -32,7 +32,6 @@ import java.util.ArrayList;
  */
 public class AlbumsListFragment extends Fragment {
 
-    private static final String TAG = "AlbumsListFragment-TAG";
     private Context context;
     private View mainView;
     private RecyclerView gv;

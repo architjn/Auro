@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 public class PointShiftingArrayList<T> extends ArrayList<T> {
 
-    private static final String TAG = "PointShiftingArrayList-TAG";
     private int pointOnShifted = 0;
 
     @Override

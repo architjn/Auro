@@ -34,7 +34,6 @@ import java.io.File;
  */
 public class AlbumActivity extends AppCompatActivity {
 
-    private static final String TAG = "AlbumActivity-TAG";
     private RecyclerView rv;
     private ImageView albumArt;
     private PermissionChecker permissionChecker;

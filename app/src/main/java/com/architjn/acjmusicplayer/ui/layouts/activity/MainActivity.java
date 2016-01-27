@@ -46,7 +46,6 @@ import io.fabric.sdk.android.Fabric;
  */
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity-TAG";
     private FragmentName currentFragment;
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;

@@ -26,7 +26,6 @@ import java.io.File;
 public class NotificationHandler {
 
     private static final int NOTIFICATION_ID = 272448;
-    private static final String TAG = "NotificationHandler-TAG";
     private Context context;
     private PlayerService service;
     private boolean notificationActive;
