@@ -17,7 +17,6 @@ import java.util.Collections;
  */
 public abstract class ArtistImgHandler extends SQLiteOpenHelper {
 
-    private static final String TAG = "ArtistImgHandler-TAG";
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "ArtistDB";
     private static final String TABLE_PLAYBACK = "artist";

@@ -37,7 +37,6 @@ import java.util.Arrays;
  * views within their parent ViewGroup.
  */
 public class ViewDragHelper {
-    private static final String TAG = "ViewDragHelper";
 
     /**
      * A null/invalid pointer ID.

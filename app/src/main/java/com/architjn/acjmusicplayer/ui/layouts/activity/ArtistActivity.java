@@ -24,7 +24,6 @@ import com.architjn.acjmusicplayer.utils.adapters.ArtistSubListAdapter;
  */
 public class ArtistActivity extends AppCompatActivity {
 
-    private static final String TAG = "ArtistActivity-TAG";
     private RecyclerView rv;
 
     @Override

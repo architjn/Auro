@@ -16,7 +16,6 @@ import java.util.ArrayList;
  */
 public class ListSongs {
 
-    private static final String TAG = "ListSongs-TAG";
 
     public static ArrayList<Album> getAlbumList(Context context) {
         final ArrayList<Album> albumList = new ArrayList<>();

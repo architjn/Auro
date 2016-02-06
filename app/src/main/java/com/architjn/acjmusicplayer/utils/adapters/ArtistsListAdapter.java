@@ -39,7 +39,6 @@ import java.util.ArrayList;
  */
 public class ArtistsListAdapter extends RecyclerView.Adapter<ArtistsListAdapter.SimpleItemViewHolder> {
 
-    private static final String TAG = "ArtistsListAdapter-TAG";
     private ArrayList<Artist> items;
     private ArtistListFragment fragment;
     private Context context;

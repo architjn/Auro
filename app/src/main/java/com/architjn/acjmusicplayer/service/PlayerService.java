@@ -37,10 +37,8 @@ public class PlayerService extends Service {
     public static final String ACTION_PREV_SONG = "ACTION_PREV_SONG";
     public static final String ACTION_PAUSE_SONG = "ACTION_PAUSE_SONG";
     public static final String ACTION_ADD_QUEUE = "ACTION_ADD_QUEUE";
-    private static final String TAG = "PlayerService-TAG";
     private PlayerHandler musicPlayerHandler;
     private Context context;
-    private ListType listType;
     private NotificationHandler notificationHandler;
     private BroadcastReceiver playerServiceBroadcastReceiver = new BroadcastReceiver() {
         @Override

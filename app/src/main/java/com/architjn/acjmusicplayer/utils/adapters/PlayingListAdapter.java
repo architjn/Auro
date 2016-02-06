@@ -29,7 +29,6 @@ public class PlayingListAdapter extends RecyclerView.Adapter<PlayingListAdapter.
     private static final int ITEM_VIEW_TYPE_HEADER = 0;
     private static final int ITEM_VIEW_TYPE_ITEM = 1;
     private static final int ITEM_VIEW_TYPE_UP_NEXT_HEADER = 2;
-    private static final String TAG = "PlayingListAdapter-TAG";
 
     private PointShiftingArrayList<Song> items;
     private Context context;

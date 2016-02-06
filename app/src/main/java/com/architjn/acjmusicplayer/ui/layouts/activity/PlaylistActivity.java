@@ -19,7 +19,6 @@ import com.architjn.acjmusicplayer.utils.adapters.PlaylistSongListAdapter;
  */
 public class PlaylistActivity extends AppCompatActivity {
 
-    private static final String TAG = "PlaylistActivity-TAG";
     private RecyclerView rv;
 
     @Override

@@ -30,7 +30,6 @@ public class PlaylistDBHelper extends SQLiteOpenHelper {
 
     private static final String PLAYLIST_KEY_ID = "playlist_id";
     private static final String PLAYLIST_KEY_NAME = "playlist_name";
-    private static final String TAG = "PlaylistDBHelper-TAG";
 
     private Context context;
 

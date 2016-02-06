@@ -17,7 +17,6 @@ import java.util.ArrayList;
  */
 public class PlayerHandler {
 
-    private static final String TAG = "PlayerHandler-TAG";
     private final PlayerDBHandler dbHandler;
     private final UserPreferenceHandler preferenceHandler;
     private Context context;
