@@ -1,22 +1,22 @@
 # Auro
 The world's first fastest, open source Music player for Android with latest design...
 
-#Features
+# Features
 - Fastest Music Player
 - Latest Designed
 - Open Source Music player
 - Customizable Options
 
-#Team Members
+# Team Members
  - <a href="http://google.co.in/+architjn">Archit Jain</a>
  
-######Thanks to
+###### Thanks to
 - <a href="https://plus.google.com/+aleksandartesic">Aleksandar Tešić</a> for concept design
 
-#Donate
+# Donate
 Paypal Donation id - architjn93@gmail.com
 
-#Screenshots
+# Screenshots
 <img src="https://raw.githubusercontent.com/architjn/Auro/master/SCREENSHOTS/songs.png" height="500"/>
 &nbsp;&nbsp;&nbsp;&nbsp;
 <img src="https://raw.githubusercontent.com/architjn/Auro/master/SCREENSHOTS/artists.png" height="500"/>
@@ -29,12 +29,12 @@ Paypal Donation id - architjn93@gmail.com
 &nbsp;&nbsp;&nbsp;&nbsp;
 <img src="https://raw.githubusercontent.com/architjn/Auro/master/SCREENSHOTS/album.png" height="500"/>
 
-#Download
+# Download
 Step 1 - Join Community <a href="https://goo.gl/kUsuK6">HERE</a> [Required in order to optin for beta testing]<br>
 Step 2 - Opt in for Beta program <a href="https://play.google.com/apps/testing/com.architjn.acjmusicplayer">HERE</a><br>
 Step 3 - Download from playstore <a href="https://play.google.com/store/apps/details?id=com.architjn.acjmusicplayer">HERE</a><br>
 
-#Libraries used
+# Libraries used
 - Google AppCompat 
 - Google CardView
 - Google RecyclerView
@@ -44,13 +44,13 @@ Step 3 - Download from playstore <a href="https://play.google.com/store/apps/det
 - jbundle http client
 - <a href="https://github.com/afollestad/material-dialogs">Material Dialogs</a>
 
-#Points should be followed
-###If you are creating your own music player
+# Points should be followed
+### If you are creating your own music player
  1. Proper credits should be given to Auro's owner
  2. Icon of your application **should not** be similar to Auro's Icon
  3. Name **should not** be similar to Auro
  
-#####(If any of the points above is not followed, we can take any legal action)
+##### (If any of the points above is not followed, we can take any legal action)
  
-#License
+# License
 <a href="https://github.com/architjn/Auro/blob/master/LICENSE">Check here</a>
