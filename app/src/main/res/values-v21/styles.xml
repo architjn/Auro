@@ -36,7 +36,8 @@
         <item name="windowNoTitle">true</item>
         <item name="android:actionBarWidgetTheme">@style/WidgetTheme</item>
         <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
     <style name="AppTheme.Album" parent="AppTheme">
@@ -44,7 +45,8 @@
         <item name="windowNoTitle">true</item>
         <item name="android:actionBarWidgetTheme">@style/WidgetTheme</item>
         <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
